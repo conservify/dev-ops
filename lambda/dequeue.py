@@ -21,14 +21,14 @@ def lambda_handler(event, context):
         with conn.cursor() as cur:
             logger.info("Creating schema...")
 
-            cur.execute("CREATE TABLE IF NOT EXISTS messages_raw (id SERIAL PRIMARY KEY, sqs_id VARCHAR NOT NULL, data JSON NOT NULL, hash VARCHAR NOT NULL)")
+            cur.execute("CREATE TABLE IF NOT EXISTS messages_raw (id SERIAL PRIMARY KEY, time TIMESTAMP, sqs_id VARCHAR NOT NULL, data JSON NOT NULL, hash VARCHAR NOT NULL)")
 
             logger.info("Receiving messages...")
 
             processed = []
             for message in queue.receive_messages(WaitTimeSeconds=10, MaxNumberOfMessages=10, MessageAttributeNames=['MessageId', 'MD5OfBody']):
                 logger.info("Inserting {}".format(message.message_id))
-                cur.execute("INSERT INTO messages_raw (sqs_id, data, hash) VALUES (%(sqs_id)s, %(data)s, %(hash)s)", {
+                cur.execute("INSERT INTO messages_raw (time, sqs_id, data, hash) VALUES (now(), %(sqs_id)s, %(data)s, %(hash)s)", {
                     'data': message.body,
                     'sqs_id': message.message_id,
                     'hash': message.md5_of_body
