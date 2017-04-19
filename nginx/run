@@ -1,1 +1,7 @@
-sudo docker run --name rproxy -d --restart always -v /home/jenkins/artifacts:/var/lib/jenkins_artifacts -p 80:80 -p 443:443 nginx-rproxy
+sudo docker run --name rproxy \
+	-d --restart always \
+	-v /home/jenkins/artifacts:/var/lib/jenkins_artifacts \
+	-p 80:80 -p 443:443 \
+	--link jenkins \
+	--link nexus \
+	nginx-rproxy
