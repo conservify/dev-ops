@@ -9,7 +9,7 @@ server {
 		# chunkin_resume;
 	}
 
-	server_name	conservify.page5of4.com;
+	server_name	code.conservify.org;
 
 	access_log  /var/log/nginx/conservify.access.log;
 	error_log  /var/log/nginx/conservify.error.log debug;
@@ -29,17 +29,17 @@ server {
 	location / {
 		root /var/www/html;
 
-        	rewrite ^ https://conservify.page5of4.com$request_uri? permanent;
+        	rewrite ^ https://code.conservify.org$request_uri? permanent;
 	}
 }
 
 server {
 	listen   443;
-	server_name	conservify.page5of4.com;
+	server_name	code.conservify.org;
 
 	ssl                  on;
-	ssl_certificate      /etc/letsencrypt/live/conservify.page5of4.com/fullchain.pem;
-	ssl_certificate_key  /etc/letsencrypt/live/conservify.page5of4.com/privkey.pem;
+	ssl_certificate      /etc/letsencrypt/live/code.conservify.org/fullchain.pem;
+	ssl_certificate_key  /etc/letsencrypt/live/code.conservify.org/privkey.pem;
 
 	access_log  /var/log/nginx/conservify.access.log;
 	error_log  /var/log/nginx/conservify.error.log debug;

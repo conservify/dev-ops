@@ -3,4 +3,4 @@ docker run -it \
            --net host \
            -v /etc/letsencrypt:/etc/letsencrypt \
            -v /var/lib/letsencrypt:/var/lib/letsencrypt \
-           gzm55/certbot certonly --standalone --text -d conservify.page5of4.com "$@"
+           gzm55/certbot certonly --standalone --text -d code.conservify.org "$@"
