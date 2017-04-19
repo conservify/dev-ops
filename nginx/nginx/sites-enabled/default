@@ -1,0 +1,26 @@
+server {
+
+	listen   80 default;
+
+	access_log  /var/log/nginx/home.access.log;
+
+	include server-common.conf;
+
+	location / {
+		root   /var/www;
+		index  index.html index.htm;
+	}
+
+	location /doc {
+		root   /usr/share;
+		autoindex on;
+		allow 127.0.0.1;
+		deny all;
+	}
+
+	location /images {
+		root   /usr/share;
+		autoindex on;
+	}
+}
+
