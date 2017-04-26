@@ -130,7 +130,7 @@ class StationStatus:
     def update(self, transmission):
         self.time = transmission.local_time()
         self.battery = transmission.battery()
-        self.battery_history.append([ transmission.local_time().strftime("%s"), transmission.battery(), transmission.local_time() ])
+        self.battery_history.append([ transmission.local_time().strftime("%s"), transmission.battery() ])
         self.number_of_messages += 1
 
     def age(self):
@@ -145,11 +145,17 @@ class StationStatus:
     def write_battery_log(self):
         file_name = "data/battery_" + self.name + ".csv"
         graph_file_name = "data/battery_" + self.name + ".png"
+        json_file_name = "data/battery_" + self.name + ".json"
         with open(file_name, "w", newline='') as file:
             print("writing " + file_name + " " + graph_file_name)
             writer = csv.writer(file, delimiter=',')
             for entry in sorted(self.battery_history, key=lambda x: x[0]):
                 writer.writerow(entry)
+
+        with open(json_file_name, "w") as file:
+            file.write(json.dumps({
+                'battery': self.battery_history
+            }))
 
         title = self.name + ' battery'
         cmd = [
@@ -164,6 +170,15 @@ class StationStatus:
         ]
         subprocess.call(" ".join(cmd), shell=True, universal_newlines=False)
 
+    def json(self):
+        return {
+            'name': self.name,
+            'age': self.age().total_seconds(),
+            'time': self.time.strftime("%s"),
+            'number_of_messages': self.number_of_messages,
+            'battery': self.battery
+        }
+
 class DashboardStatus:
     def __init__(self):
         self.statuses = {}
@@ -176,6 +191,11 @@ class DashboardStatus:
     def log(self):
         for station, status in sorted(self.statuses.items(), key=lambda x: x[1].age()):
             status.log()
+
+        with open("data/dashboard.json", "w") as file:
+            file.write(json.dumps({
+                'stations': [s.json() for s in self.statuses.values()]
+            }))
 
     def write_battery_log(self):
         for station, status in self.statuses.items():
