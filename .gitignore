@@ -1,2 +1,4 @@
 lambda/config.py
 *.zip
+config.py
+*.swp
