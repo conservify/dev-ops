@@ -1,0 +1,1 @@
+sudo docker run --name jenkins-agent kodbasen/jenkins-docker-slave-arm -headless -url https://code.conservify.org/ $SECRET $NAME
