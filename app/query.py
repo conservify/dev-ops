@@ -1,8 +1,10 @@
 import sys
 import logging
 import psycopg2
+import csv
 import json
 import config
+import subprocess
 from urllib.parse import parse_qs
 import binascii
 import struct
@@ -123,10 +125,12 @@ class StationStatus:
         self.time = None
         self.battery = None
         self.number_of_messages = 0
+        self.battery_history = []
 
     def update(self, transmission):
         self.time = transmission.local_time()
         self.battery = transmission.battery()
+        self.battery_history.append([ transmission.local_time().strftime("%s"), transmission.battery(), transmission.local_time() ])
         self.number_of_messages += 1
 
     def age(self):
@@ -138,17 +142,44 @@ class StationStatus:
         row = " | ".join([ self.name, str(self.age()), self.time.strftime("%x %X"), str(self.number_of_messages), str(self.battery) ])
         print("| " + row + " |")
 
+    def write_battery_log(self):
+        file_name = "data/battery_" + self.name + ".csv"
+        graph_file_name = "data/battery_" + self.name + ".png"
+        with open(file_name, "w", newline='') as file:
+            print("writing " + file_name + " " + graph_file_name)
+            writer = csv.writer(file, delimiter=',')
+            for entry in sorted(self.battery_history, key=lambda x: x[0]):
+                writer.writerow(entry)
+
+        title = self.name + ' battery'
+        cmd = [
+            "gnuplot",
+            "-e",
+            "'filename=\"" + file_name + "\"'",
+            "-e",
+            "'title=\" " + title + "\"'",
+            "battery.gp",
+            ">",
+            graph_file_name
+        ]
+        subprocess.call(" ".join(cmd), shell=True, universal_newlines=False)
+
 class DashboardStatus:
     def __init__(self):
         self.statuses = {}
 
     def update(self, transmission):
-        station = self.statuses.setdefault(transmission.name(), StationStatus(transmission.name()))
-        station.update(transmission)
+        if len(transmission.name()) > 0:
+            station = self.statuses.setdefault(transmission.name(), StationStatus(transmission.name()))
+            station.update(transmission)
 
     def log(self):
         for station, status in sorted(self.statuses.items(), key=lambda x: x[1].age()):
             status.log()
+
+    def write_battery_log(self):
+        for station, status in self.statuses.items():
+            status.write_battery_log()
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(levelname)s %(message)s', level=logging.DEBUG)
@@ -170,9 +201,10 @@ if __name__ == "__main__":
             for row in cur.fetchall():
                 transmission = parser.from_database_row(row)
                 if transmission and transmission.is_v2():
-                    print(transmission.transmission_time() + " " + transmission.local_time().strftime("%x %X") + "," + transmission.raw())
+                    # print(transmission.transmission_time() + " " + transmission.local_time().strftime("%x %X") + "," + transmission.raw())
                     binary = textToBinary.convert(transmission)
                     # print(binascii.hexlify(binary).decode('utf8'))
                     dashboard.update(transmission)
 
             dashboard.log()
+            dashboard.write_battery_log()
