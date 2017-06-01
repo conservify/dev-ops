@@ -11,6 +11,7 @@ import struct
 import datetime
 from pytz import timezone
 import argparse
+import requests
 
 from_zone = timezone('UTC')
 # to_zone = timezone('Africa/Gaborone')
@@ -73,6 +74,9 @@ class Transmission:
         self.fields = fields
         self.original = original
 
+    def original_data(self):
+        return self.original['data'][0]
+
     def transmission_time(self):
         return self.original['transmit_time'][0]
 
@@ -102,7 +106,11 @@ class Transmission:
         return float(self.fields[4])
 
     def is_v2(self):
-        return self.fields[2] in "ST,WE,LO,AT,SO"
+        return self.fields[2] in [ "ST", "WE", "LO", "AT", "SO" ]
+
+    def is_weather(self):
+        return self.fields[2] in [ "AT" ]
+
 
 class TransmissionsParser:
     def __init__(self):
@@ -111,7 +119,6 @@ class TransmissionsParser:
     def from_database_row(self, row):
         data = row[2]
         form = parse_qs(data['body-raw']) 
-        # print(form)
         if form.get('imei'):
             if form.get('data'):
                 protocol_id = form['momsn']
@@ -139,8 +146,10 @@ class StationStatus:
         return local_now - self.time
 
     def log(self):
-        row = " | ".join([ self.name, str(self.age()), self.time.strftime("%x %X"), str(self.number_of_messages), str(self.battery) ])
-        print("| " + row + " |")
+        #row = " | ".join([ self.name, str(self.age()), self.time.strftime("%x %X"), str(self.number_of_messages), str(self.battery) ])
+        #print("| " + row + " |")
+        row = "\t".join([ self.name, str(self.age()), self.time.strftime("%x %X"), str(self.number_of_messages), str(self.battery) ])
+        print(row)
 
     def write_battery_log(self):
         file_name = "data/battery_" + self.name + ".csv"
@@ -222,9 +231,17 @@ if __name__ == "__main__":
                 transmission = parser.from_database_row(row)
                 if transmission and transmission.is_v2():
                     # print(transmission.transmission_time() + " " + transmission.local_time().strftime("%x %X") + "," + transmission.raw())
-                    binary = textToBinary.convert(transmission)
-                    # print(binascii.hexlify(binary).decode('utf8'))
+                    # binary = textToBinary.convert(transmission)
+                    #print(transmission.original_data())))
+                    message_raw = binascii.a2b_hex(transmission.original_data()).decode('utf8')
+                    print(message_raw)
+                    payload = {
+                        'data': transmission.original_data()
+                    }
+                    # r = requests.post("http://requestb.in/qh53liqh", data=payload)
+                    # r = requests.post("http://intotheokavango.org/ingest/rockblock", data=payload)
+                    # sys.exit(2)
                     dashboard.update(transmission)
 
-            dashboard.log()
-            dashboard.write_battery_log()
+            #dashboard.log()
+            #dashboard.write_battery_log()

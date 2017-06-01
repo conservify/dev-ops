@@ -1,5 +1,6 @@
 lambda/config.py
 *.zip
 config.py
+*.swo
 *.swp
 data
