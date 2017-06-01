@@ -1,4 +1,4 @@
-FROM jenkins
+FROM jenkins:2.46.3
 USER root
 RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386
 WORKDIR /tmp
