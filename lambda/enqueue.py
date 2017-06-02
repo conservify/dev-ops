@@ -11,3 +11,5 @@ def lambda_handler(event, context):
     backup_queue.send_message(MessageBody=json.dumps(event))
     incoming_queue = sqs.get_queue_by_name(QueueName='messages-incoming')
     incoming_queue.send_message(MessageBody=json.dumps(event))
+    unprocessed_queue = sqs.get_queue_by_name(QueueName='messages-unprocessed')
+    unprocessed_queue.send_message(MessageBody=json.dumps(event))
