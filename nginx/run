@@ -4,4 +4,5 @@ sudo docker run --name rproxy \
 	-p 80:80 -p 443:443 \
 	--link jenkins \
 	--link nexus \
+	--add-host="parent:172.17.0.1" \
 	nginx-rproxy
