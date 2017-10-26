@@ -1,0 +1,3 @@
+sudo docker run --name fk-landing -d \
+	--add-host="parent:172.17.0.1" \
+	fk-landing
