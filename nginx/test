@@ -1,7 +1,9 @@
-sudo docker run --name rproxy --rm \
+sudo docker run --name rproxy \
+	--rm \
 	-v /home/jenkins/artifacts:/var/lib/jenkins_artifacts \
 	-p 80:80 -p 443:443 \
 	--link jenkins \
 	--link nexus \
-	nginx-rproxy \
-	nginx-debug  -g 'daemon off;' 
+	--link fk-landing \
+	--add-host="parent:172.17.0.1" \
+	nginx-rproxy

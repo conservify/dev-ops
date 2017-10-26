@@ -99,7 +99,7 @@ server {
 	}
 
 	location / {
-		root /var/www/conservify;
+		root /var/www/conservify.org;
 		try_files $uri @jenkins;
 
 		expires max;
