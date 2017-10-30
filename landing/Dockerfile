@@ -1,1 +1,1 @@
-FROM conservify/fk-landing:jacob-build
+FROM conservify/fk-landing:master
