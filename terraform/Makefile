@@ -2,6 +2,7 @@ all: fk_enqueue.zip terraform.tfplan
 
 apply: terraform.tfplan
 	terraform apply
+	cp terraform.tfstate* ~/dropbox/conservify
 
 terraform.tfplan:
 	terraform get
