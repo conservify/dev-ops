@@ -123,8 +123,19 @@ resource "aws_alb_listener" "fk-server-80" {
   port              = "80"
   protocol          = "HTTP"
 
-  // ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  // certificate_arn   = "arn:aws:acm:us-east-1:582827299311:certificate/30a77491-8d27-4ad5-af2d-b134ed9c73f9"
+  default_action {
+    target_group_arn = "${aws_alb_target_group.fk-server.arn}"
+    type             = "forward"
+  }
+}
+
+resource "aws_alb_listener" "fk-server-443" {
+  load_balancer_arn = "${aws_alb.fk-server.arn}"
+  port              = "443"
+  protocol          = "HTTPS"
+
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = "${var.certificate_arn}"
 
   default_action {
     target_group_arn = "${aws_alb_target_group.fk-server.arn}"

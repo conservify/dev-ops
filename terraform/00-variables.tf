@@ -31,3 +31,5 @@ variable "db_username" {
 }
 
 variable "db_password" {}
+
+variable "certificate_arn" {}
