@@ -1,0 +1,34 @@
+# -*- mode: yaml -*-
+# vi: set ft=yaml :
+
+---
+etcd:
+storage:
+  files:
+    - filesystem: "root"
+      path:       "/etc/hostname"
+      mode:       0644
+      contents:
+        inline: ${hostname}
+locksmith:
+  reboot_strategy: "reboot"
+systemd:
+  units:
+    - name: fk-app.service
+      enable: true
+      enabled: true
+      contents: |
+        [Unit]
+        Description=fk-app
+        Wants=docker.service
+
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/usr/bin/docker kill fk-app
+        ExecStartPre=-/usr/bin/docker rm fk-app
+        ExecStartPre=/usr/bin/docker pull ${app_server_container}
+        ExecStart=/usr/bin/docker run -e FIELDKIT_POSTGRES_URL=${db_url} --name fk-app -p 80:80 ${app_server_container}
+        ExecStop=/usr/bin/docker stop fk-app
+
+        [Install]
+        WantedBy=multi-user.target

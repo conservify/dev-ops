@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Steps
 
   sudo apt-get install tmux htop
@@ -12,3 +13,7 @@
 
 
 
+=======
+# aws
+Source/configuration for AWS infrastructure.
+>>>>>>> aws/master

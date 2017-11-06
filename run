@@ -1,0 +1,2 @@
+mkdir -p data
+sudo docker run --name cfy -v $PWD/data:/app/data --rm cfy
