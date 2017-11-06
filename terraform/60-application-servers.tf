@@ -102,6 +102,7 @@ resource "aws_instance" "fk-app-server-a" {
   user_data                   = "${data.ct_config.fk-app-server-a.rendered}"
   key_name                    = "cfy-dev-server"
   iam_instance_profile        = "${aws_iam_instance_profile.fk-server.id}"
+  availability_zone           = "${element(var.azs, count.index)}"
 
   root_block_device {
     volume_type = "gp2"
@@ -109,7 +110,7 @@ resource "aws_instance" "fk-app-server-a" {
   }
 
   tags {
-    Name = "fk-app-server-a"
+    Name = "fk-app-server-${count.index}"
   }
 }
 
@@ -124,7 +125,7 @@ resource "aws_alb" "fk-server" {
   }
 }
 
-resource "aws_alb_listener" "fk-server" {
+resource "aws_alb_listener" "fk-server-80" {
   load_balancer_arn = "${aws_alb.fk-server.arn}"
   port              = "80"
   protocol          = "HTTP"

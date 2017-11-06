@@ -4,6 +4,7 @@ apply: terraform.tfplan
 	terraform apply
 
 terraform.tfplan:
+	terraform get
 	terraform plan -out=terraform.tfplan
 
 clean:

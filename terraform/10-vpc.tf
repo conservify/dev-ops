@@ -76,10 +76,3 @@ resource "aws_route" "public_access" {
   gateway_id             = "${aws_internet_gateway.fk.id}"
 }
 
-/*
-resource "aws_eip" "tuto_eip" {
-  vpc      = true
-  depends_on = ["aws_internet_gateway.fk"]
-}
-*/
-
