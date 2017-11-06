@@ -1,4 +1,3 @@
-
 resource "aws_route53_record" "fk-server-a" {
   zone_id = "${var.zone_id}"
   name    = "fk-server-a.aws.${var.zone_name}"

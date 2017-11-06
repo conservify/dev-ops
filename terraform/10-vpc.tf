@@ -82,3 +82,4 @@ resource "aws_eip" "tuto_eip" {
   depends_on = ["aws_internet_gateway.fk"]
 }
 */
+

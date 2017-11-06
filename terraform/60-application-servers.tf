@@ -1,19 +1,19 @@
 resource "aws_security_group" "ssh" {
-  name = "ssh"
+  name        = "ssh"
   description = "ssh"
-  vpc_id = "${aws_vpc.fk.id}"
+  vpc_id      = "${aws_vpc.fk.id}"
 
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = "${var.whitelisted_cidrs}"
   }
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -24,17 +24,17 @@ resource "aws_security_group" "fk-app-server" {
   vpc_id      = "${aws_vpc.fk.id}"
 
   ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = "${var.whitelisted_cidrs}"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    cidr_blocks     = "${var.whitelisted_cidrs}"
     security_groups = ["${aws_security_group.fk-server-alb.id}"]
   }
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -65,7 +65,6 @@ resource "aws_security_group" "fk-server-alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
 
 resource "aws_security_group" "postgresql" {
   name        = "postgresql"
@@ -129,6 +128,7 @@ resource "aws_alb_listener" "fk-server" {
   load_balancer_arn = "${aws_alb.fk-server.arn}"
   port              = "80"
   protocol          = "HTTP"
+
   // ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   // certificate_arn   = "arn:aws:acm:us-east-1:582827299311:certificate/30a77491-8d27-4ad5-af2d-b134ed9c73f9"
 
