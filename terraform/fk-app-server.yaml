@@ -26,8 +26,8 @@ systemd:
         TimeoutStartSec=0
         ExecStartPre=-/usr/bin/docker kill fk-app
         ExecStartPre=-/usr/bin/docker rm fk-app
-        ExecStartPre=/usr/bin/docker pull nginx
-        ExecStart=/usr/bin/docker run -e APPNAME=fk-app --name fk-app -p 80:80 nginx
+        ExecStartPre=/usr/bin/docker pull ${app_server_container}
+        ExecStart=/usr/bin/docker run -e FIELDKIT_POSTGRES_URL=${db_url} --name fk-app -p 80:80 ${app_server_container}
         ExecStop=/usr/bin/docker stop fk-app
 
         [Install]

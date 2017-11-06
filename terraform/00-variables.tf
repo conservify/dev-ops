@@ -17,3 +17,17 @@ variable "azs" {
   type    = "list"
   default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
+
+variable "app_server_container" {
+  default = "conservify/fk-cloud:jacob-build"
+}
+
+variable "db_name" {
+  default = "fk"
+}
+
+variable "db_username" {
+  default = "fk"
+}
+
+variable "db_password" {}

@@ -66,24 +66,17 @@ resource "aws_security_group" "fk-server-alb" {
   }
 }
 
-resource "aws_security_group" "postgresql" {
-  name        = "postgresql"
-  description = "postgresql"
-  vpc_id      = "${aws_vpc.fk.id}"
-
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.fk-app-server.id}"]
-  }
-}
-
 data "template_file" "fk-app-server-a" {
   template = "${file("${path.module}/fk-app-server.yaml")}"
 
   vars {
-    hostname = "fk-app-server-a"
+    hostname             = "fk-app-server-a"
+    app_server_container = "${var.app_server_container}"
+    db_username          = "${var.db_username}"
+    db_name              = "${var.db_name}"
+    db_password          = "${var.db_password}"
+    db_address           = "${module.database.db_address}"
+    db_url               = "${module.database.db_url}"
   }
 }
 
@@ -145,7 +138,6 @@ resource "aws_alb_target_group" "fk-server" {
   protocol = "HTTP"
   vpc_id   = "${aws_vpc.fk.id}"
 
-  /*
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
@@ -154,11 +146,34 @@ resource "aws_alb_target_group" "fk-server" {
     path                = "/status"
     interval            = 5
   }
-  */
 }
 
 resource "aws_alb_target_group_attachment" "fk-server-a" {
   target_group_arn = "${aws_alb_target_group.fk-server.arn}"
   target_id        = "${aws_instance.fk-app-server-a.id}"
   port             = 80
+}
+
+module "database" {
+  source = "./database"
+
+  db_name                      = "${var.db_name}"
+  db_username                  = "${var.db_username}"
+  db_password                  = "${var.db_password}"
+  app_server_security_group_id = "${aws_security_group.fk-app-server.id}"
+  db_subnet_group_name         = "${aws_db_subnet_group.fk.name}"
+  vpc_id                       = "${aws_vpc.fk.id}"
+}
+
+output "db_password" {
+  value     = "${var.db_password}"
+  sensitive = true
+}
+
+output "db_address" {
+  value = "${module.database.db_address}"
+}
+
+output "db_url" {
+  value = "${module.database.db_url}"
 }
