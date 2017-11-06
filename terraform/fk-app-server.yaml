@@ -12,3 +12,23 @@ storage:
         inline: ${hostname}
 locksmith:
   reboot_strategy: "reboot"
+systemd:
+  units:
+    - name: fk-app.service
+      enable: true
+      enabled: true
+      contents: |
+        [Unit]
+        Description=fk-app
+        Wants=docker.service
+
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/usr/bin/docker kill fk-app
+        ExecStartPre=-/usr/bin/docker rm fk-app
+        ExecStartPre=/usr/bin/docker pull nginx
+        ExecStart=/usr/bin/docker run -e APPNAME=fk-app --name fk-app -p 80:80 nginx
+        ExecStop=/usr/bin/docker stop fk-app
+
+        [Install]
+        WantedBy=multi-user.target

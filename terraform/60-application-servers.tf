@@ -7,7 +7,7 @@ resource "aws_security_group" "ssh" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["172.91.15.40/32"]
+    cidr_blocks = "${var.whitelisted_cidrs}"
   }
 
   egress {
@@ -27,8 +27,8 @@ resource "aws_security_group" "fk-app-server" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = ["172.91.15.40/32"]
-    // security_groups = ["${aws_security_group.fieldkit-server-alb.id}"]
+    cidr_blocks = "${var.whitelisted_cidrs}"
+    security_groups = ["${aws_security_group.fk-server-alb.id}"]
   }
 
   egress {
@@ -36,6 +36,47 @@ resource "aws_security_group" "fk-app-server" {
     to_port = 0
     protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "fk-server-alb" {
+  name        = "fk-server-alb"
+  description = "fk-server-alb"
+  vpc_id      = "${aws_vpc.fk.id}"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+resource "aws_security_group" "postgresql" {
+  name        = "postgresql"
+  description = "postgresql"
+  vpc_id      = "${aws_vpc.fk.id}"
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.fk-app-server.id}"]
   }
 }
 
@@ -71,4 +112,52 @@ resource "aws_instance" "fk-app-server-a" {
   tags {
     Name = "fk-app-server-a"
   }
+}
+
+resource "aws_alb" "fk-server" {
+  name            = "fk-server"
+  internal        = false
+  security_groups = ["${aws_security_group.fk-server-alb.id}"]
+  subnets         = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
+
+  tags {
+    Name = "fk-server"
+  }
+}
+
+resource "aws_alb_listener" "fk-server" {
+  load_balancer_arn = "${aws_alb.fk-server.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+  // ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  // certificate_arn   = "arn:aws:acm:us-east-1:582827299311:certificate/30a77491-8d27-4ad5-af2d-b134ed9c73f9"
+
+  default_action {
+    target_group_arn = "${aws_alb_target_group.fk-server.arn}"
+    type             = "forward"
+  }
+}
+
+resource "aws_alb_target_group" "fk-server" {
+  name     = "fk-server"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${aws_vpc.fk.id}"
+
+  /*
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    port                = 80
+    path                = "/status"
+    interval            = 5
+  }
+  */
+}
+
+resource "aws_alb_target_group_attachment" "fk-server-a" {
+  target_group_arn = "${aws_alb_target_group.fk-server.arn}"
+  target_id        = "${aws_instance.fk-app-server-a.id}"
+  port             = 80
 }
