@@ -7,12 +7,16 @@ terraform.tfplan:
 	terraform plan -out=terraform.tfplan
 
 clean:
-	rm -rf terraform.tfplan
+	rm -f terraform.tfplan fk_enqueue.zip
 
 fk_enqueue.zip: fk_enqueue.py
-	zip -o $@ $^
+	zip -o $@ $^ && touch $@
 
-setup:
+setup: ~/.terraformrc
 	go get -u github.com/coreos/terraform-provider-ct
+	terraform init
+
+~/.terraformrc:
+	cp .terraformrc ~/
 
 .PHONY: all apply clean
