@@ -1,0 +1,14 @@
+# -*- mode: yaml -*-
+# vi: set ft=yaml :
+
+---
+etcd:
+storage:
+  files:
+    - filesystem: "root"
+      path:       "/etc/hostname"
+      mode:       0644
+      contents:
+        inline: ${hostname}
+locksmith:
+  reboot_strategy: "reboot"
