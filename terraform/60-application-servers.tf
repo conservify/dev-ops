@@ -75,6 +75,7 @@ data "template_file" "fk-app-server-a" {
     db_username          = "${var.db_username}"
     db_name              = "${var.db_name}"
     db_password          = "${var.db_password}"
+    zone_name            = "${var.zone_name}"
     db_address           = "${module.database.db_address}"
     db_url               = "${module.database.db_url}"
   }
