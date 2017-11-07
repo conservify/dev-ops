@@ -190,3 +190,7 @@ output "db_address" {
 output "db_url" {
   value = "${module.database.db_url}"
 }
+
+output "app_server_container" {
+  value = "${var.app_server_container}"
+}
