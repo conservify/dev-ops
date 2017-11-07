@@ -1,4 +1,4 @@
-all: fk_enqueue.zip terraform.tfplan 
+all: fk_enqueue.zip terraform.tfplan
 
 apply: terraform.tfplan
 	terraform apply
@@ -6,9 +6,6 @@ apply: terraform.tfplan
 terraform.tfplan:
 	terraform get
 	terraform plan -out=terraform.tfplan
-
-clean:
-	rm -f terraform.tfplan fk_enqueue.zip
 
 fk_enqueue.zip: fk_enqueue.py
 	zip -o $@ $^ && touch $@
@@ -20,8 +17,11 @@ setup: ~/.terraformrc
 ~/.terraformrc:
 	cp .terraformrc ~/
 
-graph: ## Creates a graph of the resources that Terraform is aware of
+graph:
 	@rm -f graph.png
 	@terraform graph -draw-cycles -module-depth=-1 | dot -Tpng > graph.png
+
+clean:
+	rm -f terraform.tfplan fk_enqueue.zip graph.png
 
 .PHONY: all apply clean

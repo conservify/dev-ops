@@ -10,8 +10,10 @@ storage:
       mode:       0644
       contents:
         inline: ${hostname}
+
 locksmith:
   reboot_strategy: "reboot"
+
 systemd:
   units:
     - name: fk-app.service
