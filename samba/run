@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo docker run --rm -it --name samba -h samba -p 138:138/udp -p 139:139 -p 445:445 -p 445:445/udp -v /home/jlewallen:/home/jlewallen jlewallen/samba
