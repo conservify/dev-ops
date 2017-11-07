@@ -2,7 +2,6 @@ all: fk_enqueue.zip terraform.tfplan
 
 apply: terraform.tfplan
 	terraform apply
-	cp terraform.tfstate* ~/dropbox/conservify
 
 terraform.tfplan:
 	terraform get
@@ -20,5 +19,9 @@ setup: ~/.terraformrc
 
 ~/.terraformrc:
 	cp .terraformrc ~/
+
+graph: ## Creates a graph of the resources that Terraform is aware of
+	@rm -f graph.png
+	@terraform graph -draw-cycles -module-depth=-1 | dot -Tpng > graph.png
 
 .PHONY: all apply clean
