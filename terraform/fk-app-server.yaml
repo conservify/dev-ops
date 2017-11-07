@@ -3,6 +3,14 @@
 
 ---
 etcd:
+  version:                     "3.0.15"
+  name:                        "{HOSTNAME}"
+  advertise_client_urls:       "http://{PRIVATE_IPV4}:2379"
+  initial_advertise_peer_urls: "http://{PRIVATE_IPV4}:2380"
+  listen_client_urls:          "http://0.0.0.0:2379"
+  listen_peer_urls:            "http://{PRIVATE_IPV4}:2380"
+  initial_cluster:             "{HOSTNAME}=http://{PRIVATE_IPV4}:2380"
+
 storage:
   files:
     - filesystem: "root"
@@ -10,8 +18,10 @@ storage:
       mode:       0644
       contents:
         inline: ${hostname}
+
 locksmith:
   reboot_strategy: "reboot"
+
 systemd:
   units:
     - name: fk-app.service
@@ -27,7 +37,7 @@ systemd:
         ExecStartPre=-/usr/bin/docker kill fk-app
         ExecStartPre=-/usr/bin/docker rm fk-app
         ExecStartPre=/usr/bin/docker pull ${app_server_container}
-        ExecStart=/usr/bin/docker run -e FIELDKIT_POSTGRES_URL=${db_url} --name fk-app -p 80:80 ${app_server_container}
+        ExecStart=/usr/bin/docker run -e FIELDKIT_DOMAIN=${zone_name} -e FIELDKIT_LANDING_ROOT=/landing -e FIELDKIT_ADMIN_ROOT=/admin -e FIELDKIT_FRONTEND_ROOT=/frontend -e FIELDKIT_POSTGRES_URL=${db_url} --name fk-app -p 80:80 ${app_server_container}
         ExecStop=/usr/bin/docker stop fk-app
 
         [Install]

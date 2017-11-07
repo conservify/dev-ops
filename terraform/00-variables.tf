@@ -19,7 +19,7 @@ variable "azs" {
 }
 
 variable "app_server_container" {
-  default = "conservify/fk-cloud:jacob-build"
+  default = "conservify/fk-cloud:master"
 }
 
 variable "db_name" {

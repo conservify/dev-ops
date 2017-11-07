@@ -75,6 +75,7 @@ data "template_file" "fk-app-server-a" {
     db_username          = "${var.db_username}"
     db_name              = "${var.db_name}"
     db_password          = "${var.db_password}"
+    zone_name            = "${var.zone_name}"
     db_address           = "${module.database.db_address}"
     db_url               = "${module.database.db_url}"
   }
@@ -82,6 +83,7 @@ data "template_file" "fk-app-server-a" {
 
 data "ct_config" "fk-app-server-a" {
   pretty_print = false
+  platform     = "ec2"
   content      = "${data.template_file.fk-app-server-a.rendered}"
 }
 
@@ -134,8 +136,8 @@ resource "aws_alb_listener" "fk-server-443" {
   port              = "443"
   protocol          = "HTTPS"
 
-  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = "${var.certificate_arn}"
+  ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn = "${var.certificate_arn}"
 
   default_action {
     target_group_arn = "${aws_alb_target_group.fk-server.arn}"
