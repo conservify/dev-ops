@@ -1,4 +1,4 @@
-nginx/letsencrypt
+docker/nginx/letsencrypt
 vpn.env
 lambda/config.py
 *.zip
@@ -6,3 +6,7 @@ config.py
 *.swo
 *.swp
 data
+docker/logs.env
+docker/logs/data
+docker/logs/journal
+docker/logs/config/node-id

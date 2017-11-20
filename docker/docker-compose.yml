@@ -1,0 +1,69 @@
+version: '2'
+services:
+  nexus-data:
+    image: "sonatype/nexus"
+  nexus:
+    image: "sonatype/nexus"
+    volumes_from:
+      - nexus-data
+    ports:
+      - "8081:8081"
+  fk-landing:
+    image: "fk-landing"
+  jenkins:
+    image: "conservify/jenkins"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    ports:
+      - "45900:45900"
+      - "49001:8080"
+      - "50000:50000"
+  proxy:
+    image: "nginx-rproxy"
+    volumes:
+      - /home/jenkins/artifacts:/var/lib/jenkins_artifacts
+    links:
+      - jenkins
+      - nexus
+      - fk-landing
+      - logs
+      - glacier-status
+    extra_hosts:
+      - "parent:127.0.0.1"
+    ports:
+      - "443:443"
+      - "80:80"
+  logs-mongo:
+    image: "mongo:3"
+    volumes:
+      - /home/ubuntu/dev-ops/docker/logs/data/mongo:/data/db
+  logs-elasticsearch:
+    image: "elasticsearch:2"
+    command: "elasticsearch -Des.cluster.name='graylog'"
+    volumes:
+      - /graylog/data/elasticsearch:/usr/share/elasticsearch/data
+  logs:
+    image: graylog2/server:2.1.1-1
+    volumes:
+      - /home/ubuntu/dev-ops/docker/logs/journal:/usr/share/graylog/data/journal
+      - /home/ubuntu/dev-ops/docker/logs/config:/usr/share/graylog/data/config
+    env_file:
+      - logs.env
+    environment:
+      GRAYLOG_WEB_ENDPOINT_URI: https://code.conservify.org/logs/api
+    links:
+      - logs-mongo:mongo
+      - logs-elasticsearch:elasticsearch
+    ports:
+      - "5140:5140"
+      - "9000:9000"
+      - "12201/udp:12201/udp"
+      - "1514/udp:1514/udp"
+  glacier-status:
+    image: conservify/glacier-status
+    volumes:
+      - /var/log:/var/log
+    ports:
+      - "8000:8000"
+volumes:
+  jenkins_home:
