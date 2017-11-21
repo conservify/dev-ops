@@ -14,6 +14,7 @@ services:
     image: "conservify/jenkins"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "45900:45900"
       - "49001:8080"
