@@ -12,8 +12,10 @@ services:
     image: "fk-landing"
   jenkins:
     image: "conservify/jenkins"
+    environment:
+      JENKINS_OPTS: --prefix=/jenkins
     volumes:
-      - jenkins_home:/var/jenkins_home
+      - /svr0/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "45900:45900"
@@ -42,7 +44,7 @@ services:
     image: "elasticsearch:2"
     command: "elasticsearch -Des.cluster.name='graylog'"
     volumes:
-      - /graylog/data/elasticsearch:/usr/share/elasticsearch/data
+      - /svr0/graylog/data/elasticsearch:/usr/share/elasticsearch/data
   logs:
     image: graylog2/server:2.1.1-1
     volumes:

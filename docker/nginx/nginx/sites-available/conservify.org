@@ -119,18 +119,8 @@ server {
 		proxy_busy_buffers_size    64k;
 	}
 
-	location / {
-		root /var/www/conservify.org;
-		try_files $uri @jenkins;
-
-		expires max;
-		access_log off;
-	}
-
-	location @jenkins {
-		include common.conf;
-
-		proxy_pass         http://jenkins:8080;
+	location /jenkins {
+		proxy_pass         http://jenkins:8080/jenkins;
 		proxy_redirect     off;
 
 		proxy_set_header   Host             $host;
@@ -148,6 +138,13 @@ server {
 		proxy_buffer_size          4k;
 		proxy_buffers              4 32k;
 		proxy_busy_buffers_size    64k;
+	}
+
+	location / {
+		root /var/www/conservify.org;
+
+		expires max;
+		access_log off;
 	}
 }
 

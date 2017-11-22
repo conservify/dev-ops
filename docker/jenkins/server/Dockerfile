@@ -1,4 +1,4 @@
-FROM jenkins:2.60.3
+FROM jenkins/jenkins:lts
 USER root
 RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential
 WORKDIR /tmp
