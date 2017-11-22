@@ -9,9 +9,17 @@ services:
     ports:
       - "8081:8081"
   fk-landing:
+    depends_on:
+      - logs
     image: "fk-landing"
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
   jenkins:
     image: "conservify/jenkins"
+    depends_on:
+      - logs
     environment:
       JENKINS_OPTS: --prefix=/jenkins
     volumes:
@@ -21,6 +29,10 @@ services:
       - "45900:45900"
       - "49001:8080"
       - "50000:50000"
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
   proxy:
     image: "nginx-rproxy"
     volumes:
@@ -36,6 +48,10 @@ services:
     ports:
       - "443:443"
       - "80:80"
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
   logs-mongo:
     image: "mongo:3"
     volumes:
@@ -64,9 +80,15 @@ services:
       - "1514/udp:1514/udp"
   glacier-status:
     image: conservify/glacier-status
+    depends_on:
+      - logs
     volumes:
       - /var/log:/var/log
     ports:
       - "8000:8000"
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 volumes:
   jenkins_home:
