@@ -1,11 +1,9 @@
 version: '2'
 services:
-  nexus-data:
-    image: "sonatype/nexus"
   nexus:
     image: "sonatype/nexus"
-    volumes_from:
-      - nexus-data
+    volumes:
+      - /svr0/nexus/sonatype-work:/sonatype-work
     ports:
       - "8081:8081"
   fk-landing:
@@ -33,6 +31,20 @@ services:
       driver: "gelf"
       options:
         gelf-address: "udp://127.0.0.1:12201"
+  jira:
+    image: "ivantichy/jira:7.1.7"
+    depends_on:
+      - logs
+    ports:
+      - "8080:8080"
+    volumes:
+      - /svr0/jira/pg:/var/lib/postgresql/9.4/main
+      - /svr0/jira/app:/var/atlassian/jira-app
+      - /svr0/jira/home:/var/atlassian/jira-home
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
   proxy:
     image: "nginx-rproxy"
     volumes:
@@ -43,6 +55,7 @@ services:
       - fk-landing
       - logs
       - glacier-status
+      - jira
     extra_hosts:
       - "parent:127.0.0.1"
     ports:
