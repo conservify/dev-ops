@@ -22,8 +22,9 @@ server {
 		autoindex_format json;
 	}
 
-	location /geophones {
-		return 200;
+	location /time {
+		ssi on;
+		alias /var/www/time;
 	}
 
 	location / {
@@ -50,10 +51,6 @@ server {
 		alias /var/lib/jenkins_artifacts;
 		autoindex on;
 		autoindex_format json;
-	}
-
-	location /geophones {
-		return 200;
 	}
 
 	location /glacier {

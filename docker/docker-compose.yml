@@ -10,10 +10,6 @@ services:
     depends_on:
       - logs
     image: "fk-landing"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "udp://127.0.0.1:12201"
   jenkins:
     image: "conservify/jenkins"
     depends_on:
@@ -28,10 +24,6 @@ services:
       - "45900:45900"
       - "49001:8080"
       - "50000:50000"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "udp://127.0.0.1:12201"
   jira:
     image: "ivantichy/jira:7.1.7"
     depends_on:
@@ -42,10 +34,6 @@ services:
       - /svr0/jira/pg:/var/lib/postgresql/9.4/main
       - /svr0/jira/app:/var/atlassian/jira-app
       - /svr0/jira/home:/var/atlassian/jira-home
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "udp://127.0.0.1:12201"
   proxy:
     image: "nginx-rproxy"
     volumes:
@@ -62,14 +50,10 @@ services:
     ports:
       - "443:443"
       - "80:80"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "udp://127.0.0.1:12201"
   logs-mongo:
     image: "mongo:3"
     volumes:
-      - /home/ubuntu/dev-ops/docker/logs/data/mongo:/data/db
+      - /svr0/graylog/mongo:/data/db
   logs-elasticsearch:
     image: "elasticsearch:2"
     command: "elasticsearch -Des.cluster.name='graylog'"
@@ -78,8 +62,8 @@ services:
   logs:
     image: graylog2/server:2.1.1-1
     volumes:
-      - /home/ubuntu/dev-ops/docker/logs/journal:/usr/share/graylog/data/journal
-      - /home/ubuntu/dev-ops/docker/logs/config:/usr/share/graylog/data/config
+      - /svr0/graylog/journal:/usr/share/graylog/data/journal
+      - /svr0/graylog/config:/usr/share/graylog/data/config
     env_file:
       - logs.env
     environment:
@@ -101,9 +85,5 @@ services:
       - /var/log:/var/log
     ports:
       - "8000:8000"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "udp://127.0.0.1:12201"
 volumes:
   jenkins_home:
