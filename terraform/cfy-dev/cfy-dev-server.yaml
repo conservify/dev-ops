@@ -1,0 +1,11 @@
+# -*- mode: yaml -*-
+# vi: set ft=yaml :
+
+---
+storage:
+  files:
+    - filesystem: "root"
+      path:       "/etc/hostname"
+      mode:       0644
+      contents:
+        inline: ${hostname}

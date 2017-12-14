@@ -8,7 +8,7 @@ data "aws_caller_identity" "current" {}
 
 terraform {
   backend "local" {
-    path = "../../../dropbox/conservify/terraform/terraform.tfstate"
+    path = "../../../../dropbox/conservify/terraform/fk.tfstate"
   }
 }
 
@@ -17,7 +17,7 @@ data "terraform_remote_state" "default" {
   backend = "local"
 
   config {
-    path = "../../../dropbox/conservify/terraform/terraform.tfstate"
+    path = "../../../../dropbox/conservify/terraform/fk.tfstate"
   }
 }
 */
