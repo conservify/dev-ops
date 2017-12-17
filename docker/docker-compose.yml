@@ -39,6 +39,7 @@ services:
     volumes:
       - /home/jenkins/artifacts:/var/lib/jenkins_artifacts
     links:
+      - spotify
       - jenkins
       - nexus
       - fk-landing
@@ -85,5 +86,11 @@ services:
       - /var/log:/var/log
     ports:
       - "8000:8000"
+  spotify:
+    image: jlewallen/play-zones:master
+    volumes:
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+    ports:
+      - "9090:9090"
 volumes:
   jenkins_home:
