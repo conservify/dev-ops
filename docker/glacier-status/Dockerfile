@@ -2,7 +2,8 @@ FROM golang:1.8.1
 RUN mkdir -p /app/work
 WORKDIR /app/work
 RUN apt-get update && apt-get install unzip
-RUN wget https://github.com/Conservify/glacier/archive/master.zip && unzip master.zip
+# RUN wget https://github.com/Conservify/glacier/archive/master.zip && unzip master.zip
+COPY glacier /app/work/glacier-master
 RUN go get github.com/hpcloud/tail
 RUN go get github.com/sfreiberg/gotwilio
 COPY secrets.go /app/work/glacier-master/log-monitor

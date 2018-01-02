@@ -11,3 +11,4 @@ docker/logs/data
 docker/logs/journal
 docker/logs/config/node-id
 htpasswd
+glacier
