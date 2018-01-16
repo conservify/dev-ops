@@ -3,7 +3,7 @@ docker run -it \
            --net host \
            -v /etc/letsencrypt:/etc/letsencrypt \
            -v /var/lib/letsencrypt:/var/lib/letsencrypt \
-           gzm55/certbot certonly --renew-by-default --standalone --text -d fkdev.org -d api.fkdev.org -d www.fkdev.org "$@"
+           gzm55/certbot certonly --renew-by-default --manual --preferred-challenges dns-01 --text -d fkdev.org -d api.fkdev.org -d www.fkdev.org "$@"
 
 mv letsencrypt letsencrypt-old
 cp -ar /etc/letsencrypt letsencrypt
