@@ -3,7 +3,10 @@
 set -xe
 
 if [ -z "$ENV_DB_URL" ]; then
-    echo "Please source setup-env.sh"
+    source ./setup-env.sh
+fi
+if [ -z "$ENV_DB_URL" ]; then
+    echo No cloud configuration.
     exit 2
 fi
 

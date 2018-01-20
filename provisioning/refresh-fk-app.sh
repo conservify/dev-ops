@@ -2,8 +2,11 @@
 
 set -xe
 
-if [ -z "$APP_SERVER_ADDRESS" ]; then
-    echo "Please source setup-env.sh"
+if [ -z "$ENV_DB_URL" ]; then
+    source ./setup-env.sh
+fi
+if [ -z "$ENV_DB_URL" ]; then
+    echo No cloud configuration.
     exit 2
 fi
 

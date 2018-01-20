@@ -12,3 +12,5 @@ docker/logs/journal
 docker/logs/config/node-id
 htpasswd
 glacier
+schema.sql
+data.sql
