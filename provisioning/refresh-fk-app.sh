@@ -15,4 +15,4 @@ eval $(ssh-agent)
 trap "ssh-agent -k" exit
 ssh-add ~/.ssh/cfy.pem
 
-ssh -t core@$APP_SERVER_ADDRESS "docker pull conservify/fk-cloud:master && sudo systemctl restart fk-app"
+ssh -t core@$APP_SERVER_ADDRESS "docker pull conservify/fk-cloud:master && (cd /etc/docker/compose && /opt/bin/docker-compose -f fk-compose.yml stop fk-app && /opt/bin/docker-compose -f fk-compose.yml rm -f fk-app && /opt/bin/docker-compose -f fk-compose.yml up -d fk-app)"
