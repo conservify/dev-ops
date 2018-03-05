@@ -81,6 +81,21 @@ data "template_file" "fk-app-server-a" {
   }
 }
 
+data "template_file" "fk-app-server-a-compose" {
+  template = "${file("${path.module}/fk-compose.yml")}"
+
+  vars {
+    hostname             = "fk-app-server-a"
+    app_server_container = "${var.app_server_container}"
+    db_username          = "${var.db_username}"
+    db_name              = "${var.db_name}"
+    db_password          = "${var.db_password}"
+    zone_name            = "${var.zone_name}"
+    db_address           = "${module.database.db_address}"
+    db_url               = "${module.database.db_url}"
+  }
+}
+
 data "ct_config" "fk-app-server-a" {
   pretty_print = false
   platform     = "ec2"
@@ -99,6 +114,12 @@ resource "aws_instance" "fk-app-server-a" {
   iam_instance_profile        = "${aws_iam_instance_profile.fk-server.id}"
   availability_zone           = "${element(var.azs, count.index)}"
 
+  connection {
+    user = "core"
+    agent = false
+    private_key = "${file("/home/jlewallen/.ssh/cfy.pem")}"
+  }
+
   root_block_device {
     volume_type = "gp2"
     volume_size = 100
@@ -106,6 +127,21 @@ resource "aws_instance" "fk-app-server-a" {
 
   tags {
     Name = "fk-app-server-${count.index}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /opt/bin",
+      "sudo curl -L \"https://github.com/docker/compose/releases/download/1.20.0-rc1/docker-compose-Linux-x86_64\" -o /opt/bin/docker-compose",
+      "sudo chmod +x /opt/bin/docker-compose",
+      "sudo mkdir -p /etc/docker/compose",
+      "sudo chown -R core. /etc/docker",
+    ]
+  }
+
+  provisioner "file" {
+    content      = "${data.template_file.fk-app-server-a-compose.rendered}"
+    destination = "/etc/docker/compose/fk-compose.yml"
   }
 }
 
