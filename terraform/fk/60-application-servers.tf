@@ -67,7 +67,7 @@ resource "aws_security_group" "fk-server-alb" {
 }
 
 data "template_file" "fk-app-server-a" {
-  template = "${file("${path.module}/fk-app-server.yaml")}"
+  template = "${file("${path.module}/fk-app-server.yml")}"
 
   vars {
     hostname             = "fk-app-server-a"

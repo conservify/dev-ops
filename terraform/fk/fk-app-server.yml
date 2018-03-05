@@ -34,6 +34,24 @@ locksmith:
 
 systemd:
   units:
+    - name: fk-app.service
+      enable: true
+      enabled: true
+      contents: |
+        [Unit]
+        Description=fk-app
+        Wants=docker.service
+
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/usr/bin/docker kill fk-app
+        ExecStartPre=-/usr/bin/docker rm fk-app
+        ExecStartPre=/usr/bin/docker pull ${app_server_container}
+        ExecStart=/usr/bin/docker run -e FIELDKIT_DOMAIN=${zone_name} -e FIELDKIT_LANDING_ROOT=/landing -e FIELDKIT_ADMIN_ROOT=/admin -e FIELDKIT_FRONTEND_ROOT=/frontend -e FIELDKIT_POSTGRES_URL=${db_url} --name fk-app -p 80:80 ${app_server_container}
+        ExecStop=/usr/bin/docker stop fk-app
+
+        [Install]
+        WantedBy=multi-user.target
     - name: fk.service
       enable: true
       enabled: true
