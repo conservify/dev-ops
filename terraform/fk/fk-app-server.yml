@@ -35,8 +35,8 @@ locksmith:
 systemd:
   units:
     - name: fk-app.service
-      enable: true
-      enabled: true
+      enable: false
+      enabled: false
       contents: |
         [Unit]
         Description=fk-app
