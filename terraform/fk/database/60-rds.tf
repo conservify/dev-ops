@@ -20,7 +20,7 @@ resource "aws_db_instance" "staging" {
 
   allocated_storage      = 20
   engine                 = "postgres"
-  engine_version         = "9.6.1"
+  engine_version         = "9.6.6"
   instance_class         = "db.t2.micro"
   name                   = "${var.db_name}"
   username               = "${var.db_username}"
