@@ -28,6 +28,7 @@ data "aws_iam_policy_document" "fk-server" {
 
       values = [
         "admin@fieldkit.org",
+        "admin@fkdev.org",
       ]
     }
   }

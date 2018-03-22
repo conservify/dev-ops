@@ -28,6 +28,7 @@ storage:
           FIELDKIT_ADMIN_ROOT=/admin
           FIELDKIT_FRONTEND_ROOT=/frontend
           FIELDKIT_POSTGRES_URL=${db_url}
+          FIELDKIT_EMAILER=aws
 
 locksmith:
   reboot_strategy: "reboot"
