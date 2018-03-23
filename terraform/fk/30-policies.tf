@@ -1,5 +1,13 @@
+resource "aws_sqs_queue" "fk-messages-incoming" {
+  name = "fk-messages-incoming"
+}
+
+resource "aws_s3_bucket" "fk-streams" {
+  bucket = "fk-streams"
+  acl    = "private"
+}
+
 data "aws_iam_policy_document" "fk-server" {
-  /*
   statement {
     actions = [
       "sqs:SendMessage",
@@ -8,10 +16,20 @@ data "aws_iam_policy_document" "fk-server" {
     ]
 
     resources = [
-      "${aws_sqs_queue.fk.arn}",
+      "${aws_sqs_queue.fk-messages-incoming.arn}",
     ]
   }
-  */
+
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.fk-streams.arn}/*"
+    ]
+  }
 
   statement {
     actions = [
