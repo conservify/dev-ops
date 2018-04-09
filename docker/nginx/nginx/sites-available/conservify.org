@@ -53,6 +53,29 @@ server {
 		autoindex_format json;
 	}
 
+	location /spotify/transfer/tag/token {
+		auth_basic 	  "off";
+
+		proxy_pass         http://spotify:9090/spotify/transfer/tag/token;
+		proxy_redirect     off;
+
+		proxy_set_header   Host             $host;
+		proxy_set_header   X-Real-IP        $remote_addr;
+		proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+		proxy_max_temp_file_size 0;
+
+		client_max_body_size       1g;
+		client_body_buffer_size    128k;
+
+		proxy_connect_timeout      90;
+		proxy_send_timeout         90;
+		proxy_read_timeout         90;
+
+		proxy_buffer_size          4k;
+		proxy_buffers              4 32k;
+		proxy_busy_buffers_size    64k;
+	}
+
 	location /spotify {
 		auth_basic 	     "Administrator";
 		auth_basic_user_file /etc/nginx/htpasswd; 
