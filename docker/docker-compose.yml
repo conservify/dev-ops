@@ -20,6 +20,7 @@ services:
     volumes:
       - /svr0/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+      - /svr0/distribution:/var/lib/distribution
     ports:
       - "45900:45900"
       - "49001:8080"
@@ -37,7 +38,7 @@ services:
   proxy:
     image: "nginx-rproxy"
     volumes:
-      - /home/jenkins/artifacts:/var/lib/jenkins_artifacts
+      - /svr0/distribution:/var/lib/distribution
     links:
       - spotify
       - jenkins

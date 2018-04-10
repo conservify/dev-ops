@@ -17,7 +17,7 @@ server {
 	include server-common.conf;
 
 	location /distribution {
-		alias /var/lib/jenkins_artifacts;
+		alias /var/lib/distribution;
 		autoindex on;
 		autoindex_format json;
 	}
@@ -48,7 +48,7 @@ server {
 	include server-common.conf;
 
 	location /distribution {
-		alias /var/lib/jenkins_artifacts;
+		alias /var/lib/distribution;
 		autoindex on;
 		autoindex_format json;
 	}
