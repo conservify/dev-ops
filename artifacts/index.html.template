@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Conservify Distribution</title>
+		<link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="icon" href="/distribution/favicon.png" type="image/x-icon">
+	</head>
+	<body>
+
+	<div class="">
+
+	<h1>Conservify Distribution</h1>
+
+	{{- range .Options}}
+		<div class="card text-white bg-primary mb-3" style="">
+			<div class="card-header">{{.Key}}</div>
+			<div class="card-body">
+				<h4 class="card-title">{{.Title}}</h4>
+				<div class="card-text">
+				<div>{{.Details}}</div>
+				{{- range .Links }}
+					<div><a href="{{.Url}}">{{.Title}}</a></div>
+				{{- end}}
+				</div>
+			</div>
+			</div>
+		</div>
+	{{- end}}
+
+	</div>
+
+	</body>
+</html>
