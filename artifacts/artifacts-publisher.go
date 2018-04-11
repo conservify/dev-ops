@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	texttemplate "text/template"
 	"time"
 )
@@ -151,6 +152,11 @@ func (h *ApkHandler) Handle(path string, jobName string, build *BuildInfo, archi
 
 type BuildWalkFunc func(path string, jobName string, buildXmlPath string, build *BuildInfo, artifactPaths []string) error
 
+// Sorry.
+func fixXmlVersion(bytes []byte) []byte {
+	return []byte(strings.Replace(strings.Replace(string(bytes), "version=\"1.1\"", "version=\"1.0\"", 1), "version='1.1'", "version='1.0'", 1))
+}
+
 func walkBuilds(path string, walkFunc BuildWalkFunc) error {
 	return filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
@@ -171,10 +177,11 @@ func walkBuilds(path string, walkFunc BuildWalkFunc) error {
 		if err != nil {
 			return err
 		}
+
 		buildInfo := BuildInfo{}
-		err = xml.Unmarshal(data, &buildInfo)
+		err = xml.Unmarshal(fixXmlVersion(data), &buildInfo)
 		if err != nil {
-			return err
+			return fmt.Errorf("Error reading %s (%v)", buildXmlPath, err)
 		}
 
 		artifactPaths, err := getFilesUnder([]string{filepath.Join(path, "archive"), filepath.Join(path, "artifacts")})
