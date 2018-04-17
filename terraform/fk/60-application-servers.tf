@@ -206,6 +206,7 @@ resource "aws_alb_target_group_attachment" "fk-server-a" {
 module "database" {
   source = "./database"
 
+  db_identifier                = "fk-staging"
   db_name                      = "${var.db_name}"
   db_username                  = "${var.db_username}"
   db_password                  = "${var.db_password}"

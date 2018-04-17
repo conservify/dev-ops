@@ -12,10 +12,10 @@ resource "aws_security_group" "postgresql" {
 }
 
 resource "aws_db_instance" "staging" {
-  identifier = "fk-staging"
+  identifier = "${var.db_identifier}"
 
   tags {
-    Name = "fk-staging"
+    Name = "${var.db_identifier}"
   }
 
   allocated_storage      = 20
