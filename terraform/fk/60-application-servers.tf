@@ -214,20 +214,3 @@ module "database" {
   db_subnet_group_name         = "${aws_db_subnet_group.fk.name}"
   vpc_id                       = "${aws_vpc.fk.id}"
 }
-
-output "db_password" {
-  value     = "${var.db_password}"
-  sensitive = true
-}
-
-output "db_address" {
-  value = "${module.database.db_address}"
-}
-
-output "db_url" {
-  value = "${module.database.db_url}"
-}
-
-output "app_server_container" {
-  value = "${var.app_server_container}"
-}
