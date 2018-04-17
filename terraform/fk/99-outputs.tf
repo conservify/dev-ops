@@ -30,3 +30,7 @@ output "internet_gateway_id" {
 output "subnet_ids" {
   value = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
 }
+
+output "app_server_address" {
+  value = "fk-server-a.aws.${var.zone_name}"
+}

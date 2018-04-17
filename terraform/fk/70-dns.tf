@@ -6,10 +6,6 @@ resource "aws_route53_record" "fk-server-a" {
   records = ["${aws_instance.fk-app-server-a.public_ip}"]
 }
 
-output "app_server_address" {
-  value = "fk-server-a.aws.${var.zone_name}"
-}
-
 resource "aws_route53_record" "home" {
   zone_id = "${var.zone_id}"
   name    = "${var.zone_name}"
