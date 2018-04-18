@@ -68,7 +68,6 @@ systemd:
         WorkingDirectory=/etc/docker/compose
 
         # Remove old containers, images and volumes
-        ExecStartPre=/usr/bin/docker pull ${app_server_container}
         ExecStartPre=/opt/bin/docker-compose -f /etc/docker/compose/fk-compose.yml down -v
         ExecStartPre=/opt/bin/docker-compose -f /etc/docker/compose/fk-compose.yml rm -v
         ExecStartPre=-/bin/bash -c 'docker volume rm $(docker volume ls -q)'
