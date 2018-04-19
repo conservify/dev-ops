@@ -213,7 +213,7 @@ func copy(o *options) error {
 			return nil
 		}
 
-		copyingTo := filepath.Join(archive, cleanupRelativePath(relative), fmt.Sprintf("%d", info.BuildNumber))
+		copyingTo := filepath.Join(archive, cleanupRelativePath(relative))
 
 		if false {
 			log.Printf("Processing %s -> %s (%s)", path, copyingTo, jobName)
