@@ -78,7 +78,7 @@ func (h *IpaHandler) Handle(path string, jobName string, build *BuildInfo, archi
 		return nil, err
 	}
 
-	ipaUrl := fmt.Sprintf("https://code.conservify.org/distribution/%s/%d/artifacts/%s", jobName, build.BuildNumber, filepath.Base(artifact))
+	ipaUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/%d/artifacts/%s", jobName, build.BuildNumber, filepath.Base(artifact))
 
 	data := IpaTemplateData{
 		Url: ipaUrl,
@@ -98,7 +98,7 @@ func (h *IpaHandler) Handle(path string, jobName string, build *BuildInfo, archi
 
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.Format("2006/01/02 15:04:05")
-	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/%s/%d/manifest.plist", jobName, build.BuildNumber)
+	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/%d/manifest.plist", jobName, build.BuildNumber)
 	installUrl := fmt.Sprintf("itms-services://?action=download-manifest&url=%s", manifestUrl)
 
 	options = []IndexOption{
@@ -130,7 +130,7 @@ func (h *ApkHandler) CanHandle(path string) bool {
 func (h *ApkHandler) Handle(path string, jobName string, build *BuildInfo, archived []string, artifact string) (options []IndexOption, err error) {
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.Format("2006/01/02 15:04:05")
-	downloadUrl := fmt.Sprintf("https://code.conservify.org/distribution/%s/%d/artifacts/%s", jobName, build.BuildNumber, filepath.Base(artifact))
+	downloadUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/%d/artifacts/%s", jobName, build.BuildNumber, filepath.Base(artifact))
 
 	options = []IndexOption{
 		IndexOption{
@@ -194,14 +194,16 @@ func walkBuilds(path string, walkFunc BuildWalkFunc) error {
 }
 
 func copy(o *options) error {
-	log.Printf("Copying %s to %s", o.Source, o.Destination)
+	archive := filepath.Join(o.Destination, "archive")
+
+	log.Printf("Copying %s to %s", o.Source, archive)
 
 	return walkBuilds(o.Source, func(path string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		if len(artifactPaths) == 0 {
 			return nil
 		}
 
-		copyingTo := filepath.Join(o.Destination, jobName, fmt.Sprintf("%d", info.BuildNumber))
+		copyingTo := filepath.Join(archive, jobName, fmt.Sprintf("%d", info.BuildNumber))
 
 		log.Printf("Processing %s -> %s (%s)", path, copyingTo, jobName)
 
@@ -287,7 +289,9 @@ func toIndexData(options []IndexOption) IndexData {
 }
 
 func index(o *options) error {
-	log.Printf("Indexing %s", o.Destination)
+	archive := filepath.Join(o.Destination, "archive")
+
+	log.Printf("Indexing %s", archive)
 
 	handlers := []FileTypeHandler{
 		&IpaHandler{Destination: o.Destination},
@@ -296,7 +300,7 @@ func index(o *options) error {
 
 	options := make([]IndexOption, 0)
 
-	err := walkBuilds(o.Destination, func(path string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
+	err := walkBuilds(archive, func(path string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		log.Printf("Processing %s %s", path, jobName)
 
 		for _, p := range artifactPaths {
