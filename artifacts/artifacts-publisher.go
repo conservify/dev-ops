@@ -369,6 +369,11 @@ func createRawIndex(path string, base string) (de *DirectoryEntry, err error) {
 		return nil, err
 	}
 
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+
 	files := make([]*FileEntry, 0)
 	dirs := make([]*DirectoryEntry, 0)
 	for _, e := range entries {
@@ -399,6 +404,7 @@ func createRawIndex(path string, base string) (de *DirectoryEntry, err error) {
 	}
 	de = &DirectoryEntry{
 		Name:         filepath.Base(path),
+		ModifiedTime: info.ModTime(),
 		Files:        files,
 		Directories:  dirs,
 		RelativePath: relative,
