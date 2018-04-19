@@ -151,17 +151,22 @@ func (h *ApkHandler) Handle(path string, jobName string, build *BuildInfo, archi
 	return
 }
 
-type BuildWalkFunc func(path string, jobName string, buildXmlPath string, build *BuildInfo, artifactPaths []string) error
+type BuildWalkFunc func(path string, relative string, jobName string, buildXmlPath string, build *BuildInfo, artifactPaths []string) error
 
 // Sorry.
 func fixXmlVersion(bytes []byte) []byte {
 	return []byte(strings.Replace(strings.Replace(string(bytes), "version=\"1.1\"", "version=\"1.0\"", 1), "version='1.1'", "version='1.0'", 1))
 }
 
-func walkBuilds(path string, walkFunc BuildWalkFunc) error {
-	return filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+func walkBuilds(base string, walkFunc BuildWalkFunc) error {
+	return filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
 			return nil
+		}
+
+		relative, err := filepath.Rel(base, path)
+		if err != nil {
+			return err
 		}
 
 		buildXmlPath := filepath.Join(path, "build.xml")
@@ -190,8 +195,12 @@ func walkBuilds(path string, walkFunc BuildWalkFunc) error {
 			return err
 		}
 
-		return walkFunc(path, jobName, buildXmlPath, &buildInfo, artifactPaths)
+		return walkFunc(path, relative, jobName, buildXmlPath, &buildInfo, artifactPaths)
 	})
+}
+
+func cleanupRelativePath(relative string) string {
+	return strings.Replace(relative, "jobs/", "", -1)
 }
 
 func copy(o *options) error {
@@ -199,14 +208,16 @@ func copy(o *options) error {
 
 	log.Printf("Copying %s to %s", o.Source, archive)
 
-	return walkBuilds(o.Source, func(path string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
+	return walkBuilds(o.Source, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		if len(artifactPaths) == 0 {
 			return nil
 		}
 
-		copyingTo := filepath.Join(archive, jobName, fmt.Sprintf("%d", info.BuildNumber))
+		copyingTo := filepath.Join(archive, cleanupRelativePath(relative), fmt.Sprintf("%d", info.BuildNumber))
 
-		log.Printf("Processing %s -> %s (%s)", path, copyingTo, jobName)
+		if false {
+			log.Printf("Processing %s -> %s (%s)", path, copyingTo, jobName)
+		}
 
 		err := mkdirDirIfMissing(copyingTo)
 		if err != nil {
@@ -322,8 +333,10 @@ func index(o *options) error {
 
 	options := make([]IndexOption, 0)
 
-	err := walkBuilds(archive, func(path string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
-		log.Printf("Processing %s %s", path, jobName)
+	err := walkBuilds(archive, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
+		if false {
+			log.Printf("Processing %s %s", path, jobName)
+		}
 
 		for _, p := range artifactPaths {
 			for _, handler := range handlers {
@@ -394,6 +407,27 @@ func createRawIndex(path string, base string) (de *DirectoryEntry, err error) {
 	return
 }
 
+func jsonIndex(o *options) error {
+	r, err := createRawIndex(o.Destination, o.Destination)
+	if err != nil {
+		return err
+	}
+
+	index := Index{
+		Root: r,
+	}
+
+	indexJsonPath := filepath.Join(o.Destination, "index.json")
+	bytes, err := json.Marshal(index)
+
+	err = ioutil.WriteFile(indexJsonPath, bytes, 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	o := options{}
 
@@ -415,19 +449,7 @@ func main() {
 			log.Fatalf("Error: %v", err)
 		}
 
-		r, err := createRawIndex(o.Destination, o.Destination)
-		if err != nil {
-			log.Fatalf("Error: %v", err)
-		}
-
-		index := Index{
-			Root: r,
-		}
-
-		indexJsonPath := filepath.Join(o.Destination, "index.json")
-		bytes, err := json.Marshal(index)
-
-		err = ioutil.WriteFile(indexJsonPath, bytes, 0666)
+		err = jsonIndex(&o)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
