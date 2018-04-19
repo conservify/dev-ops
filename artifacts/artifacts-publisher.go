@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"flag"
 	"fmt"
@@ -240,6 +241,27 @@ type IndexData struct {
 	ByKey   map[string][]*IndexOption
 }
 
+type Index struct {
+	Root *DirectoryEntry `json:"root"`
+}
+
+type FileEntry struct {
+	Name         string    `json:"name"`
+	ModifiedTime time.Time `json:"modified"`
+	RelativePath string    `json:"relative"`
+	Size         int64     `json:"size"`
+	Url          string    `json:"url"`
+}
+
+type DirectoryEntry struct {
+	Name         string            `json:"name"`
+	ModifiedTime time.Time         `json:"modified"`
+	RelativePath string            `json:"relative"`
+	Url          string            `json:"url"`
+	Files        []*FileEntry      `json:"files"`
+	Directories  []*DirectoryEntry `json:"directories"`
+}
+
 func writeIndex(o *options, data IndexData) error {
 	templateData, err := ioutil.ReadFile(filepath.Join(o.Destination, "index.html.template"))
 	if err != nil {
@@ -328,6 +350,50 @@ func index(o *options) error {
 	return writeIndex(o, toIndexData(options))
 }
 
+func createRawIndex(path string, base string) (de *DirectoryEntry, err error) {
+	entries, err := ioutil.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+
+	files := make([]*FileEntry, 0)
+	dirs := make([]*DirectoryEntry, 0)
+	for _, e := range entries {
+		if e.IsDir() {
+			sub, err := createRawIndex(filepath.Join(path, e.Name()), base)
+			if err != nil {
+				return nil, err
+			}
+			dirs = append(dirs, sub)
+		} else {
+			relative, err := filepath.Rel(base, filepath.Join(path, e.Name()))
+			if err != nil {
+				return nil, err
+			}
+			files = append(files, &FileEntry{
+				Name:         e.Name(),
+				ModifiedTime: e.ModTime(),
+				Size:         e.Size(),
+				RelativePath: relative,
+				Url:          fmt.Sprintf("http://code.conservify.org/distribution/%s", relative),
+			})
+		}
+	}
+
+	relative, err := filepath.Rel(base, path)
+	if err != nil {
+		return nil, err
+	}
+	de = &DirectoryEntry{
+		Name:         filepath.Base(path),
+		Files:        files,
+		Directories:  dirs,
+		RelativePath: relative,
+		Url:          fmt.Sprintf("http://code.conservify.org/distribution/%s", relative),
+	}
+	return
+}
+
 func main() {
 	o := options{}
 
@@ -336,19 +402,35 @@ func main() {
 
 	flag.Parse()
 
-	if o.Source == "" || o.Destination == "" {
-		flag.Usage()
-		os.Exit(2)
+	if o.Source != "" && o.Destination != "" {
+		err := copy(&o)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
 	}
 
-	err := copy(&o)
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
+	if o.Destination != "" {
+		err := index(&o)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
 
-	err = index(&o)
-	if err != nil {
-		log.Fatalf("Error: %v", err)
+		r, err := createRawIndex(o.Destination, o.Destination)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+
+		index := Index{
+			Root: r,
+		}
+
+		indexJsonPath := filepath.Join(o.Destination, "index.json")
+		bytes, err := json.Marshal(index)
+
+		err = ioutil.WriteFile(indexJsonPath, bytes, 0666)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
 	}
 }
 
