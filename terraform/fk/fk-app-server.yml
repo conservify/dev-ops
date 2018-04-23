@@ -30,6 +30,7 @@ storage:
           FIELDKIT_POSTGRES_URL=${db_url}
           FIELDKIT_EMAILER=aws
           FIELDKIT_ARCHIVER=aws
+          FIELDKIT_PRODUCTION_LOGGING=true
 
 locksmith:
   reboot_strategy: "reboot"

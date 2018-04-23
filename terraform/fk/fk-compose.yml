@@ -6,6 +6,11 @@ services:
       - "80:80"
     env_file:
       - fieldkit.env
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: ${gelf_address}
+        tag: ${gelf_tags}
   grafana:
     image: grafana/grafana
     command: echo "grafana disabled"

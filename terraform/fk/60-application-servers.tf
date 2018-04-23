@@ -78,6 +78,8 @@ data "template_file" "fk-app-server-a" {
     zone_name            = "${var.zone_name}"
     db_address           = "${module.database.db_address}"
     db_url               = "${module.database.db_url}"
+    gelf_address         = "${var.gelf_address}"
+    gelf_tags            = "${var.gelf_tags}"
   }
 }
 
@@ -93,6 +95,8 @@ data "template_file" "fk-app-server-a-compose" {
     zone_name            = "${var.zone_name}"
     db_address           = "${module.database.db_address}"
     db_url               = "${module.database.db_url}"
+    gelf_address         = "${var.gelf_address}"
+    gelf_tags            = "${var.gelf_tags}"
   }
 }
 

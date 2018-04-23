@@ -33,3 +33,11 @@ variable "db_username" {
 variable "db_password" {}
 
 variable "certificate_arn" {}
+
+variable "gelf_tags" {
+  default = "fkdev"
+}
+
+variable "gelf_address" {
+  default = "udp://172.31.58.48:12201"
+}
