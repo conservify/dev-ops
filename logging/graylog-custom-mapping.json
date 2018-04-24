@@ -1,0 +1,15 @@
+{
+    "template": "graylog_*",
+    "mappings" : {
+        "message" : {
+            "properties" : {
+                "serviceTrace" : {
+                    "type" : "string",
+                    "analyzer" : "whitespace",
+                    "index" : "analyzed"
+                }
+            }
+        }
+    }
+}
+
