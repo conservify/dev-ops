@@ -22,6 +22,12 @@ server {
 		autoindex_format json;
 	}
 
+	location /glacier/data {
+		alias /var/lib/glacier-data;
+		autoindex on;
+		autoindex_format json;
+	}
+
 	location /time {
 		ssi on;
 		alias /var/www/time;
@@ -49,6 +55,12 @@ server {
 
 	location /distribution {
 		alias /var/lib/distribution;
+		autoindex on;
+		autoindex_format json;
+	}
+
+	location /glacier/data {
+		alias /var/lib/glacier-data;
 		autoindex on;
 		autoindex_format json;
 	}

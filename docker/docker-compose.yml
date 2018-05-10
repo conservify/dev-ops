@@ -39,6 +39,7 @@ services:
     image: "nginx-rproxy"
     volumes:
       - /svr0/distribution:/var/lib/distribution
+      - /svr0/glacier:/var/lib/glacier-data
     links:
       - spotify
       - jenkins
