@@ -65,10 +65,8 @@ server {
 		autoindex_format json;
 	}
 
-	location /spotify/transfer/tag/token {
-		auth_basic 	  "off";
-
-		proxy_pass         http://spotify:9090/spotify/transfer/tag/token;
+	location /logs-viewer {
+		proxy_pass         http://logs-viewer:3000/logs-viewer;
 		proxy_redirect     off;
 
 		proxy_set_header   Host             $host;
@@ -89,9 +87,6 @@ server {
 	}
 
 	location /spotify {
-		auth_basic 	     "Administrator";
-		auth_basic_user_file /etc/nginx/htpasswd; 
-
 		proxy_pass         http://spotify:9090/spotify;
 		proxy_redirect     off;
 

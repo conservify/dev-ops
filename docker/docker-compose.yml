@@ -47,6 +47,7 @@ services:
       - fk-landing
       - logs
       - glacier-status
+      - logs-viewer
       - jira
     extra_hosts:
       - "parent:127.0.0.1"
@@ -92,7 +93,9 @@ services:
     image: jlewallen/play-zones:master
     volumes:
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
-    ports:
-      - "9090:9090"
+  logs-viewer:
+    image: jlewallen/logs-viewer:master
+    volumes:
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
 volumes:
   jenkins_home:
