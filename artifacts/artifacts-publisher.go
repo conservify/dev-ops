@@ -53,7 +53,7 @@ func (a BySort) Less(i, j int) bool { return a[i].Sort > a[j].Sort }
 
 type FileTypeHandler interface {
 	CanHandle(path string) bool
-	Handle(path string, jobName string, build *BuildInfo, archived []string, artifact string) ([]IndexOption, error)
+	Handle(path string, relative string, jobName string, build *BuildInfo, archived []string, artifact string) ([]IndexOption, error)
 }
 
 type IpaHandler struct {
@@ -68,7 +68,7 @@ type IpaTemplateData struct {
 	Url string
 }
 
-func (h *IpaHandler) Handle(path string, jobName string, build *BuildInfo, archived []string, artifact string) (options []IndexOption, err error) {
+func (h *IpaHandler) Handle(path string, relative string, jobName string, build *BuildInfo, archived []string, artifact string) (options []IndexOption, err error) {
 	templateData, err := ioutil.ReadFile(filepath.Join(h.Destination, "manifest.plist.template"))
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func (h *IpaHandler) Handle(path string, jobName string, build *BuildInfo, archi
 		return nil, err
 	}
 
-	ipaUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/%d/artifacts/%s", jobName, build.BuildNumber, filepath.Base(artifact))
+	ipaUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/artifacts/%s", relative, filepath.Base(artifact))
 
 	data := IpaTemplateData{
 		Url: ipaUrl,
@@ -99,7 +99,7 @@ func (h *IpaHandler) Handle(path string, jobName string, build *BuildInfo, archi
 
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.Format("2006/01/02 15:04:05")
-	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/%d/manifest.plist", jobName, build.BuildNumber)
+	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/manifest.plist", relative)
 	installUrl := fmt.Sprintf("itms-services://?action=download-manifest&url=%s", manifestUrl)
 
 	options = []IndexOption{
@@ -128,10 +128,10 @@ func (h *ApkHandler) CanHandle(path string) bool {
 	return filepath.Ext(path) == ".apk"
 }
 
-func (h *ApkHandler) Handle(path string, jobName string, build *BuildInfo, archived []string, artifact string) (options []IndexOption, err error) {
+func (h *ApkHandler) Handle(path string, relative string, jobName string, build *BuildInfo, archived []string, artifact string) (options []IndexOption, err error) {
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.Format("2006/01/02 15:04:05")
-	downloadUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/%d/artifacts/%s", jobName, build.BuildNumber, filepath.Base(artifact))
+	downloadUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/artifacts/%s", relative, filepath.Base(artifact))
 
 	options = []IndexOption{
 		IndexOption{
@@ -335,7 +335,7 @@ func index(o *options) error {
 
 	err := walkBuilds(archive, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		if false {
-			log.Printf("Processing %s %s", path, jobName)
+			log.Printf("Processing %s %s (%s)", path, jobName, relative)
 		}
 
 		for _, p := range artifactPaths {
@@ -343,7 +343,7 @@ func index(o *options) error {
 				if handler.CanHandle(p) {
 					log.Printf("- %T (%s)", handler, p)
 
-					newOptions, err := handler.Handle(path, jobName, info, artifactPaths, p)
+					newOptions, err := handler.Handle(path, relative, jobName, info, artifactPaths, p)
 					if err != nil {
 						return err
 					}
