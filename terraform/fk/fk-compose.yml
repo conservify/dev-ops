@@ -4,6 +4,7 @@ services:
     image: ${app_server_container}
     ports:
       - "80:80"
+      - "6060:6060"
     env_file:
       - fieldkit.env
     logging:
