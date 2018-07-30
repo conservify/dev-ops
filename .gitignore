@@ -1,4 +1,4 @@
-docker/nginx/letsencrypt
+docker/nginx/letsencrypt*
 vpn.env
 lambda/config.py
 *.zip
