@@ -35,7 +35,7 @@ done
 
 sudo usermod -aG docker ubuntu
 
-sudo mkdir /var/jenkins
-sudo chown -R ubuntu. /var/jenkins/
+sudo mkdir /var/jenkins_home
+sudo chown -R ubuntu. /var/jenkins_home
 
 echo Done!
