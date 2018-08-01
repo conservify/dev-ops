@@ -1,7 +1,7 @@
 set -xe
 
 sudo apt-get update
-sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common unzip
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
