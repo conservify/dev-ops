@@ -3,6 +3,9 @@ set -xe
 sudo apt-get update
 sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common unzip
 
+# This is necessary to run android-sdk's aapt.
+sudo apt-get install -qy lib32stdc++6 lib32z1
+
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 sudo add-apt-repository \
