@@ -1,0 +1,11 @@
+timestamps {
+    node () {
+        stage ('build') {
+            sh """
+cd /var/lib/distribution
+
+./artifacts-publisher --source ~/jobs --destination /var/lib/distribution
+"""
+	      }
+    }
+}
