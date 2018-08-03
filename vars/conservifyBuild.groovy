@@ -3,6 +3,7 @@
 def call(Map parameters = [:]) {
     repository = parameters.repository
     name = parameters.name
+    archive = parameters.archive
 
     if (!name) {
         error 'conservifyBuild: Name is required'
@@ -24,8 +25,10 @@ def call(Map parameters = [:]) {
         sh "make"
     }
 
-    stage ('archive') {
-        archiveArtifacts artifacts: 'build/*.bin'
+    if (archive) {
+        stage ('archive') {
+            archiveArtifacts artifacts: 'build/*.bin'
+        }
     }
 
     // currentBuild.displayName = version
