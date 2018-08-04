@@ -1,7 +1,19 @@
 timestamps {
     node () {
+        stage ('git') {
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/Conservify/dev-ops.git']]])
+        }
+
         stage ('build') {
             sh """
+pwd && make clean build
+
+cp artifacts/*.template /var/lib/distribution
+cp artifacts/favicon.png /var/lib/distribution
+cp build/artifacts-publisher /var/lib/distribution
+
+ls -alh /var/lib/distribution
+
 cd /var/lib/distribution
 
 ./artifacts-publisher --source ~/jobs --destination /var/lib/distribution
