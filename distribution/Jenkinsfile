@@ -1,4 +1,6 @@
 timestamps {
+    properties([pipelineTriggers([[$class: 'GitHubPushTrigger']])])
+
     node () {
         stage ('git') {
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/Conservify/dev-ops.git']]])
@@ -6,7 +8,7 @@ timestamps {
 
         stage ('build') {
             sh """
-pwd && make clean build
+make clean build
 
 cp artifacts/*.template /var/lib/distribution
 cp artifacts/favicon.png /var/lib/distribution
