@@ -1,5 +1,8 @@
 timestamps {
-    properties([pipelineTriggers([[$class: 'GitHubPushTrigger']])])
+    properties([
+        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
+        pipelineTriggers([[$class: 'GitHubPushTrigger']]),
+    ])
 
     node () {
         stage ('git') {
@@ -20,6 +23,6 @@ cd /var/lib/distribution
 
 ./artifacts-publisher --source ~/jobs --destination /var/lib/distribution
 """
-	      }
+        }
     }
 }
