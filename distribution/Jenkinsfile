@@ -6,7 +6,7 @@ properties([
 timestamps {
     node () {
         stage ('git') {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/Conservify/dev-ops.git']]])
+            checkout scm
         }
 
         stage ('build') {
