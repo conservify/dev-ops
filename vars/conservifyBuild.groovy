@@ -9,12 +9,13 @@ def call(Map parameters = [:]) {
         error 'conservifyBuild: Name is required'
     }
 
-    if (!repository) {
-        error 'conservifyBuild: Repository is required'
-    }
-
     stage ('git') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: repository]]])
+        if (repository) {
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: repository]]])
+        }
+        else {
+            checkout scm
+        }
     }
 
     stage ('clean') {
