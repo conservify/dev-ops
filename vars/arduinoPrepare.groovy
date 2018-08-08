@@ -4,6 +4,9 @@ def call(Map parameters = [:]) {
     stage ('prepare') {
         echo "Preparing Arduino Packages"
 
+        def cmake = tool("cmake")
+        echo cmake
+
         dir ('..') {
             sh "env; pwd"
 
