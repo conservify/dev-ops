@@ -4,12 +4,7 @@ def call(Map parameters = [:]) {
     stage ('prepare') {
         echo "Preparing Arduino Packages"
 
-        def cmake = tool("cmake")
-        echo cmake
-
         dir ('..') {
-            sh "env; pwd"
-
             if (!fileExists('arduino-packages/.git/config')) {
                 dir ('arduino-packages') {
                     checkout([$class: 'GitSCM', branches: [[name: '*/linux']], userRemoteConfigs: [[url: 'https://github.com/jlewallen/arduino-packages.git']]])
@@ -34,7 +29,6 @@ fi
                     checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/Conservify/arduino-cmake-minimal.git']]])
                 }
                 else {
-                    sh "env"
                     sh "git checkout master && git pull origin master"
                 }
             }
