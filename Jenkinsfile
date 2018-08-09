@@ -1,19 +1,27 @@
+@Library('conservify') _
+
+conservifyProperties()
+
 timestamps {
-    node () {
+    node {
         stage ('git') {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/Conservify/dev-ops.git']]])
+            checkout scm
         }
 
         stage ('build') {
-            sh """
-make clean build
+            sh "make clean build"
+        }
 
-cp artifacts/*.template /var/lib/distribution
-cp artifacts/favicon.png /var/lib/distribution
-cp build/artifacts-publisher /var/lib/distribution
+        stage ('archive') {
+            sh "cp artifacts/* build"
+            archiveArtifacts artifacts: 'build/*'
+        }
 
-ls -alh /var/lib/distribution
-"""
+        stage ('publish') {
+            sh "cp artifacts/*.template /var/lib/distribution"
+            sh "cp artifacts/favicon.png /var/lib/distribution"
+
+            refreshDistribution()
         }
     }
 }
