@@ -2,7 +2,9 @@
 
 def call(Map parameters = [:]) {
     node ('master') {
-        sh "/var/lib/distribution/artifacts-publisher --source ~/jobs --destination /var/lib/distribution"
+        dir ("../distribution") {
+            sh "build/artifacts-publisher --source ~/jobs --destination /var/lib/distribution"
+        }
     }
 
     return
