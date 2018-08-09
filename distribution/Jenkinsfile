@@ -1,8 +1,6 @@
-properties([
-    [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-    pipelineTriggers([[$class: 'GitHubPushTrigger']]),
-    disableConcurrentBuilds(),
-])
+@Library('conservify') _
+
+conservifyProperties()
 
 timestamps {
     node () {
@@ -11,19 +9,19 @@ timestamps {
         }
 
         stage ('build') {
-            sh """
-make clean build
+            sh "make clean build"
+        }
 
-cp artifacts/*.template /var/lib/distribution
-cp artifacts/favicon.png /var/lib/distribution
-cp build/artifacts-publisher /var/lib/distribution
+        stage ('archive') {
+            archiveArtifacts artifacts: 'build/*'
+        }
 
-ls -alh /var/lib/distribution
+        stage ('publish') {
+            sh "cp artifacts/*.template /var/lib/distribution"
+            sh "cp artifacts/favicon.png /var/lib/distribution"
+            sh "cp build/artifacts-publisher /var/lib/distribution"
 
-cd /var/lib/distribution
-
-./artifacts-publisher --source ~/jobs --destination /var/lib/distribution
-"""
+            refreshDistribution()
         }
     }
 }
