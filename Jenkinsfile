@@ -20,8 +20,10 @@ timestamps {
         stage ('publish') {
             sh "cp artifacts/*.template /var/lib/distribution"
             sh "cp artifacts/favicon.png /var/lib/distribution"
-
-            refreshDistribution()
         }
     }
+
+    // This will fail the first time this is run, because there's no dev-ops
+    // build to pull artifacts from. We should make this optional.
+    refreshDistribution()
 }
