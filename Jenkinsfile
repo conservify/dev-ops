@@ -14,6 +14,7 @@ timestamps {
 
         stage ('archive') {
             sh "cp artifacts/* build"
+            sh "rm build/*.go"
             archiveArtifacts artifacts: 'build/*'
         }
 
