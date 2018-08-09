@@ -11,7 +11,7 @@ def call(Map parameters = [:]) {
 
     stage ('git') {
         if (repository) {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: repository]]])
+            git branch: 'master', url: repository
         }
         else {
             checkout scm

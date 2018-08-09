@@ -7,7 +7,7 @@ def call(Map parameters = [:]) {
         dir ('..') {
             if (!fileExists('arduino-packages/.git/config')) {
                 dir ('arduino-packages') {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/linux']], userRemoteConfigs: [[url: 'https://github.com/jlewallen/arduino-packages.git']]])
+                    git branch: 'linux', url: 'https://github.com/jlewallen/arduino-packages.git'
                 }
             }
 
@@ -26,7 +26,16 @@ fi
 
             dir ("arduino-cmake-minimal") {
                 if (!fileExists('arduino-cmake-minimal/.git/config')) {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/Conservify/arduino-cmake-minimal.git']]])
+                    git branch: 'master', url: 'https://github.com/Conservify/arduino-cmake-minimal.git'
+                }
+                else {
+                    sh "git checkout master && git pull origin master"
+                }
+            }
+
+            dir ("cmake") {
+                if (!fileExists('cmake/.git/config')) {
+                    git branch: 'master', url: 'https://github.com/Conservify/cmake.git'
                 }
                 else {
                     sh "git checkout master && git pull origin master"
