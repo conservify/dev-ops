@@ -22,6 +22,14 @@ def call(Map parameters = [:]) {
         sh "make clean"
     }
 
+    stage ('deps') {
+        def files = findFiles(glob: '**/arduino-libraries')
+        if (files.length > 0) {
+            sh "rm -rf gitdeps"
+            sh "make gitdeps"
+        }
+    }
+
     stage ('build') {
         sh "make"
     }
