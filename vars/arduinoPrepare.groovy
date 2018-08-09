@@ -33,7 +33,11 @@ fi
                 }
             }
 
-            // TODO: simple-deps
+            dir ("bin") {
+                if (!fileExists('simple-deps')) {
+                    copyArtifacts(projectName: 'simple-deps', flatten: true)
+                }
+            }
         }
     }
 
