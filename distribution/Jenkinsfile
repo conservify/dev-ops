@@ -3,7 +3,7 @@
 conservifyProperties()
 
 timestamps {
-    node () {
+    node {
         stage ('git') {
             checkout scm
         }
