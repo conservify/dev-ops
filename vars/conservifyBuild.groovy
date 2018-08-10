@@ -4,6 +4,7 @@ def call(Map parameters = [:]) {
     repository = parameters.repository
     name = parameters.name
     archive = parameters.archive
+    distribute = parameters.distribute
 
     if (!name) {
         error 'conservifyBuild: Name is required'
@@ -37,6 +38,13 @@ def call(Map parameters = [:]) {
     if (archive) {
         stage ('archive') {
             archiveArtifacts artifacts: 'build/*.bin'
+        }
+    }
+
+    if (distribute) {
+        stage ('distribute') {
+            def files = findFiles(glob: 'build/*.bin')
+            echo files
         }
     }
 
