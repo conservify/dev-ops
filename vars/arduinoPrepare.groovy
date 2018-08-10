@@ -46,6 +46,9 @@ fi
                 if (!fileExists('simple-deps')) {
                     copyArtifacts(projectName: 'simple-deps', flatten: true)
                 }
+                if (!fileExists('fktool')) {
+                    copyArtifacts(projectName: 'cloud', flatten: true)
+                }
             }
         }
     }
