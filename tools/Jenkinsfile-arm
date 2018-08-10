@@ -1,0 +1,71 @@
+@Library('conservify') _
+
+def createDirectory(path) {
+    def actual = ""
+    dir (path) {
+        actual = pwd()
+    }
+    return actual
+}
+
+timestamps {
+    // Cross compile golang tools because this is generally faster.
+    node ("master") {
+        def go = tool "golang-amd64"
+        def build = createDirectory("build")
+
+        dir ("gowork") {
+            def gowork = pwd()
+
+            dir ("src") {
+                withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=arm", "GOOS=linux", "GOROOT=${go}", "GOPATH=${gowork}"]) {
+                    stage ("simple-deps") {
+                        dir ("github.com/Conservify/simple-deps") {
+                            git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
+
+                            sh "make deps && make"
+                            stash name: 'simple-deps', includes: 'build/*'
+                        }
+                    }
+                    stage ("flasher") {
+                        dir ("github.com/Conservify/flasher") {
+                            git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
+
+                            sh "make deps && make"
+                            stash name: 'flasher', includes: 'build/linux-arm/*'
+                        }
+                    }
+                    stage ("fktool") {
+                        dir ("github.com/fieldkit/cloud") {
+                            git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
+
+                            sh "make deps && make build/fktool"
+                            stash name: 'cloud', includes: 'build/fktool'
+                        }
+                    }
+
+                    stage ("archive") {
+                        dir ("temp") {
+                            unstash 'simple-deps'
+                            unstash 'flasher'
+                            unstash 'cloud'
+                            archiveArtifacts artifacts: '**'
+                        }
+                    }
+                }
+            }
+        }
+        deleteDir()
+    }
+
+    node ("arm") {
+        def go = tool "golang-arm"
+        sh "${go}/bin/go version"
+
+        stage ('test') {
+            unstash 'simple-deps'
+            unstash 'flasher'
+            unstash 'cloud'
+        }
+    }
+}
