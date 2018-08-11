@@ -34,8 +34,7 @@ timestamps {
                             git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
 
                             sh "make deps && make"
-                            sh "cp build/linux-arm/* ${pkg}"
-                            sh "cp -ar tools ${pkg}"
+                            sh "cp -ar build/linux-arm/* ${pkg}"
                         }
                     }
                     stage ("fktool") {
