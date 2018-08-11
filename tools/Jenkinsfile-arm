@@ -3,6 +3,7 @@
 def createDirectory(path) {
     def actual = ""
     dir (path) {
+        sh "pwd"
         actual = pwd()
     }
     return actual
@@ -13,6 +14,7 @@ timestamps {
     node ("master") {
         def go = tool "golang-amd64"
         def build = createDirectory("build")
+        def pkg = createDirectory("package")
 
         dir ("gowork") {
             def gowork = pwd()
@@ -24,7 +26,7 @@ timestamps {
                             git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
 
                             sh "make deps && make"
-                            stash name: 'simple-deps', includes: 'build/*'
+                            sh "cp build/* ${pkg}"
                         }
                     }
                     stage ("flasher") {
@@ -32,7 +34,8 @@ timestamps {
                             git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
 
                             sh "make deps && make"
-                            stash name: 'flasher', includes: 'build/linux-arm/*'
+                            sh "cp build/linux-arm/* ${pkg}"
+                            sh "cp -ar tools ${pkg}"
                         }
                     }
                     stage ("fktool") {
@@ -40,15 +43,13 @@ timestamps {
                             git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
 
                             sh "make deps && make build/fktool"
-                            stash name: 'cloud', includes: 'build/fktool'
+                            sh "cp build/fktool ${pkg}"
                         }
                     }
 
                     stage ("archive") {
-                        dir ("temp") {
-                            unstash 'simple-deps'
-                            unstash 'flasher'
-                            unstash 'cloud'
+                        dir (pkg) {
+                            stash name: "tools", includes: "**"
                             archiveArtifacts artifacts: '**'
                         }
                     }
@@ -63,9 +64,7 @@ timestamps {
         sh "${go}/bin/go version"
 
         stage ('test') {
-            unstash 'simple-deps'
-            unstash 'flasher'
-            unstash 'cloud'
+            unstash 'tools'
         }
     }
 }
