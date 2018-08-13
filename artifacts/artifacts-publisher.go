@@ -160,6 +160,10 @@ func fixXmlVersion(bytes []byte) []byte {
 
 func walkBuilds(base string, walkFunc BuildWalkFunc) error {
 	return filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Printf("Error: %v %v", path, err)
+			return nil
+		}
 		if !info.IsDir() {
 			return nil
 		}
