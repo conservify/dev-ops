@@ -9,8 +9,7 @@ def createDirectory(path) {
     return actual
 }
 
-timestamps {
-    // Cross compile golang tools because this is generally faster.
+def buildTools() {
     node ("master") {
         def go = tool "golang-amd64"
         def build = createDirectory("build")
@@ -37,6 +36,13 @@ timestamps {
                             sh "cp -ar build/linux-arm/* ${pkg}"
                         }
                     }
+                    stage ("dev-ops") {
+                        dir ("github.com/Conservify/dev-ops") {
+                            git branch: 'master', url: 'https://github.com/Conservify/dev-ops.git'
+
+                            sh "make"
+                        }
+                    }
                     stage ("fktool") {
                         dir ("github.com/fieldkit/cloud") {
                             git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
@@ -57,6 +63,11 @@ timestamps {
         }
         deleteDir()
     }
+}
+
+timestamps {
+    // Cross compile golang tools because this is generally faster.
+    buildTools()
 
     node ("arm") {
         def go = tool "golang-arm"
