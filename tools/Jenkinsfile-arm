@@ -2,7 +2,7 @@
 
 timestamps {
     // Cross compile golang tools because this is generally faster.
-    buildTools("arm")
+    buildGoTools("arm")
 
     node ("arm") {
         def go = tool "golang-arm"

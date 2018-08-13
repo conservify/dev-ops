@@ -1,5 +1,5 @@
 @Library('conservify') _
 
 timestamps {
-    buildTools("amd64")
+    buildGoTools("amd64")
 }
