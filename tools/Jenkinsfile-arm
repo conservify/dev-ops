@@ -9,7 +9,7 @@ def createDirectory(path) {
     return actual
 }
 
-def buildTools() {
+def buildTools(goArch) {
     node ("master") {
         def go = tool "golang-amd64"
         def build = createDirectory("build")
@@ -19,7 +19,7 @@ def buildTools() {
             def gowork = pwd()
 
             dir ("src") {
-                withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=arm", "GOOS=linux", "GOROOT=${go}", "GOPATH=${gowork}"]) {
+                withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}", "GOPATH=${gowork}"]) {
                     stage ("simple-deps") {
                         dir ("github.com/Conservify/simple-deps") {
                             git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
@@ -67,7 +67,7 @@ def buildTools() {
 
 timestamps {
     // Cross compile golang tools because this is generally faster.
-    buildTools()
+    buildTools("arm")
 
     node ("arm") {
         def go = tool "golang-arm"
