@@ -43,8 +43,16 @@ def call(Map parameters = [:]) {
 
     if (distribute) {
         stage ('distribute') {
+            echo pwd()
+
             def files = findFiles(glob: 'build/*.bin')
-            echo files
+            if (files.length > 0) {
+                echo files.toString()
+                sh "fktool --host api.fkdev.org --scheme https --firmware-directory build"
+            }
+            else {
+                echo "No files to distribute."
+            }
         }
     }
 
