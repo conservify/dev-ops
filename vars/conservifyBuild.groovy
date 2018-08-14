@@ -41,21 +41,6 @@ def call(Map parameters = [:]) {
         }
     }
 
-    if (distribute) {
-        stage ('distribute') {
-            echo pwd()
-
-            def files = findFiles(glob: 'build/*.bin')
-            if (files.length > 0) {
-                echo files.toString()
-                sh "fktool --host api.fkdev.org --scheme https --firmware-directory build"
-            }
-            else {
-                echo "No files to distribute."
-            }
-        }
-    }
-
     // slackSend channel: '#automation', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Back to normal (<${env.BUILD_URL}|Open>)"
 
     return
