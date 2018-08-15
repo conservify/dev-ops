@@ -20,6 +20,7 @@ def call(Map parameters = [:]) {
     }
 
     stage ('clean') {
+        sh "rm -rf gitdeps"
         sh "make clean"
     }
 
