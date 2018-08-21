@@ -36,9 +36,9 @@ def call(Map parameters = [:]) {
         sh "make"
     }
 
-    if (archive) {
+    if (archive instanceof String) {
         stage ('archive') {
-            archiveArtifacts artifacts: 'build/*.bin'
+            archiveArtifacts artifacts: archive
         }
     }
 
