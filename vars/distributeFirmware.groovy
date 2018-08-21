@@ -2,7 +2,9 @@
 
 def call(Map parameters = [:]) {
     stage ('distribute') {
-        def command = "fktool --host api.fkdev.org --scheme https --firmware-directory build"
+        def directory = parameters.directory ?: "build"
+
+        def command = "fktool --host api.fkdev.org --scheme https --firmware-directory " + directory
 
         if (parameters.module) {
             command += " --module " + parameters.module
