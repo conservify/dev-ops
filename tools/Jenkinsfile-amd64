@@ -1,5 +1,7 @@
 @Library('conservify') _
 
+conservifyProperties()
+
 timestamps {
     buildGoTools("amd64")
 }

@@ -1,5 +1,7 @@
 @Library('conservify') _
 
+conservifyProperties()
+
 timestamps {
     // Cross compile golang tools because this is generally faster.
     buildGoTools("arm")
