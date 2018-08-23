@@ -25,7 +25,7 @@ def call(Map parameters = [:]) {
     }
 
     stage ('deps') {
-        def files = findFiles(glob: '**/arduino-libraries')
+        def files = findFiles(glob: '**/arduino-libraries, **/dependencies.sd')
         if (files.length > 0) {
             sh "rm -rf gitdeps"
             sh "make gitdeps"
@@ -39,6 +39,12 @@ def call(Map parameters = [:]) {
     if (archive instanceof String) {
         stage ('archive') {
             archiveArtifacts artifacts: archive
+        }
+    }
+
+    if (parameters.test) {
+        stage ('test') {
+            sh "make test"
         }
     }
 
