@@ -24,15 +24,6 @@ fi
 """
             }
 
-            dir ("arduino-cmake-minimal") {
-                if (!fileExists('.git/config')) {
-                    git branch: 'master', url: 'https://github.com/Conservify/arduino-cmake-minimal.git'
-                }
-                else {
-                    sh "git checkout master && git pull origin master"
-                }
-            }
-
             dir ("cmake") {
                 if (!fileExists('.git/config')) {
                     git branch: 'master', url: 'https://github.com/Conservify/cmake.git'
