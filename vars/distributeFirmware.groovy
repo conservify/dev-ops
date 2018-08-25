@@ -16,7 +16,7 @@ def call(Map parameters = [:]) {
             sh command
         }
         else {
-            echo "No files to distribute."
+            echo "No files ${directory} to distribute."
         }
     }
 }
