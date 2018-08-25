@@ -10,7 +10,7 @@ def call(Map parameters = [:]) {
             command += " --module " + parameters.module
         }
 
-        def files = findFiles(glob: 'build/*.bin')
+        def files = findFiles(glob: directory + '/*.bin')
         if (files.length > 0) {
             echo files.toString()
             sh command
