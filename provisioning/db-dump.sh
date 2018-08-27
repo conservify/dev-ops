@@ -15,5 +15,6 @@ eval $(ssh-agent)
 trap "ssh-agent -k" exit
 ssh-add ~/.ssh/cfy.pem
 
-ssh -t core@$APP_SERVER_ADDRESS "docker run -it --rm postgres pg_dump -s $ENV_DB_URL" > ../schema.sql
-ssh -t core@$APP_SERVER_ADDRESS "docker run -it --rm postgres pg_dump -a $ENV_DB_URL" > ../data.sql
+ssh -t core@$APP_SERVER_ADDRESS "docker run -it --rm postgres pg_dump -s $ENV_DB_URL > schema.sql"
+ssh -t core@$APP_SERVER_ADDRESS "docker run -it --rm postgres pg_dump -a $ENV_DB_URL --exclude-table-data fieldkit.inaturalist_observations > data.sql"
+rsync -zvua --progress "core@$APP_SERVER_ADDRESS:*.sql" ../
