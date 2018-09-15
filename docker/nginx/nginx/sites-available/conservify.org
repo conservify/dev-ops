@@ -107,7 +107,7 @@ server {
 	}
 
 	location /glacier-renderer {
-		proxy_pass         http://glacier-renderer:9090/glacier;
+		proxy_pass         http://glacier-renderer:9090/glacier-renderer;
 		proxy_redirect     off;
 
 		proxy_set_header   Host             $host;
