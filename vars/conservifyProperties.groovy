@@ -3,6 +3,6 @@
 def call(Map parameters = [:]) {
     properties([
         [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-        pipelineTriggers([[$class: 'GitHubPushTrigger']]),
+        pipelineTriggers([cron('@weekly'), githubPush()]),
     ])
 }
