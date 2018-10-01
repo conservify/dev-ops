@@ -1,3 +1,5 @@
+properties([pipelineTriggers([cron('@weekly')])])
+
 timestamps {
     node () {
         stage ('build') {
