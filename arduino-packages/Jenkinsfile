@@ -1,3 +1,5 @@
+properties([pipelineTriggers([cron('@weekly')])])
+
 timestamps {
     node () {
         stage ('git') {
@@ -13,5 +15,4 @@ done
 """
 	      }
     }
-
 }
