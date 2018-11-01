@@ -15,7 +15,7 @@ services:
     depends_on:
       - logs
     environment:
-      JAVA_OPTS: -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Los_Angeles
+      JAVA_OPTS: -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Los_Angeles -Dhudson.model.WorkspaceCleanupThread.disabled=true
       JENKINS_OPTS: --prefix=/jenkins
     volumes:
       - /svr0/jenkins:/var/jenkins_home
