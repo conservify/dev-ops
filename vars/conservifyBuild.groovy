@@ -49,10 +49,10 @@ def call(Map parameters = [:]) {
             }
         }
 
-        slackSend channel: '#automation', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Success (<${env.BUILD_URL}|Open>)"
+        notifySuccess()
     }
     catch (Exception e) {
-        slackSend channel: '#automation', color: 'danger', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Failed (<${env.BUILD_URL}|Open>)"
+        notifyFailure()
         throw e;
     }
 
