@@ -50,4 +50,6 @@ sudo usermod -aG docker ubuntu
 sudo mkdir /var/jenkins_home
 sudo chown -R ubuntu. /var/jenkins_home
 
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
 echo Done!
