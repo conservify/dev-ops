@@ -1,8 +1,10 @@
 #!/usr/bin/env groovy
 
-def call(Map parameters = [:]) {
-    properties([
-        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-        pipelineTriggers([cron('@weekly'), githubPush()]),
-    ])
+def call(List additional = []) {
+    def props = [] + additional
+
+    props.add([$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']])
+    props.add(pipelineTriggers([cron('@weekly'), githubPush()]))
+
+    properties(props)
 }
