@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 type options struct {
@@ -20,7 +21,7 @@ func main() {
 
 	flag.Parse()
 
-	if o.Source == "" {
+	if o.Source == "" && o.Destination == "" {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(2)
@@ -35,14 +36,19 @@ func main() {
 	}
 
 	if o.Destination != "" {
-		mg := NewMenuGenerator()
-		err := mg.GenerateMenu(o.Destination)
+		indexer := NewIndexer()
+		maximumAge := (time.Hour * 24) * 30
+		err := indexer.DeleteOldBuilds(o.Destination, maximumAge)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+		err = indexer.GenerateFileIndex(o.Destination)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
 
-		indexer := NewIndexer()
-		err = indexer.GenerateFileIndex(o.Destination)
+		mg := NewMenuGenerator()
+		err = mg.GenerateMenu(o.Destination)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}

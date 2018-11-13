@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -101,6 +102,33 @@ func (i *Indexer) GenerateFileIndex(directory string) error {
 	bytes, err := json.Marshal(index)
 
 	err = ioutil.WriteFile(indexJsonPath, bytes, 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) error {
+	archive := filepath.Join(directory, "archive")
+
+	log.Printf("Deleting old builds %s", archive)
+
+	now := time.Now()
+
+	err := walkBuilds(archive, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
+		age := now.Sub(time.Unix(info.StartTime/1000, 0))
+
+		if age.Hours() > maximumAge.Hours() {
+			log.Printf("DELETING %s %s (%s) (%s)", path, jobName, relative, age)
+			if true {
+				return nil
+			}
+			return os.RemoveAll(path)
+		}
+
+		return nil
+	})
 	if err != nil {
 		return err
 	}
