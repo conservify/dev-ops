@@ -26,24 +26,23 @@ func main() {
 		os.Exit(2)
 	}
 
-	am := NewArtifactsManager(o.Destination)
-	mg := NewMenuGenerator()
-	indexer := NewIndexer()
-
 	if o.Source != "" && o.Destination != "" {
-		err := am.Copy(o.Source)
+		ac := NewArtifactsCopier(o.Destination)
+		err := ac.Copy(o.Source)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
 	}
 
 	if o.Destination != "" {
+		mg := NewMenuGenerator()
 		err := mg.GenerateMenu(o.Destination)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
 
-		err = indexer.GenerateIndex(o.Destination)
+		indexer := NewIndexer()
+		err = indexer.GenerateFileIndex(o.Destination)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}

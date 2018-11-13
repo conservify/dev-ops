@@ -87,7 +87,7 @@ func createRawIndex(path string, base string) (de *DirectoryEntry, err error) {
 	return
 }
 
-func (i *Indexer) GenerateIndex(directory string) error {
+func (i *Indexer) GenerateFileIndex(directory string) error {
 	r, err := createRawIndex(directory, directory)
 	if err != nil {
 		return err

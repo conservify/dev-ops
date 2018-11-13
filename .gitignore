@@ -15,3 +15,4 @@ glacier
 schema.sql
 data.sql
 build
+artifacts/artifacts-publisher

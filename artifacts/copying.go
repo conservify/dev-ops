@@ -6,17 +6,17 @@ import (
 	"strings"
 )
 
-type ArtifactsManager struct {
+type ArtifactsCopier struct {
 	Directory string
 }
 
-func NewArtifactsManager(directory string) (am *ArtifactsManager) {
-	return &ArtifactsManager{
+func NewArtifactsCopier(directory string) (am *ArtifactsCopier) {
+	return &ArtifactsCopier{
 		Directory: directory,
 	}
 }
 
-func (am *ArtifactsManager) Copy(source string) error {
+func (am *ArtifactsCopier) Copy(source string) error {
 	archive := filepath.Join(am.Directory, "archive")
 
 	log.Printf("Copying %s to %s", source, archive)
@@ -58,10 +58,6 @@ func (am *ArtifactsManager) Copy(source string) error {
 		}
 		return nil
 	})
-}
-
-func (am *ArtifactsManager) Index() error {
-	return nil
 }
 
 func cleanupRelativePath(relative string) string {
