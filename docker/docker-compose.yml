@@ -26,7 +26,7 @@ services:
       - "49001:8080"
       - "50000:50000"
   jira:
-    image: "ivantichy/jira:7.1.7"
+    image: "ivantichy/jira:7.13.0"
     depends_on:
       - logs
     ports:

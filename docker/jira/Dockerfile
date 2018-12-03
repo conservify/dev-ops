@@ -1,1 +1,1 @@
-FROM ivantichy/jira:7.1.7
+FROM ivantichy/jira:7.13.0
