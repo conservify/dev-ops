@@ -1,6 +1,8 @@
 @Library('conservify') _
 
-conservifyProperties()
+conservifyProperties([
+    pipelineTriggers([upstream('fk/app-ios, fk/app-android, fk/app-android-easy-mode')])
+])
 
 timestamps {
     node {
