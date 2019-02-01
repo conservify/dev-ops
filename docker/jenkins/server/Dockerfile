@@ -1,6 +1,6 @@
 FROM jenkins/jenkins:lts
 USER root
-RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential zlib1g zlib1g:i386 python-pip
+RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential zlib1g zlib1g:i386 python-pip zip
 RUN pip install virtualenv
 WORKDIR /tmp
 RUN wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
