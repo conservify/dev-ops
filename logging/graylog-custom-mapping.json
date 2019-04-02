@@ -3,7 +3,12 @@
     "mappings" : {
         "message" : {
             "properties" : {
-                "serviceTrace" : {
+                "service_trace" : {
+                    "type" : "string",
+                    "analyzer" : "whitespace",
+                    "index" : "analyzed"
+                },
+                "error" : {
                     "type" : "string",
                     "analyzer" : "whitespace",
                     "index" : "analyzed"
