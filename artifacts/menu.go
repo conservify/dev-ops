@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -15,7 +16,7 @@ import (
 
 type Link struct {
 	Title string
-	Url   string
+	Url   htmltemplate.URL
 }
 
 type MenuOption struct {
@@ -93,7 +94,7 @@ func (h *IpaHandler) Handle(path string, relative string, jobName string, build 
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.Format("2006/01/02 15:04:05")
 	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/manifest.plist", relative)
-	installUrl := fmt.Sprintf("itms-services://?action=download-manifest&url=%s", manifestUrl)
+	installUrl := htmltemplate.URL(fmt.Sprintf("itms-services://?action=download-manifest&url=%s", url.QueryEscape(manifestUrl)))
 
 	options = []MenuOption{
 		MenuOption{
@@ -124,7 +125,7 @@ func (h *ApkHandler) CanHandle(path string) bool {
 func (h *ApkHandler) Handle(path string, relative string, jobName string, build *BuildInfo, archived []string, artifact string) (options []MenuOption, err error) {
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.Format("2006/01/02 15:04:05")
-	downloadUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/artifacts/%s", relative, filepath.Base(artifact))
+	downloadUrl := htmltemplate.URL(fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/artifacts/%s", relative, filepath.Base(artifact)))
 
 	options = []MenuOption{
 		MenuOption{
