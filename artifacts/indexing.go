@@ -121,9 +121,6 @@ func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) er
 
 		if age.Hours() > maximumAge.Hours() {
 			log.Printf("DELETING %s %s (%s) (%s)", path, jobName, relative, age)
-			if true {
-				return nil
-			}
 			return os.RemoveAll(path)
 		}
 
