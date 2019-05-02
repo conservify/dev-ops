@@ -11,13 +11,12 @@ import (
 )
 
 type BuildInfo struct {
-	Duration            int64  `xml:"duration"`
-	Timestamp           int64  `xml:"timestamp"`
-	StartTime           int64  `xml:"startTime"`
-	Status              string `xml:"result"`
-	ParameterCommitHash string `xml:"actions>hudson.plugins.git.RevisionParameterAction>commit"`
-	BuildCommitHash     string `xml:"actions>hudson.plugins.git.util.BuildData>buildsByBranchName>entry>hudson.plugins.git.util.Build>marked>sha1"`
-	BuildNumber         int32  `xml:"actions>hudson.plugins.git.util.BuildData>buildsByBranchName>entry>hudson.plugins.git.util.Build>hudsonBuildNumber"`
+	Duration        int64  `xml:"duration"`
+	Timestamp       int64  `xml:"timestamp"`
+	StartTime       int64  `xml:"startTime"`
+	Status          string `xml:"result"`
+	BuildCommitHash string `xml:"actions>hudson.plugins.git.util.BuildDetails>build>marked>sha1"`
+	BuildNumber     int32  `xml:"actions>hudson.plugins.git.util.BuildDetails>build>hudsonBuildNumber"`
 }
 
 type BuildWalkFunc func(path string, relative string, jobName string, buildXmlPath string, build *BuildInfo, artifactPaths []string) error
