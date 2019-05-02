@@ -21,8 +21,9 @@ timestamps {
         }
 
         stage ('publish') {
-            sh "cp artifacts/*.template /var/lib/distribution"
-            sh "cp artifacts/favicon.png /var/lib/distribution"
+            sh "cp build/artifacts-publisher /var/lib/distribution"
+            sh "cp build/*.template /var/lib/distribution"
+            sh "cp build/favicon.png /var/lib/distribution"
         }
     }
 
