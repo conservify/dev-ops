@@ -116,18 +116,28 @@ func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) er
 
 	now := time.Now()
 
+	deleting := make([]string, 0)
+
 	err := walkBuilds(archive, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		age := now.Sub(time.Unix(info.StartTime/1000, 0))
 
 		if age.Hours() > maximumAge.Hours() {
 			log.Printf("DELETING %s %s (%s) (%s)", path, jobName, relative, age)
-			return os.RemoveAll(path)
+			deleting = append(deleting, path)
+			return nil
 		}
 
 		return nil
 	})
 	if err != nil {
 		return err
+	}
+
+	for _, path := range deleting {
+		err = os.RemoveAll(path)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
