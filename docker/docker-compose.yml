@@ -32,7 +32,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /svr0/jira/pg:/var/lib/postgresql/9.4/main
+      - /svr0/jira/pg:/var/lib/postgresql/9.6/main
       - /svr0/jira/app:/var/atlassian/jira-app
       - /svr0/jira/home:/var/atlassian/jira-home
   proxy:
