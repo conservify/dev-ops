@@ -1,11 +1,5 @@
 version: '2'
 services:
-  nexus:
-    image: "sonatype/nexus"
-    volumes:
-      - /svr0/nexus/sonatype-work:/sonatype-work
-    ports:
-      - "8081:8081"
   fk-landing:
     depends_on:
       - logs
