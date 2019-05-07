@@ -3,7 +3,7 @@ services:
   fk-landing:
     depends_on:
       - logs
-    image: "fk-landing"
+    image: "fk-landing-redirected"
   jenkins:
     image: "conservify/jenkins"
     depends_on:
