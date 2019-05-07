@@ -38,7 +38,6 @@ services:
     links:
       - spotify
       - jenkins
-      - nexus
       - fk-landing
       - logs
       - glacier-status
