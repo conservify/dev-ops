@@ -23,3 +23,6 @@ run:
 		--link fk-landing \
 		--add-host="parent:172.17.0.1" \
 		nginx-rproxy
+
+backup:
+	sudo tar cjf letsencrypt-`date +"%Y-%m-%d_%H-%M-%S"`.tar.bz2 letsencrypt-*
