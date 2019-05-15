@@ -1,7 +1,11 @@
 #!/usr/bin/env groovy
 
-def call(Map parameters = [:], List additional = []) {
-    def props = [] + additional
+def call(Map parameters) {
+    def props = []
+
+    if (parameters.additional) {
+        props += parameters.additional
+    }
 
     echo 'Applying Conservify properties'
 
@@ -16,4 +20,8 @@ def call(Map parameters = [:], List additional = []) {
     }
 
     properties(props)
+}
+
+def call(List additional = []) {
+    call(additional: additional)
 }
