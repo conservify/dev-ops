@@ -6,7 +6,7 @@ def call(goArch) {
 
         sh "env"
 
-        withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
+        withEnv(["PATH+GOLANG=${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
             sh "which go"
             sh "env"
 
