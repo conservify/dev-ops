@@ -34,7 +34,9 @@ def call(Map parameters = [:]) {
         }
 
         stage ('build') {
-            sh "make"
+            withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
+                sh "make"
+            }
         }
 
         if (archive instanceof String) {
