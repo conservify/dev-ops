@@ -8,7 +8,7 @@ def call(goArch) {
             def gowork = pwd()
 
             dir ("src") {
-                withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}", "GOPATH=${gowork}"]) {
+                withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
                     stage ("simple-deps") {
                         dir ("github.com/Conservify/simple-deps") {
                             git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
