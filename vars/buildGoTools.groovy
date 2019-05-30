@@ -6,6 +6,7 @@ def call(goArch) {
 
         withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
             sh "which go"
+            sh "env"
 
             stage ("simple-deps") {
                 dir ("github.com/Conservify/simple-deps") {
