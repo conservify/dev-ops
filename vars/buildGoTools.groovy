@@ -4,6 +4,8 @@ def call(goArch) {
         def build = createDirectory("build")
         def pkg = createDirectory("package")
 
+        sh "env"
+
         withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
             sh "which go"
             sh "env"
