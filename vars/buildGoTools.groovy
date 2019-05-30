@@ -4,49 +4,45 @@ def call(goArch) {
         def build = createDirectory("build")
         def pkg = createDirectory("package")
 
-        dir ("gowork") {
-            def gowork = pwd()
+        withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
+            sh "which go"
 
-            dir ("src") {
-                withEnv(["PATH+GOLANG=/bin:/usr/local/bin:/usr/bin:${go}/bin", "GOARCH=" + goArch, "GOOS=linux", "GOROOT=${go}"]) {
-                    stage ("simple-deps") {
-                        dir ("github.com/Conservify/simple-deps") {
-                            git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
+            stage ("simple-deps") {
+                dir ("github.com/Conservify/simple-deps") {
+                    git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
 
-                            sh "make deps && make"
-                            sh "cp build/* ${pkg}"
-                        }
-                    }
-                    stage ("flasher") {
-                        dir ("github.com/Conservify/flasher") {
-                            git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
+                    sh "make deps && make"
+                    sh "cp build/* ${pkg}"
+                }
+            }
+            stage ("flasher") {
+                dir ("github.com/Conservify/flasher") {
+                    git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
 
-                            sh "make deps && make"
-                            sh "cp -ar build/linux-arm/* ${pkg}"
-                        }
-                    }
-                    stage ("dev-ops") {
-                        dir ("github.com/Conservify/dev-ops") {
-                            git branch: 'master', url: 'https://github.com/Conservify/dev-ops.git'
+                    sh "make deps && make"
+                    sh "cp -ar build/linux-arm/* ${pkg}"
+                }
+            }
+            stage ("dev-ops") {
+                dir ("github.com/Conservify/dev-ops") {
+                    git branch: 'master', url: 'https://github.com/Conservify/dev-ops.git'
 
-                            sh "make"
-                        }
-                    }
-                    stage ("fktool") {
-                        dir ("github.com/fieldkit/cloud") {
-                            git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
+                    sh "make"
+                }
+            }
+            stage ("fktool") {
+                dir ("github.com/fieldkit/cloud") {
+                    git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
 
-                            sh "make deps && make build/fktool"
-                            sh "cp build/fktool ${pkg}"
-                        }
-                    }
+                    sh "make deps && make build/fktool"
+                    sh "cp build/fktool ${pkg}"
+                }
+            }
 
-                    stage ("archive") {
-                        dir (pkg) {
-                            stash name: "tools", includes: "**"
-                            archiveArtifacts artifacts: '**'
-                        }
-                    }
+            stage ("archive") {
+                dir (pkg) {
+                    stash name: "tools", includes: "**"
+                    archiveArtifacts artifacts: '**'
                 }
             }
         }
