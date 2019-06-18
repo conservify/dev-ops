@@ -1,7 +1,7 @@
 @Library('conservify') _
 
 conservifyProperties([
-    pipelineTriggers([upstream('fk/app-ios, fk/app-android, fk/app-android-easy-mode')])
+    pipelineTriggers([upstream('fk/fkn-app-ios, fk/fkn-app-android')])
 ])
 
 timestamps {
@@ -11,7 +11,9 @@ timestamps {
         }
 
         stage ('build') {
-            sh "make clean build"
+              withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
+                sh "make clean build"
+            }
         }
 
         stage ('archive') {
