@@ -28,14 +28,18 @@ def call(Map parameters = [:]) {
         stage ('deps') {
             def files = findFiles(glob: '**/arduino-libraries, **/dependencies.sd')
             if (files.length > 0) {
-                sh "rm -rf gitdeps"
-                sh "make gitdeps"
+                withPythonEnv('python') {
+                  sh "rm -rf gitdeps"
+                    sh "make gitdeps"
+                }
             }
         }
 
         stage ('build') {
             withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
-                sh "make"
+                withPythonEnv('python') {
+                    sh "make"
+                }
             }
         }
 
