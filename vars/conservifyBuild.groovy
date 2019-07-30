@@ -5,6 +5,7 @@ def call(Map parameters = [:]) {
     name = parameters.name
     archive = parameters.archive
     distribute = parameters.distribute
+    clean = parameters.clean ?: "clean"
 
     if (!name) {
         error 'conservifyBuild: Name is required'
@@ -22,7 +23,7 @@ def call(Map parameters = [:]) {
 
         stage ('clean') {
             sh "rm -rf gitdeps"
-            sh "make clean"
+            sh "make " + clean
         }
 
         stage ('deps') {
