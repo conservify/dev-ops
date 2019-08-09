@@ -5,6 +5,6 @@ RUN pip install virtualenv
 RUN pip3 install virtualenv
 WORKDIR /tmp
 RUN wget https://dl.google.com/go/go1.12.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.12.linux-amd64.tar.gz
-RUN wget https://nodejs.org/dist/v8.12.0/node-v8.12.0-linux-x64.tar.xz && tar -C /usr/local -xf node-v8.12.0-linux-x64.tar.xz && mv /usr/local/node-* /usr/local/node
+RUN wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-x64.tar.xz && tar -C /usr/local -xf node-v10.16.2-linux-x64.tar.xz && mv /usr/local/node-* /usr/local/node
 RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz && tar -C /usr/local -xf docker-17.09.0-ce.tgz
 USER jenkins
