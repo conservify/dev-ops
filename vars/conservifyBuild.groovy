@@ -3,6 +3,7 @@
 def call(Map parameters = [:]) {
     repository = parameters.repository
     name = parameters.name
+    target = parameters.target
     archive = parameters.archive
     distribute = parameters.distribute
     clean = parameters.clean ?: "clean"
@@ -39,7 +40,12 @@ def call(Map parameters = [:]) {
         stage ('build') {
             withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
                 withPythonEnv('python') {
-                    sh "make"
+                    if (target) {
+                        sh "make " + target
+                    }
+                    else {
+                        sh "make"
+                    }
                 }
             }
         }
