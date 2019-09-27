@@ -9,7 +9,7 @@ def call(Map parameters) {
 
     echo 'Applying Conservify properties'
 
-    props.add([$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']])
+    props.add([$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '20']])
 
     if (parameters.manual) {
         echo 'Manual triggers enabled.'

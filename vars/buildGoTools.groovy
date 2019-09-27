@@ -11,7 +11,7 @@ def call(goArch) {
             sh "env"
 
             stage ("simple-deps") {
-                dir ("github.com/Conservify/simple-deps") {
+                dir ("github.com/conservify/simple-deps") {
                     git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
 
                     sh "make deps && make"
@@ -19,7 +19,7 @@ def call(goArch) {
                 }
             }
             stage ("flasher") {
-                dir ("github.com/Conservify/flasher") {
+                dir ("github.com/conservify/flasher") {
                     git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
 
                     sh "make deps && make"
@@ -27,7 +27,7 @@ def call(goArch) {
                 }
             }
             stage ("dev-ops") {
-                dir ("github.com/Conservify/dev-ops") {
+                dir ("github.com/conservify/dev-ops") {
                     git branch: 'master', url: 'https://github.com/Conservify/dev-ops.git'
 
                     sh "make"
