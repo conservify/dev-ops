@@ -36,7 +36,6 @@ services:
       - /svr0/glacier:/var/lib/glacier-data
       - /svr0/web/code.conservify.org:/var/www/conservify.org
     links:
-      - spotify
       - jenkins
       - fk-landing
       - logs
@@ -92,10 +91,6 @@ services:
       - /svr0/glacier/archive:/svr0/glacier/archive
     ports:
       - "9090:9090"
-  spotify:
-    image: jlewallen/play-zones:master
-    volumes:
-      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
   logs-viewer:
     image: jlewallen/logs-viewer:master
     volumes:
