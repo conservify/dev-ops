@@ -12,7 +12,10 @@ docker/logs/journal
 docker/logs/config/node-id
 htpasswd
 glacier
-schema.sql
-data.sql
 build
 artifacts/artifacts-publisher
+
+schema.sql
+data.sql
+TM_WORLD_BORDERS-0.3.sql
+TM_WORLD_BORDERS_SIMPL-0.3.sql
