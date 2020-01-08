@@ -34,13 +34,13 @@ func main() {
 		log.Printf("[http] %s", req.URL)
 
 		p := strings.Split(req.URL.Path[1:], "/")
-		if len(p) != o.Strip + 2 {
+		if len(p) != o.Strip+2 {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		batch := p[o.Strip]
-		filename := p[o.Strip + 1]
+		filename := p[o.Strip+1]
 
 		localDirectory := filepath.Join(o.RootPath, batch)
 		err := os.MkdirAll(localDirectory, 0755)
@@ -65,6 +65,7 @@ func main() {
 		log.Printf("[http] (%s) received %d -> %s", req.URL, bytes, localPath)
 
 		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(fmt.Sprintf("%s", batch)))
 	})
 
 	log.Printf("starting...")
