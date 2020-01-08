@@ -43,11 +43,16 @@ services:
       - glacier-renderer
       - logs-viewer
       - jira
+      - diagnostics
     extra_hosts:
       - "parent:127.0.0.1"
     ports:
       - "443:443"
       - "80:80"
+  diagnostics:
+    build: ./diagnostics
+    volumes:
+      - /svr0/diagnostics:/data
   logs-mongo:
     image: "mongo:3"
     volumes:
