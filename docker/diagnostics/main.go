@@ -100,7 +100,7 @@ func serve(o *options, w http.ResponseWriter, req *http.Request) (meta *UploadMe
 		return nil, fmt.Errorf("unable to copy file: %v", err)
 	}
 
-	log.Printf("[http] (%s) received %d -> %s", req.URL, bytes, localPath)
+	log.Printf("[http] %s received %d -> %s", req.URL, bytes, localPath)
 
 	return meta, nil
 }
@@ -121,6 +121,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		meta, err := serve(o, w, req)
 		if err != nil {
+			log.Printf("error: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(fmt.Sprintf("error: %v", err)))
 			return
@@ -128,6 +129,7 @@ func main() {
 
 		bytes, err := json.Marshal(meta)
 		if err != nil {
+			log.Printf("error: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(fmt.Sprintf("error: %v", err)))
 			return
