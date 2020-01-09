@@ -55,6 +55,7 @@ func saveOrReadMeta(batch, path string) (meta *UploadMeta, err error) {
 			return nil, fmt.Errorf("error: %v", err)
 		}
 
+		meta = &UploadMeta{}
 		err = json.Unmarshal(data, meta)
 		if err != nil {
 			return nil, fmt.Errorf("error: %v", err)
