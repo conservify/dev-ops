@@ -7,6 +7,11 @@ resource "aws_s3_bucket" "fk-streams" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket" "fk-media" {
+  bucket = "fk-media"
+  acl    = "private"
+}
+
 data "aws_iam_policy_document" "fk-server" {
   statement {
     actions = [
@@ -23,11 +28,13 @@ data "aws_iam_policy_document" "fk-server" {
   statement {
     actions = [
       "s3:PutObject",
-      "s3:PutObjectAcl"
+      "s3:PutObjectAcl",
+      "s3:ListBuckett"
     ]
 
     resources = [
       "${aws_s3_bucket.fk-streams.arn}/*"
+      "${aws_s3_bucket.fk-media.arn}/*"
     ]
   }
 
