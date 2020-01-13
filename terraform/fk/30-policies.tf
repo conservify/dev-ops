@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "fk-server" {
     ]
 
     resources = [
-      "${aws_s3_bucket.fk-streams.arn}/*"
+      "${aws_s3_bucket.fk-streams.arn}/*",
       "${aws_s3_bucket.fk-media.arn}/*"
     ]
   }
