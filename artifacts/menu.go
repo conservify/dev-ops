@@ -91,8 +91,13 @@ func (h *IpaHandler) Handle(path string, relative string, jobName string, build 
 		return nil, err
 	}
 
+	location, err := time.LoadLocation("America/Los_Angeles")
+	if err != nil {
+		return nil, err
+	}
+
 	buildTime := time.Unix(build.Timestamp/1000, 0)
-	timestamp := buildTime.Format("2006/01/02 15:04:05")
+	timestamp := buildTime.UTC().In(location).Format("2006/01/02 15:04:05")
 	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/manifest.plist", relative)
 	installUrl := htmltemplate.URL(fmt.Sprintf("itms-services://?action=download-manifest&url=%s", url.QueryEscape(manifestUrl)))
 
@@ -101,7 +106,7 @@ func (h *IpaHandler) Handle(path string, relative string, jobName string, build 
 			Key:     jobName,
 			Sort:    build.Timestamp,
 			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber),
-			Details: fmt.Sprintf("%s", timestamp),
+			Details: timestamp,
 			Links: []Link{
 				Link{
 					Title: "Install",
@@ -123,8 +128,13 @@ func (h *ApkHandler) CanHandle(path string) bool {
 }
 
 func (h *ApkHandler) Handle(path string, relative string, jobName string, build *BuildInfo, archived []string, artifact string) (options []MenuOption, err error) {
+	location, err := time.LoadLocation("America/Los_Angeles")
+	if err != nil {
+		return nil, err
+	}
+
 	buildTime := time.Unix(build.Timestamp/1000, 0)
-	timestamp := buildTime.Format("2006/01/02 15:04:05")
+	timestamp := buildTime.In(location).Format("2006/01/02 15:04:05")
 	downloadUrl := htmltemplate.URL(fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/artifacts/%s", relative, filepath.Base(artifact)))
 
 	options = []MenuOption{
