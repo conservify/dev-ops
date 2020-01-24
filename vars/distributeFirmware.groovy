@@ -2,21 +2,25 @@
 
 def call(Map parameters = [:]) {
     stage ('distribute') {
-        def directory = parameters.directory ?: "build"
+        def command = "fktool --host api.fkdev.org --scheme https"
 
-        def command = "fktool --host api.fkdev.org --scheme https --firmware-directory " + directory
+		if (parameters.directory) {
+		   command += " --firmware-directory " + parameters.directory
+		}
+
+		if (parameters.file) {
+		   command += " --firmware-file " + parameters.file
+		}
 
         if (parameters.module) {
             command += " --module " + parameters.module
         }
 
-        def files = findFiles(glob: directory + '/*.bin')
-        if (files.length > 0) {
-            echo files.toString()
-            sh command
+        if (parameters.profile) {
+            command += " --profile " + parameters.profile
         }
-        else {
-            echo "No files ${directory} to distribute."
-        }
+
+		echo command
+		sh command
     }
 }
