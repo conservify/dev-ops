@@ -20,6 +20,14 @@ def call(Map parameters = [:]) {
             command += " --profile " + parameters.profile
         }
 
+		if (parameters.email) {
+			command += " --email " + parameters.email
+		}
+
+		if (parameters.password) {
+			command += " --password " + parameters.password
+		}
+
 		echo command
 		sh command
     }
