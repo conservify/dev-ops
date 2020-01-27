@@ -105,7 +105,7 @@ func (h *IpaHandler) Handle(path string, relative string, jobName string, build 
 		MenuOption{
 			Key:     jobName,
 			Sort:    build.Timestamp,
-			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber),
+			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber()),
 			Details: timestamp,
 			Links: []Link{
 				Link{
@@ -141,7 +141,7 @@ func (h *ApkHandler) Handle(path string, relative string, jobName string, build 
 		MenuOption{
 			Key:     jobName,
 			Sort:    build.Timestamp,
-			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber),
+			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber()),
 			Details: fmt.Sprintf("%s", timestamp),
 			Links: []Link{
 				Link{
