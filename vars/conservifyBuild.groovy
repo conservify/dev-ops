@@ -7,6 +7,7 @@ def call(Map parameters = [:]) {
     archive = parameters.archive
     distribute = parameters.distribute
     clean = parameters.clean ?: "clean"
+	python = parameters.python ?: "python"
 
     if (!name) {
         error 'conservifyBuild: Name is required'
@@ -40,7 +41,7 @@ def call(Map parameters = [:]) {
         stage ('build') {
             withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
 				withEnv(["PATH+GOHOME=${HOME}/go/bin"]) {
-					withPythonEnv('python') {
+					withPythonEnv(python) {
 						if (target) {
 							sh "make " + target
 						}
