@@ -39,13 +39,15 @@ def call(Map parameters = [:]) {
 
         stage ('build') {
             withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
-                withPythonEnv('python') {
-                    if (target) {
-                        sh "make " + target
-                    }
-                    else {
-                        sh "make"
-                    }
+				withEnv(["PATH+GOHOME=${HOME}/go/bin"]) {
+					withPythonEnv('python') {
+						if (target) {
+							sh "make " + target
+						}
+						else {
+							sh "make"
+						}
+					}
                 }
             }
         }
