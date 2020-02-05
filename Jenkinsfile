@@ -1,7 +1,7 @@
 @Library('conservify') _
 
 conservifyProperties([
-    pipelineTriggers([upstream('fk/fkn-app-ios, fk/fkn-app-android')])
+    pipelineTriggers([upstream('fk/mobile-app-ios, fk/mobile-app-android')])
 ])
 
 timestamps {
