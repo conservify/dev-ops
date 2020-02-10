@@ -1,11 +1,8 @@
 version: '2'
 services:
-  fk-landing:
-    depends_on:
-      - logs
-    image: "fk-landing-redirected"
   jenkins:
     image: "conservify/jenkins"
+    restart: always
     depends_on:
       - logs
     environment:
@@ -19,8 +16,10 @@ services:
       - "45900:45900"
       - "49001:8080"
       - "50000:50000"
+
   jira:
     image: "ivantichy/jira:7.13.0"
+    restart: always
     depends_on:
       - logs
     ports:
@@ -29,41 +28,52 @@ services:
       - /svr0/jira/pg:/var/lib/postgresql/9.6/main
       - /svr0/jira/app:/var/atlassian/jira-app
       - /svr0/jira/home:/var/atlassian/jira-home
+
   proxy:
     image: "nginx-rproxy"
+    restart: always
     volumes:
       - /svr0/distribution:/var/lib/distribution
       - /svr0/glacier:/var/lib/glacier-data
       - /svr0/web/code.conservify.org:/var/www/conservify.org
     links:
       - jenkins
-      - fk-landing
       - logs
       - glacier-status
       - glacier-renderer
       - logs-viewer
       - jira
       - diagnostics
+      - grafana
+      - influxdb
     extra_hosts:
       - "parent:127.0.0.1"
     ports:
       - "443:443"
       - "80:80"
+
   diagnostics:
     build: ./diagnostics
+    restart: always
     volumes:
       - /svr0/diagnostics:/data
+
   logs-mongo:
     image: "mongo:3"
+    restart: always
     volumes:
       - /svr0/graylog/mongo:/data/db
+
   logs-elasticsearch:
     image: "elasticsearch:2"
     command: "elasticsearch -Des.cluster.name='graylog'"
+    restart: always
     volumes:
       - /svr0/graylog/data/elasticsearch:/usr/share/elasticsearch/data
+
   logs:
     image: graylog2/server:2.1.1-1
+    restart: always
     volumes:
       - /svr0/graylog/journal:/usr/share/graylog/data/journal
       - /svr0/graylog/config:/usr/share/graylog/data/config
@@ -80,25 +90,48 @@ services:
       - "12201:12201"
       - "12201/udp:12201/udp"
       - "1514/udp:1514/udp"
+
   glacier-status:
     image: conservify/glacier-status
+    restart: always
     depends_on:
       - logs
     volumes:
       - /var/log:/var/log
     ports:
       - "8000:8000"
+
   glacier-renderer:
     image: conservify/glacier-renderer
+    restart: always
     depends_on:
       - logs
     volumes:
       - /svr0/glacier/archive:/svr0/glacier/archive
     ports:
       - "9090:9090"
+
   logs-viewer:
     image: jlewallen/logs-viewer:master
+    restart: always
     volumes:
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - /svr0/grafana:/var/lib/grafana
+
+  influxdb:
+    image: influxdb
+    restart: always
+    ports:
+      - 8086:8086
+    volumes:
+      - /svr0/influxdb:/var/lib/influxdb
+
 volumes:
   jenkins_home:
