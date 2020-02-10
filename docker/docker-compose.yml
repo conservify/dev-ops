@@ -120,6 +120,11 @@ services:
   grafana:
     image: grafana/grafana
     restart: always
+    environment:
+      #GF_PATHS_CONFIG: /var/lib/grafana/grafana.ini
+      GF_SERVER_ROOT_URL: https://code.conservify.org/grafana
+      GF_SERVER_DOMAIN: code.conservify.org
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     ports:
       - 3000:3000
     volumes:
