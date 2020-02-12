@@ -8,7 +8,7 @@ else
 	WATCHING=$1
 fi
 
-for archive in `find ${WATCHING} -name "*.tar"`; do
+for archive in `find ${WATCHING} -name "*-stack.tar*"`; do
 	name=`basename $archive .tar`
 	work=/tmp/${name}
 	compose_dir=/etc/docker/compose/${name}
