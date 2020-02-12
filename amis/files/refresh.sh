@@ -27,7 +27,7 @@ for archive in `find ${WATCHING} -name "*.tar"`; do
 
 	mkdir -p /etc/docker/compose/${name}
 
-	cp docker-compose.yaml *.env .env /etc/docker/compose/${name}
+	cp * /etc/docker/compose/${name}
 	cp /etc/user_data.env /etc/docker/compose/99_user_data.env
 
 	popd
