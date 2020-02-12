@@ -22,8 +22,11 @@ bare-ami:
 stacked-ami: stacks
 	./build-ami.sh stacked.json
 
-images: $(IMAGE_BUILD_TARGETS)
-	echo "TAG=${TAG}" > ${BUILD}/10_tag.env
+images: $(IMAGE_BUILD_TARGETS) ${BUILD}/10_tag.env
+
+${BUILD}/10_tag.env:
+	mkdir -p $(BUILD)
+	echo "TAG=${TAG}" > $@
 
 $(IMAGE_BUILD_TARGETS): NAME = ${@:${BUILD}/%.di=%}
 $(IMAGE_BUILD_TARGETS):
