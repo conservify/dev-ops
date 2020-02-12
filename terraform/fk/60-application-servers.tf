@@ -30,8 +30,9 @@ data "template_file" "fk_app_server_user_data" {
   vars = {
 	hostname             = "fk-app-server-a"
 	zone_name            = "${var.zone_name}"
-	gelf_address         = "${var.gelf_address}"
+	gelf_url             = "${var.gelf_url}"
 	gelf_tags            = "${var.gelf_tags}"
+	env_tag              = "${var.env_tag}"
 
 	database_url         = "${var.database_url}"
 

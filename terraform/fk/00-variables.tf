@@ -35,12 +35,14 @@ variable "azs" {
 
 variable "certificate_arn" {}
 variable "gelf_tags" {}
-variable "gelf_address" {}
+variable "gelf_url" {}
 variable "database_url" {}
 
 variable "app_server_container" {
   default = ""
 }
+
+variable "env_tag" {}
 
 variable "influx_url" {}
 variable "influx_database" {}
