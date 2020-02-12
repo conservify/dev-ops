@@ -23,5 +23,5 @@ END
 cp /etc/user_data.env /etc/default/telegraf
 
 for directory in /etc/docker/compose/*; do
-	cp /etc/user_data.env ${directory}/99_user_data.env
+	cp /etc/user_data.env $directory/99_user_data.env
 done
