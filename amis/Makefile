@@ -14,6 +14,7 @@ ami: default
 
 $(BUILD)/.env:
 	mkdir -p $(BUILD)
+	echo "TAG=${TAG}" > $(BUILD)/10_tag.env
 	echo "TAG=${TAG}" > $(BUILD)/.env
 
 $(BUILD)/stack.tar: $(IMAGE_BUILD_TARGETS) $(BUILD)/.env docker-compose.yaml

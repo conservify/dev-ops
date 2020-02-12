@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat > /etc/conservify.env <<END
+cat > /etc/user_data.env <<END
 
 HOSTNAME=${hostname}
 ZONE_NAME=${zone_name}
@@ -19,6 +19,8 @@ AWS_SECRET_KEY=${aws_secret_key}
 
 END
 
-cp /etc/conservify.env /etc/default/telegraf
-cp /etc/conservify.env /etc/default/docker-compose
-cp /etc/conservify.env /etc/docker/compose
+cp /etc/user_data.env /etc/default/telegraf
+
+for directory in /etc/docker/compose/*; do
+	cp /etc/user_data.env $(directory)/99_user_data.env
+done
