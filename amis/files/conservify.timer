@@ -1,0 +1,11 @@
+[Unit]
+Description=Conservify maintenance timer
+Requires=conservify.service
+
+[Timer]
+OnBootSec=1s
+OnUnitInactiveSec=5s
+AccuracySec=100ms
+
+[Install]
+WantedBy=timers.target

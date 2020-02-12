@@ -1,0 +1,12 @@
+[Unit]
+Description=Conservify maintenance
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/tmp
+ExecStart=/var/lib/conservify/refresh.sh
+
+[Install]
+WantedBy=multi-user.target

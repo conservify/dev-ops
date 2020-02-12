@@ -1,5 +1,9 @@
 all: terraform.tfplan
 
+plan:
+	terraform get
+	terraform plan -out=terraform.tfplan
+
 apply: terraform.tfplan
 	terraform apply
 
