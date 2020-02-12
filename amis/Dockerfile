@@ -2,6 +2,7 @@ FROM hashicorp/packer
 
 WORKDIR /work
 
-COPY build.json /work/build.json
+COPY bare.json /work/bare.json
+COPY stacked.json /work/stacked.json
 COPY files /work/files
 COPY build/*.tar* /work/files
