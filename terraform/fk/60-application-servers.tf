@@ -29,7 +29,7 @@ resource "aws_instance" "fk-app-server-a" {
 data "template_file" "fk_app_server_user_data" {
   template = file("user_data.sh")
   vars = {
-	hostname             = "fk-app-server-a"
+	hostname             = "fk-app-server-test"
 	zone_name            = "${var.zone_name}"
 	gelf_url             = "${var.gelf_url}"
 	gelf_tags            = "${var.gelf_tags}"
@@ -74,6 +74,6 @@ resource "aws_instance" "fk-app-server-test" {
   }
 
   tags = {
-	Name = "fk-app-server-TEST"
+	Name = "fk-app-server-test"
   }
 }
