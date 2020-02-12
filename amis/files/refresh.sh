@@ -2,13 +2,22 @@
 
 set -e
 
-if [ -f /tmp/stack.tar ]; then
-	rm -rf /tmp/stack
-	mkdir -p /tmp/stack
+if [ -z $1 ]; then
+	WATCHING=/tmp
+else
+	WATCHING=$1
+fi
 
-	pushd /tmp/stack
+for archive in `find ${WATCHING} -name "*.tar"`; do
+	name=`basename $archive .tar`
+	work=/tmp/${name}
 
-	tar xf /tmp/stack.tar
+	rm -rf ${work}
+	mkdir -p ${work}
+
+	tar xf ${archive} -C ${work}
+
+	pushd ${work}
 
 	for image in *.di; do
 		docker load < ${image} && rm ${image}
@@ -16,15 +25,15 @@ if [ -f /tmp/stack.tar ]; then
 
 	ls -alh
 
-	mkdir -p /etc/docker/compose/stack
-	cp *.env .env /etc/docker/compose/stack
-	cp docker-compose.yaml /etc/docker/compose/stack
+	mkdir -p /etc/docker/compose/${name}
+
+	cp docker-compose.yaml *.env .env /etc/docker/compose/${name}
 
 	popd
 
-	rm -rf /tmp/stack*
+	rm -rf ${work} ${archive}
 
-	systemctl enable docker-compose@stack
+	systemctl enable docker-compose@${name}
 
-	systemctl start docker-compose@stack
-fi
+	systemctl restart docker-compose@${name}
+done
