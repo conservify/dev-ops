@@ -8,9 +8,6 @@ Restart=always
 
 WorkingDirectory=/etc/docker/compose/%i
 
-ExecStartPre=/usr/local/bin/docker-compose down -v
-ExecStartPre=/usr/local/bin/docker-compose rm -fv
-
 ExecStart=/usr/bin/docker-compose up
 
 ExecStop=/usr/bin/docker-compose down
