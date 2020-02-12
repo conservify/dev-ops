@@ -14,8 +14,10 @@ if [ -f /tmp/stack.tar ]; then
 		docker load < ${image} && rm ${image}
 	done
 
+	ls -alh
+
 	mkdir -p /etc/docker/compose/stack
-	cp .env /etc/docker/compose/stack
+	cp *.env .env /etc/docker/compose/stack
 	cp docker-compose.yaml /etc/docker/compose/stack
 
 	popd

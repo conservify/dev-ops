@@ -19,7 +19,7 @@ $(BUILD)/.env:
 
 $(BUILD)/stack.tar: $(IMAGE_BUILD_TARGETS) $(BUILD)/.env docker-compose.yaml
 	cp docker-compose.yaml $(BUILD)
-	cd $(BUILD) && tar cf $@ *.di .env *.yaml
+	cd $(BUILD) && tar cf $@ *.di *.env .env *.yaml
 
 images: $(IMAGE_BUILD_TARGETS)
 
