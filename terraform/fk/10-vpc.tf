@@ -34,7 +34,7 @@ resource "aws_subnet" "fk-b" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "fk-c"
+	Name = "fk-b"
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_subnet" "fk-c" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "fk-d"
+	Name = "fk-c"
   }
 }
 
@@ -59,18 +59,6 @@ resource "aws_subnet" "fk-e" {
 	Name = "fk-e"
   }
 }
-
-/*
-resource "aws_db_subnet_group" "fk" {
-  name        = "fk"
-  description = "fk"
-  subnet_ids  = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
-
-  tags = {
-	Name = "fk"
-  }
-}
-*/
 
 resource "aws_route" "public_access" {
   route_table_id         = aws_vpc.fk.main_route_table_id

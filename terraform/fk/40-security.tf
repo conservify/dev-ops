@@ -11,6 +11,24 @@ resource "aws_security_group" "ssh" {
 	description = var.bastion_manual_name
   }
 
+  ingress {
+	from_port   = 22
+	to_port     = 22
+	protocol    = "tcp"
+	cidr_blocks = var.bastion_tooling_cidr
+	description = var.bastion_tooling_name
+  }
+
+  /*
+  ingress {
+	from_port   = 22
+	to_port     = 22
+	protocol    = "tcp"
+	cidr_blocks = var.bastion_manual_cidr
+	description = var.bastion_manual_name
+  }
+  */
+
   egress {
 	from_port   = 0
 	to_port     = 0
@@ -31,19 +49,11 @@ resource "aws_security_group" "fk-app-server" {
 	security_groups = ["${aws_security_group.fk-server-alb.id}"]
   }
 
-  ingress {
-	from_port   = 22
-	to_port     = 22
-	protocol    = "tcp"
-	cidr_blocks = var.bastion_tooling_cidr
-	description = var.bastion_tooling_name
-  }
-
   egress {
-	from_port   = 0
-	to_port     = 0
-	protocol    = "-1"
-	cidr_blocks = ["0.0.0.0/0"]
+	from_port       = 0
+	to_port         = 0
+	protocol        = "-1"
+	cidr_blocks     = ["0.0.0.0/0"]
   }
 }
 
