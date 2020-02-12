@@ -59,9 +59,11 @@ resource "aws_instance" "fk-app-server-test" {
   iam_instance_profile        = aws_iam_instance_profile.fk-server.id
   availability_zone           = var.azs[0]
 
+  /*
   lifecycle {
 	ignore_changes = [ user_data ]
   }
+  */
 
   root_block_device {
 	volume_type = "gp2"
