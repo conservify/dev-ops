@@ -41,3 +41,10 @@ variable "database_url" {}
 variable "app_server_container" {
   default = ""
 }
+
+variable "influx_url" {}
+variable "influx_database" {}
+variable "influx_user" {}
+variable "influx_password" {}
+
+variable "application_ami" {}
