@@ -13,6 +13,7 @@ resource "aws_instance" "fk-app-server-a" {
 
   lifecycle {
 	ignore_changes = [ user_data ]
+	create_before_destroy = true
   }
 
   root_block_device {
@@ -59,11 +60,10 @@ resource "aws_instance" "fk-app-server-test" {
   iam_instance_profile        = aws_iam_instance_profile.fk-server.id
   availability_zone           = var.azs[0]
 
-  /*
   lifecycle {
-	ignore_changes = [ user_data ]
+	// ignore_changes = [ user_data ]
+	create_before_destroy = true
   }
-  */
 
   root_block_device {
 	volume_type = "gp2"
@@ -71,6 +71,6 @@ resource "aws_instance" "fk-app-server-test" {
   }
 
   tags = {
-	Name = "fk-app-server-${var.azs[0]}"
+	Name = "fk-app-server-TEST"
   }
 }

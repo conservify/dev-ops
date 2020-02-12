@@ -24,3 +24,4 @@ TM_WORLD_BORDERS_SIMPL-0.3.sql
 
 *.tfstate*
 *.tfvars*
+*.tfplan*
