@@ -1,37 +1,52 @@
-# NOTE: This fails miserably with spaces.
-BUILD ?= $(abspath build)
 
-TAG ?= $(shell date "+%Y%m%d-%H%M%S")
-
+STACKS ?= dummy-stack
 IMAGES ?= envoy-proxy dummy-service
 
+# NOTE: This fails miserably with spaces.
+BUILD ?= $(abspath build)
+TAG ?= $(shell date "+%Y%m%d-%H%M%S")
+
+# Paths to the exported docker images.
 IMAGE_BUILD_TARGETS = ${IMAGES:%=${BUILD}/%.di}
 
-default: $(BUILD)/stack.tar
+# Paths to the archived stacks.
+STACK_BUILD_TARGETS = $(STACKS:%=$(BUILD)/%.tar)
+
+default: stacks
+
+stacks: images $(STACK_BUILD_TARGETS)
 
 bare-ami:
 	./build-ami.sh bare.json
 
-stacked-ami: $(BUILD)/stack.tar
+stacked-ami: stacks
 	./build-ami.sh stacked.json
-
-$(BUILD)/.env:
-	mkdir -p $(BUILD)
-	echo "TAG=${TAG}" > $(BUILD)/10_tag.env
-	echo "TAG=${TAG}" > $(BUILD)/.env
-
-$(BUILD)/stack.tar: $(IMAGE_BUILD_TARGETS) $(BUILD)/.env docker-compose.yaml
-	cp docker-compose.yaml $(BUILD)
-	cd $(BUILD) && tar cf $@ *.di *.env .env *.yaml
 
 images: $(IMAGE_BUILD_TARGETS)
 
 $(IMAGE_BUILD_TARGETS): NAME = ${@:${BUILD}/%.di=%}
-
 $(IMAGE_BUILD_TARGETS):
 	mkdir -p $(BUILD)
-	cd $(NAME) && docker build --rm -t conservify/${NAME}:${TAG} .
+	cd services/$(NAME) && docker build --rm -t conservify/${NAME}:${TAG} .
 	docker save conservify/${NAME}:${TAG} > $@
+
+$(STACK_BUILD_TARGETS): NAME = ${@:${BUILD}/%.tar=%}
+$(STACK_BUILD_TARGETS): SOURCES = $(abspath stacks/${@:${BUILD}/%.tar=%})
+$(STACK_BUILD_TARGETS): STACK_WORK = ${BUILD}/${@:${BUILD}/%.tar=%}
+$(STACK_BUILD_TARGETS): $(IMAGE_BUILD_TARGETS)
+	mkdir -p ${STACK_WORK}
+	@for f in ${SOURCES}/*; do                                   \
+		if [ -L $$f ]; then                                      \
+			name=`basename $$f`;                                 \
+			echo ${NAME}: including $$name;                      \
+			ln -sf ${BUILD}/$$name.di ${STACK_WORK}/$$name.di;   \
+		fi                                                       \
+	done
+	echo "TAG=${TAG}" > ${STACK_WORK}/10_tag.env
+	echo "TAG=${TAG}" > ${STACK_WORK}/.env
+	cp ${SOURCES}/*.yaml $(STACK_WORK)
+	cd ${STACK_WORK} && tar chf $@ *.env .env *.yaml *.di
+	rm -rf ${STACK_WORK}
 
 clean:
 	rm -rf $(BUILD)
