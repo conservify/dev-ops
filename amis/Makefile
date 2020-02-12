@@ -3,8 +3,8 @@ STACKS ?= dummy-stack
 IMAGES ?= envoy-proxy dummy-service
 
 # NOTE: This fails miserably with spaces.
-BUILD ?= $(abspath build)
-TAG ?= $(shell date "+%Y%m%d-%H%M%S")
+BUILD := $(abspath build)
+TAG := $(shell date "+%Y%m%d-%H%M%S")
 
 # Paths to the exported docker images.
 IMAGE_BUILD_TARGETS = ${IMAGES:%=${BUILD}/%.di}
@@ -23,6 +23,7 @@ stacked-ami: stacks
 	./build-ami.sh stacked.json
 
 images: $(IMAGE_BUILD_TARGETS)
+	echo "TAG=${TAG}" > ${BUILD}/10_tag.env
 
 $(IMAGE_BUILD_TARGETS): NAME = ${@:${BUILD}/%.di=%}
 $(IMAGE_BUILD_TARGETS):
@@ -42,10 +43,8 @@ $(STACK_BUILD_TARGETS): $(IMAGE_BUILD_TARGETS)
 			ln -sf ${BUILD}/$$name.di ${STACK_WORK}/$$name.di;   \
 		fi                                                       \
 	done
-	echo "TAG=${TAG}" > ${STACK_WORK}/10_tag.env
-	echo "TAG=${TAG}" > ${STACK_WORK}/.env
-	cp ${SOURCES}/*.yaml $(STACK_WORK)
-	cd ${STACK_WORK} && tar chf $@ *.env .env *.yaml *.di
+	cp ${BUILD}/*.env ${SOURCES}/*.yaml $(STACK_WORK)
+	cd ${STACK_WORK} && tar chf $@ *.env *.yaml *.di
 	rm -rf ${STACK_WORK}
 
 clean:
