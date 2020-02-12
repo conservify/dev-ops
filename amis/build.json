@@ -1,0 +1,66 @@
+{
+  "variables": {},
+  "builders": [
+    {
+      "name": "conservify-ubuntu-18.04",
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "associate_public_ip_address": true,
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["099720109477"],
+        "most_recent": true
+      },
+      "spot_price": "auto",
+      "instance_type": "t2.micro",
+      "ami_name": "conservify-ubuntu-18.04-{{timestamp}}",
+      "ssh_username": "ubuntu"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/docker-compose@.service",
+      "destination": "/tmp/docker-compose@.service"
+    },
+    {
+      "type": "file",
+      "source": "files/docker-cleanup.timer",
+      "destination": "/tmp/docker-cleanup.timer"
+    },
+    {
+      "type": "file",
+      "source": "files/docker-cleanup.service",
+      "destination": "/tmp/docker-cleanup.service"
+    },
+    {
+      "type": "file",
+      "source": "files/stack.tar",
+      "destination": "/tmp/stack.tar"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/docker-compose@.service /etc/systemd/system/docker-compose@.service",
+        "sudo mv /tmp/docker-cleanup.service /etc/systemd/system/docker-cleanup.service",
+        "sudo mv /tmp/docker-cleanup.timer /etc/systemd/system/docker-cleanup.timer",
+        "sudo chown root. /etc/systemd/system/*",
+        "sudo mkdir -p /etc/docker/compose"
+      ]
+    },
+    {
+      "type": "shell",
+      "script": "files/provision.sh",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'"
+    },
+    {
+      "type": "shell",
+      "script": "files/refresh.sh",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'"
+    }
+  ]
+}

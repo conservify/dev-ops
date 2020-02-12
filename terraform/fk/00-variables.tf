@@ -1,43 +1,43 @@
-variable "access_key" {}
-variable "secret_key" {}
+variable "access_key" {
+}
+
+variable "secret_key" {
+}
 
 variable "region" {
   default = "us-east-1"
 }
 
-variable "zone_id" {}
-variable "zone_name" {}
+variable "zone_id" {
+}
 
-variable "whitelisted_cidrs" {
-  type    = "list"
-  default = []
+variable "zone_name" {
+}
+
+variable "bastion_manual_cidr" {
+  type = list
+}
+
+variable "bastion_manual_name" {
+}
+
+variable "bastion_tooling_cidr" {
+  type = list
+}
+
+variable "bastion_tooling_name" {
 }
 
 variable "azs" {
-  type    = "list"
+  type    = list
   default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
-variable "app_server_container" {
-  default = "conservify/fk-cloud:master"
-}
-
-variable "db_name" {
-  default = "fk"
-}
-
-variable "db_username" {
-  default = "fk"
-}
-
-variable "db_password" {}
-
 variable "certificate_arn" {}
+variable "gelf_tags" {}
+variable "gelf_address" {}
+variable "database_url" {}
 
-variable "gelf_tags" {
-  default = "fkdev"
-}
-
-variable "gelf_address" {
-  default = "udp://172.31.58.48:12201"
+variable "app_server_container" {
+  default = ""
 }
