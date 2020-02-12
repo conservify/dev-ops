@@ -9,8 +9,11 @@ IMAGE_BUILD_TARGETS = ${IMAGES:%=${BUILD}/%.di}
 
 default: $(BUILD)/stack.tar
 
-ami: default
-	./build-ami.sh
+bare-ami:
+	./build-ami.sh bare.json
+
+stacked-ami: $(BUILD)/stack.tar
+	./build-ami.sh stacked.json
 
 $(BUILD)/.env:
 	mkdir -p $(BUILD)

@@ -1,0 +1,99 @@
+{
+  "variables": {},
+  "builders": [
+    {
+      "name": "conservify-ubuntu-18.04",
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "associate_public_ip_address": true,
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["099720109477"],
+        "most_recent": true
+      },
+      "spot_price": "auto",
+      "instance_type": "t2.micro",
+      "ami_name": "conservify-bare-ubuntu-18.04-{{timestamp}}",
+      "ssh_username": "ubuntu"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/docker-compose@.service",
+      "destination": "/tmp/docker-compose@.service"
+    },
+    {
+      "type": "file",
+      "source": "files/docker-cleanup.timer",
+      "destination": "/tmp/docker-cleanup.timer"
+    },
+    {
+      "type": "file",
+      "source": "files/docker-cleanup.service",
+      "destination": "/tmp/docker-cleanup.service"
+    },
+    {
+      "type": "file",
+      "source": "files/conservify.timer",
+      "destination": "/tmp/conservify.timer"
+    },
+    {
+      "type": "file",
+      "source": "files/conservify.service",
+      "destination": "/tmp/conservify.service"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/docker-compose@.service /etc/systemd/system/docker-compose@.service",
+        "sudo mv /tmp/docker-cleanup.service /etc/systemd/system/docker-cleanup.service",
+        "sudo mv /tmp/docker-cleanup.timer /etc/systemd/system/docker-cleanup.timer",
+        "sudo mv /tmp/conservify.service /etc/systemd/system/conservify.service",
+        "sudo mv /tmp/conservify.timer /etc/systemd/system/conservify.timer",
+        "sudo chown root. /etc/systemd/system/*",
+        "sudo systemctl enable docker-cleanup.service",
+        "sudo systemctl enable docker-cleanup.timer",
+        "sudo systemctl enable conservify.service",
+        "sudo systemctl enable conservify.timer",
+        "sudo mkdir -p /etc/docker/compose"
+      ]
+    },
+    {
+      "type": "shell",
+      "script": "files/provision.sh",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'"
+    },
+    {
+      "type": "file",
+      "source": "files/telegraf.conf",
+      "destination": "/tmp/telegraf.conf"
+    },
+    {
+      "type": "shell",
+      "inline": [
+		"sudo mkdir -p /etc/telegraf",
+		"sudo mv /tmp/telegraf.conf /etc/telegraf",
+        "sudo chown -R root. /etc/telegraf"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/refresh.sh",
+      "destination": "/tmp/refresh.sh"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir /var/lib/conservify",
+        "sudo mv /tmp/refresh.sh /var/lib/conservify",
+        "sudo chown root. /var/lib/conservify/refresh.sh",
+        "sudo chmod 755 /var/lib/conservify/refresh.sh"
+      ]
+    }
+  ]
+}

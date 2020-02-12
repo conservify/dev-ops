@@ -44,6 +44,9 @@ data "template_file" "fk_app_server_user_data" {
 
 	aws_access_key       = "${var.access_key}"
 	aws_secret_key       = "${var.secret_key}"
+
+	application_start    = "${var.application_start}"
+	application_stack    = "${var.application_stack}"
   }
 }
 

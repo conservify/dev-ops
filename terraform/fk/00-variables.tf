@@ -49,4 +49,11 @@ variable "influx_database" {}
 variable "influx_user" {}
 variable "influx_password" {}
 
-variable "application_ami" {}
+variable "application_ami" {
+}
+variable "application_start" {
+  default = ""
+}
+variable "application_stack" {
+  default = ""
+}
