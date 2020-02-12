@@ -12,10 +12,9 @@ default: $(BUILD)/stack.tar
 ami: default
 	./build-ami.sh
 
-$(BUILD)/.env: aws.env
+$(BUILD)/.env:
 	mkdir -p $(BUILD)
-	cp aws.env $(BUILD)/.env
-	echo "TAG=${TAG}" >> $(BUILD)/.env
+	echo "TAG=${TAG}" > $(BUILD)/.env
 
 $(BUILD)/stack.tar: $(IMAGE_BUILD_TARGETS) $(BUILD)/.env docker-compose.yaml
 	cp docker-compose.yaml $(BUILD)
