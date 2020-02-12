@@ -8,7 +8,6 @@ build
 vpn.env
 aws.env
 
-artifacts/artifacts-publisher
 docker/nginx/letsencrypt*
 docker/logs.env
 docker/logs/data
