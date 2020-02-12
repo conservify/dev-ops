@@ -58,6 +58,19 @@
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'"
     },
     {
+      "type": "file",
+      "source": "files/telegraf.conf",
+      "destination": "/tmp/telegraf.conf"
+    },
+    {
+      "type": "shell",
+      "inline": [
+		"sudo mkdir -p /etc/telegraf",
+		"sudo mv /tmp/telegraf.conf /etc/telegraf",
+        "sudo chown -R root. /etc/telegraf"
+      ]
+    },
+    {
       "type": "shell",
       "script": "files/refresh.sh",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'"
