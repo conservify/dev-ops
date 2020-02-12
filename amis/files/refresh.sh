@@ -11,6 +11,7 @@ fi
 for archive in `find ${WATCHING} -name "*.tar"`; do
 	name=`basename $archive .tar`
 	work=/tmp/${name}
+	compose_dir=/etc/docker/compose/${name}
 
 	rm -rf ${work}
 	mkdir -p ${work}
@@ -25,10 +26,10 @@ for archive in `find ${WATCHING} -name "*.tar"`; do
 
 	ls -alh
 
-	mkdir -p /etc/docker/compose/${name}
+	mkdir -p ${compose_dir}
 
-	cp * /etc/docker/compose/${name}
-	cp /etc/user_data.env /etc/docker/compose/99_user_data.env
+	cp * ${compose_dir}
+	cp /etc/user_data.env ${compose_dir}/99_user_data.env
 
 	popd
 
