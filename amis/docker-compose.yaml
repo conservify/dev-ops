@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   front-envoy:
-    image: "conservify/proxy-envoy:${TAG}"
+    image: "conservify/envoy-proxy:${TAG}"
     networks:
       - envoy-mesh
     expose:
