@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   front-envoy:
-    image: "conservify/envoy-proxy:${TAG}"
+    image: "conservify/fk-cloud-proxy:${TAG}"
     networks:
       - envoy-mesh
     expose:
@@ -16,30 +16,10 @@ services:
         gelf-address: "${GELF_URL}"
         tag: "${GELF_TAGS}"
 
-  service1:
-    image: "conservify/dummy-service:${TAG}"
+  fk-cloud-service:
+    image: "conservify/fk-cloud-service:${TAG}"
     networks:
-      envoy-mesh:
-        aliases:
-          - service1
-    environment:
-      - SERVICE_NAME=1
-    expose:
-      - "80"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
-
-  service2:
-    image: "conservify/dummy-service:${TAG}"
-    networks:
-      envoy-mesh:
-        aliases:
-          - service2
-    environment:
-      - SERVICE_NAME=2
+      - envoy-mesh
     expose:
       - "80"
     logging:
