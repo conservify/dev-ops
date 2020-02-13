@@ -37,7 +37,7 @@ def call(goArch) {
                 dir ("github.com/fieldkit/cloud") {
                     git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
 
-                    sh "make deps && make fktool"
+                    sh "make fktool"
                     sh "cp build/fktool ${pkg}"
                 }
             }
