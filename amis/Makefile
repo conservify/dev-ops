@@ -30,6 +30,7 @@ ${BUILD}/10_tag.env:
 
 $(IMAGE_BUILD_TARGETS): NAME = ${@:${BUILD}/%.di=%}
 $(IMAGE_BUILD_TARGETS):
+	docker rmi -f `docker images --filter=reference='conservify/${NAME}' -q` || true
 	cd services/$(NAME) && docker build --rm -t conservify/${NAME}:${TAG} .
 	mkdir -p $(BUILD)
 	docker save conservify/${NAME}:${TAG} > $@
