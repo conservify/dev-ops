@@ -1,3 +1,9 @@
+data "aws_ami" "bare" {
+  owners           = ["self"]
+  name_regex       = "^conservify-bare-.*"
+  most_recent      = true
+}
+
 resource "aws_instance" "fk-app-server-a" {
   depends_on                  = [aws_internet_gateway.fk]
   ami                         = "ami-a89d3ad2"
@@ -5,7 +11,6 @@ resource "aws_instance" "fk-app-server-a" {
   subnet_id                   = aws_subnet.fk-a.id
   associate_public_ip_address = true
   vpc_security_group_ids      = ["${aws_security_group.ssh.id}", "${aws_security_group.fk-app-server.id}"]
-  #user_data                   = data.ct_config.fk-app-server-a.rendered
   monitoring                  = true
   key_name                    = "cfy-dev-server"
   iam_instance_profile        = aws_iam_instance_profile.fk-server.id
@@ -50,9 +55,9 @@ data "template_file" "fk_app_server_user_data" {
   }
 }
 
-resource "aws_instance" "fk-app-server-test" {
+resource "aws_instance" "fk-app-server-fkdev" {
   depends_on                  = [aws_internet_gateway.fk]
-  ami                         = var.application_ami
+  ami                         = data.aws_ami.bare.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.fk-a.id
   associate_public_ip_address = true
@@ -64,7 +69,7 @@ resource "aws_instance" "fk-app-server-test" {
   availability_zone           = var.azs[0]
 
   lifecycle {
-	// ignore_changes = [ user_data ]
+	ignore_changes = [ ami ]
 	create_before_destroy = true
   }
 
@@ -74,6 +79,6 @@ resource "aws_instance" "fk-app-server-test" {
   }
 
   tags = {
-	Name = "fk-app-server-test"
+	Name = "fk-app-server-fkdev"
   }
 }
