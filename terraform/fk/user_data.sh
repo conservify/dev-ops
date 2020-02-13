@@ -36,3 +36,14 @@ for directory in /etc/docker/compose/*; do
 done
 
 cp /etc/user_data.env /etc/default/telegraf
+
+# If we were given a stack to download, do that now and allow the
+# maintenance servicing to install things.
+
+if [ ! -z "$APPLICATION_STACK" ]; then
+	mkdir /tmp/stack
+	pushd /tmp/stack
+	wget $APPLICATION_STACK
+	mv * /tmp
+	popd
+fi
