@@ -3,7 +3,7 @@
 set -e
 
 if [ -z $1 ]; then
-	WATCHING=/tmp
+	WATCHING=/tmp/incoming-stacks
 else
 	WATCHING=$1
 fi

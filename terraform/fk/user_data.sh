@@ -41,9 +41,9 @@ cp /etc/user_data.env /etc/default/telegraf
 # maintenance servicing to install things.
 
 if [ ! -z "$APPLICATION_STACK" ]; then
-	mkdir /tmp/stack
-	pushd /tmp/stack
+	mkdir -p /tmp/downloading-stacks
+	pushd /tmp/downloading-stacks
 	wget $APPLICATION_STACK
-	mv * /tmp
+	mv * /tmp/incoming-stacks
 	popd
 fi
