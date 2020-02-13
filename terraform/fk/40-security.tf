@@ -43,8 +43,8 @@ resource "aws_security_group" "fk-app-server" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port       = 80
-	to_port         = 80
+	from_port       = 8000
+	to_port         = 8000
 	protocol        = "tcp"
 	security_groups = ["${aws_security_group.fk-server-alb.id}"]
   }

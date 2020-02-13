@@ -36,7 +36,7 @@ resource "aws_alb_listener" "fk-server-443" {
 
 resource "aws_alb_target_group" "fk-server" {
   name     = "fk-server"
-  port     = 80
+  port     = 8000
   protocol = "HTTP"
   vpc_id   = aws_vpc.fk.id
 
@@ -44,7 +44,7 @@ resource "aws_alb_target_group" "fk-server" {
 	healthy_threshold   = 2
 	unhealthy_threshold = 2
 	timeout             = 3
-	port                = 80
+	port                = 8000
 	path                = "/status"
 	interval            = 5
   }
@@ -53,5 +53,5 @@ resource "aws_alb_target_group" "fk-server" {
 resource "aws_alb_target_group_attachment" "fk-server-a" {
   target_group_arn = aws_alb_target_group.fk-server.arn
   target_id        = aws_instance.fk-app-server-a.id
-  port             = 80
+  port             = 8000
 }
