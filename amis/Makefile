@@ -1,6 +1,6 @@
 
-STACKS ?= dummy-stack
-IMAGES ?= envoy-proxy dummy-service
+STACKS ?= dummy-stack fk-cloud-stack
+IMAGES ?= dummy-proxy dummy-service fk-cloud-proxy fk-cloud-service
 
 # NOTE: This fails miserably with spaces.
 BUILD := $(abspath build)
@@ -30,8 +30,8 @@ ${BUILD}/10_tag.env:
 
 $(IMAGE_BUILD_TARGETS): NAME = ${@:${BUILD}/%.di=%}
 $(IMAGE_BUILD_TARGETS):
-	mkdir -p $(BUILD)
 	cd services/$(NAME) && docker build --rm -t conservify/${NAME}:${TAG} .
+	mkdir -p $(BUILD)
 	docker save conservify/${NAME}:${TAG} > $@
 
 $(STACK_BUILD_TARGETS): NAME = ${@:${BUILD}/%.tar=%}
@@ -39,11 +39,12 @@ $(STACK_BUILD_TARGETS): SOURCES = $(abspath stacks/${@:${BUILD}/%.tar=%})
 $(STACK_BUILD_TARGETS): STACK_WORK = ${BUILD}/${@:${BUILD}/%.tar=%}
 $(STACK_BUILD_TARGETS): $(IMAGE_BUILD_TARGETS)
 	mkdir -p ${STACK_WORK}
+	echo ${NAME}: building from ${SOURCES}
 	@for f in ${SOURCES}/*; do                                   \
-		if [ -L $$f ]; then                                      \
-			name=`basename $$f`;                                 \
-			echo ${NAME}: including $$name;                      \
-			ln -sf ${BUILD}/$$name.di ${STACK_WORK}/$$name.di;   \
+		if [ -d $$f ]; then                                      \
+			name=`basename $$f`                                 ;\
+			echo ${NAME}: including $$name                      ;\
+			ln -sf ${BUILD}/$$name.di ${STACK_WORK}/$$name.di   ;\
 		fi                                                       \
 	done
 	cp ${BUILD}/*.env ${SOURCES}/*.yaml $(STACK_WORK)
