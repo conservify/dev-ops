@@ -10,9 +10,9 @@ resource "aws_alb" "fk-server" {
 }
 
 resource "aws_alb_listener" "fk-server-80" {
-  load_balancer_arn = aws_alb.fk-server.arn
-  port              = "80"
-  protocol          = "HTTP"
+  load_balancer_arn  = aws_alb.fk-server.arn
+  port               = "80"
+  protocol           = "HTTP"
 
   default_action {
 	target_group_arn = aws_alb_target_group.fk-server.arn
@@ -21,12 +21,11 @@ resource "aws_alb_listener" "fk-server-80" {
 }
 
 resource "aws_alb_listener" "fk-server-443" {
-  load_balancer_arn = aws_alb.fk-server.arn
-  port              = "443"
-  protocol          = "HTTPS"
-
-  ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn = var.certificate_arn
+  load_balancer_arn  = aws_alb.fk-server.arn
+  port               = "443"
+  protocol           = "HTTPS"
+  ssl_policy         = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn    = var.certificate_arn
 
   default_action {
 	target_group_arn = aws_alb_target_group.fk-server.arn
