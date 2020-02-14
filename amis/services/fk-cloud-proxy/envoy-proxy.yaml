@@ -15,6 +15,7 @@ static_resources:
             name: local_route
             virtual_hosts:
             - name: backend
+              require_tls: EXTERNAL_ONLY
               domains:
               - "*"
               routes:
