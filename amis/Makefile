@@ -57,3 +57,16 @@ clean:
 
 .PHONY: default
 .PHONY: images
+
+tools: .bin/yq
+
+fk-cloud-stack-run: tools images
+	.bin/yq d stacks/fk-cloud-stack/docker-compose.yaml "services.*.logging" > docker-compose.yaml
+	cp build/10_tag.env .env
+	cat 99_local.env >> .env
+	docker-compose up
+
+.bin/yq:
+	mkdir -p .bin
+	wget https://github.com/mikefarah/yq/releases/download/3.1.1/yq_linux_amd64 -O .bin/yq
+	chmod 755 .bin/yq
