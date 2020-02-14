@@ -5,11 +5,13 @@ services:
     networks:
       - envoy-mesh
     expose:
-      - "80"
-      - "8001"
+      - "7000"
+      - "8000"
+      - "9000"
     ports:
-      - "8000:80"
-      - "8001:8001"
+      - "7000:7000"
+      - "8000:8000"
+      - "9000:9000"
     logging:
       driver: "gelf"
       options:
