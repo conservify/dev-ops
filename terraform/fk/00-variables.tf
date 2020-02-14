@@ -98,6 +98,19 @@ variable "workspace_to_network_e_map" {
   }
 }
 
+variable "workspace_to_database_id_map" {
+  type = map
+
+  default = {
+	dev = "fk-staging"
+	stage = "fk-staging"
+	prod = "fk-prod"
+  }
+}
+
+variable "workspace_to_database_password_map" {
+  type = map
+}
 
 variable "access_key" {
 }
@@ -126,6 +139,14 @@ variable "region" {
 variable "azs" {
   type    = list
   default = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1e"]
+}
+
+variable "database_name" {
+  default = "fk"
+}
+
+variable "database_username" {
+  default = "fk"
 }
 
 variable "gelf_url" {}

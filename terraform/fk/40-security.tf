@@ -1,6 +1,6 @@
 resource "aws_security_group" "ssh" {
-  name        = "ssh"
-  description = "ssh"
+  name        = "${local.env}-ssh"
+  description = "${local.env}-ssh"
   vpc_id      = aws_vpc.fk.id
 
   ingress {
@@ -25,11 +25,32 @@ resource "aws_security_group" "ssh" {
 	protocol    = "-1"
 	cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+	Name = local.env
+  }
+}
+
+resource "aws_security_group" "db-server" {
+  name        = "${local.env}-db-server"
+  description = "${local.env}-db-server"
+  vpc_id      = aws_vpc.fk.id
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.fk-app-server.id}"]
+  }
+
+  tags = {
+	Name = local.env
+  }
 }
 
 resource "aws_security_group" "fk-app-server" {
-  name        = "fk-app-server"
-  description = "fk-app-server"
+  name        = "${local.env}-app-server"
+  description = "${local.env}-app-server"
   vpc_id      = aws_vpc.fk.id
 
   ingress {
@@ -45,11 +66,15 @@ resource "aws_security_group" "fk-app-server" {
 	protocol        = "-1"
 	cidr_blocks     = ["0.0.0.0/0"]
   }
+
+  tags = {
+	Name = local.env
+  }
 }
 
 resource "aws_security_group" "fk-server-alb" {
-  name        = "fk-server-alb"
-  description = "fk-server-alb"
+  name        = "${local.env}-server-alb"
+  description = "${local.env}-server-alb"
   vpc_id      = aws_vpc.fk.id
 
   ingress {
@@ -71,5 +96,9 @@ resource "aws_security_group" "fk-server-alb" {
 	to_port     = 0
 	protocol    = "-1"
 	cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+	Name = local.env
   }
 }

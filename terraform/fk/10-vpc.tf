@@ -12,7 +12,7 @@ resource "aws_vpc" "fk" {
   enable_dns_hostnames = true
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "fk" {
   vpc_id = aws_vpc.fk.id
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -31,7 +31,7 @@ resource "aws_subnet" "fk-a" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_subnet" "fk-b" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_subnet" "fk-c" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -64,7 +64,7 @@ resource "aws_subnet" "fk-e" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -72,4 +72,14 @@ resource "aws_route" "public_access" {
   route_table_id         = aws_vpc.fk.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.fk.id
+}
+
+resource "aws_db_subnet_group" "fk" {
+  name        = "fk"
+  description = "fk"
+  subnet_ids  = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
+
+  tags = {
+	Name = local.env
+  }
 }
