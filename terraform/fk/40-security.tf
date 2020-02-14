@@ -19,16 +19,6 @@ resource "aws_security_group" "ssh" {
 	description = var.bastion_tooling_name
   }
 
-  /*
-  ingress {
-	from_port   = 22
-	to_port     = 22
-	protocol    = "tcp"
-	cidr_blocks = var.bastion_manual_cidr
-	description = var.bastion_manual_name
-  }
-  */
-
   egress {
 	from_port   = 0
 	to_port     = 0

@@ -1,10 +1,18 @@
+locals {
+  top_cidr = "${lookup(var.workspace_to_network_map, terraform.workspace, "")}"
+  network_a_cidr = "${lookup(var.workspace_to_network_a_map, terraform.workspace, "")}"
+  network_b_cidr = "${lookup(var.workspace_to_network_b_map, terraform.workspace, "")}"
+  network_c_cidr = "${lookup(var.workspace_to_network_c_map, terraform.workspace, "")}"
+  network_e_cidr = "${lookup(var.workspace_to_network_e_map, terraform.workspace, "")}"
+}
+
 resource "aws_vpc" "fk" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = local.top_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
-	Name = "fk"
+	Name = "${local.env}"
   }
 }
 
@@ -12,51 +20,51 @@ resource "aws_internet_gateway" "fk" {
   vpc_id = aws_vpc.fk.id
 
   tags = {
-	Name = "fk"
+	Name = "${local.env}"
   }
 }
 
 resource "aws_subnet" "fk-a" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = "10.0.0.0/18"
-  availability_zone       = "us-east-1a"
+  cidr_block              = local.network_a_cidr
+  availability_zone       = var.azs[0]
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "fk-a"
+	Name = "${local.env}"
   }
 }
 
 resource "aws_subnet" "fk-b" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = "10.0.64.0/18"
-  availability_zone       = "us-east-1b"
+  cidr_block              = local.network_b_cidr
+  availability_zone       = var.azs[1]
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "fk-b"
+	Name = "${local.env}"
   }
 }
 
 resource "aws_subnet" "fk-c" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = "10.0.128.0/18"
-  availability_zone       = "us-east-1c"
+  cidr_block              = local.network_c_cidr
+  availability_zone       = var.azs[2]
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "fk-c"
+	Name = "${local.env}"
   }
 }
 
 resource "aws_subnet" "fk-e" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = "10.0.192.0/18"
-  availability_zone       = "us-east-1e"
+  cidr_block              = local.network_e_cidr
+  availability_zone       = var.azs[3]
   map_public_ip_on_launch = true
 
   tags = {
-	Name = "fk-e"
+	Name = "${local.env}"
   }
 }
 

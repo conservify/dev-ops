@@ -1,9 +1,15 @@
-resource "aws_sqs_queue" "fk-messages-incoming" {
-  name = "fk-messages-incoming"
+locals {
+  streams_bucket_name = "${lookup(var.workspace_to_streams_bucket_name, terraform.workspace, "")}"
+  media_bucket_name = "${lookup(var.workspace_to_media_bucket_name, terraform.workspace, "")}"
 }
 
 resource "aws_s3_bucket" "fk-streams" {
-  bucket = "fk-streams"
+  bucket = local.streams_bucket_name
+  acl = "private"
+}
+
+resource "aws_s3_bucket" "fk-media" {
+  bucket = local.media_bucket_name
   acl = "private"
 }
 
@@ -19,7 +25,7 @@ resource "aws_s3_bucket_policy" "fk-streams" {
 		"Effect": "Allow",
 		"Principal": "*",
 		"Action": "s3:*",
-		"Resource": "arn:aws:s3:::fk-streams/*",
+		"Resource": "arn:aws:s3:::${local.streams_bucket_name}/*",
 		"Condition": {
 			"StringEquals": {
 				"aws:sourceVpc": "${aws_vpc.fk.id}"
@@ -30,13 +36,8 @@ resource "aws_s3_bucket_policy" "fk-streams" {
 POLICY
 }
 
-resource "aws_s3_bucket" "fk-media" {
-  bucket = "fk-media"
-  acl = "private"
-}
-
 resource "aws_iam_role" "fk-server" {
-  name = "fk-server"
+  name = "${local.env}-server"
 
   assume_role_policy = <<EOF
 {
@@ -55,12 +56,12 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "fk-server" {
-  name = "fk-server"
+  name = "${local.env}-server"
   role = aws_iam_role.fk-server.name
 }
 
 resource "aws_iam_role_policy" "fk-server" {
-  name   = "fk-server"
+  name   = "${local.env}-server"
   role   = aws_iam_role.fk-server.id
   policy = <<POLICY
 {
@@ -75,22 +76,11 @@ resource "aws_iam_role_policy" "fk-server" {
                 "StringEquals": {
                     "ses:FromAddress": [
                         "admin@fkdev.org",
+                        "admin@fkstg.org",
                         "admin@fieldkit.org"
                     ]
                 }
             }
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "sqs:DeleteMessage",
-                "sqs:ReceiveMessage",
-                "sqs:SendMessage"
-            ],
-            "Resource": [
-                "arn:aws:sqs:us-east-1:238981173904:fk-messages-incoming"
-            ]
         },
         {
             "Sid": "VisualEditor2",
@@ -112,8 +102,8 @@ resource "aws_iam_role_policy" "fk-server" {
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::fk-streams/*",
-                "arn:aws:s3:::fk-media/*"
+                "arn:aws:s3:::${local.streams_bucket_name}/*",
+                "arn:aws:s3:::${local.media_bucket_name}/*"
             ]
         },
         {
@@ -123,8 +113,8 @@ resource "aws_iam_role_policy" "fk-server" {
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::fk-streams",
-                "arn:aws:s3:::fk-media"
+                "arn:aws:s3:::${local.streams_bucket_name}",
+                "arn:aws:s3:::${local.media_bucket_name}"
             ]
         }
     ]

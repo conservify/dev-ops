@@ -7,8 +7,7 @@ cat > /etc/user_data.env <<END
 HOSTNAME=${hostname}
 ZONE_NAME=${zone_name}
 GELF_URL=${gelf_url}
-GELF_TAGS=${gelf_tags}
-ENV_TAG=${env_tag}
+GELF_TAGS=${env_tag}
 
 DATABASE_URL=${database_url}
 
