@@ -46,6 +46,7 @@ resource "aws_route53_record" "www" {
   zone_id = local.zone_id
   name    = "www.${local.zone_name}"
   type    = "A"
+  count   = terraform.workspace == "dev" ? 1 : 0
 
   alias {
 	name                   = aws_alb.fk-server.dns_name
