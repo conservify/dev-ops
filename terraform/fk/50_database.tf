@@ -3,6 +3,7 @@ locals {
   database_name = var.database_name
   database_username = var.database_username
   database_password = "${lookup(var.workspace_to_database_password_map, terraform.workspace, "")}"
+  database_url = "postgres://${var.database_username}:${local.database_password}@${aws_db_instance.fk-database.address}/${var.database_name}?sslmode=disable"
 }
 
 resource "aws_db_instance" "fk-database" {

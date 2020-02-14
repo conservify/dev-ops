@@ -3,7 +3,7 @@ output "app_server_address" {
 }
 
 output "database_url" {
-  value = "${var.database_url}"
+  value = "${local.database_url}"
 }
 
 output "bare_ami_id" {

@@ -164,7 +164,6 @@ variable "application_stack" {
 }
 
 variable "certificate_arn" {}
-variable "database_url" {}
 
 locals {
   zone_id = "${lookup(var.workspace_to_zone_id_map, terraform.workspace, "")}"

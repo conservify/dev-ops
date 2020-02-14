@@ -4,6 +4,7 @@ data "aws_ami" "bare" {
   most_recent      = true
 }
 
+
 data "template_file" "app_server_user_data" {
   template = file("user_data.sh")
 
@@ -25,7 +26,7 @@ data "template_file" "app_server_user_data" {
 	application_start    = "${var.application_start}"
 	application_stack    = "${var.application_stack}"
 
-	database_url         = "${var.database_url}"
+	database_url         = "${local.database_url}"
   }
 }
 
