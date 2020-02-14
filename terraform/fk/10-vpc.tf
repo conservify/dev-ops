@@ -75,8 +75,8 @@ resource "aws_route" "public_access" {
 }
 
 resource "aws_db_subnet_group" "fk" {
-  name        = "fk"
-  description = "fk"
+  name        = "${local.env}-db"
+  description = "${local.env}-db"
   subnet_ids  = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
 
   tags = {

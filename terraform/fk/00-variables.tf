@@ -18,6 +18,26 @@ variable "workspace_to_zone_name_map" {
   }
 }
 
+variable "workspace_to_server_instance_type_map" {
+  type = map
+
+  default = {
+	dev = "t2.micro"
+	stage = "t2.micro"
+	prod = "db.r4.large"
+  }
+}
+
+variable "workspace_to_database_instance_type_map" {
+  type = map
+
+  default = {
+	dev = "db.t2.micro"
+	stage = "db.t2.micro"
+	prod = "t3.medium"
+  }
+}
+
 variable "workspace_to_zone_id_map" {
   type = map
 
@@ -32,7 +52,7 @@ variable "workspace_to_streams_bucket_name" {
   type = map
 
   default = {
-	dev = "fk-streams"
+	dev = "fk-streams" // TODO Fix this, someday.
 	stage = "fkstg-streams"
 	prod = "fkprod-streams"
   }
@@ -42,7 +62,7 @@ variable "workspace_to_media_bucket_name" {
   type = map
 
   default = {
-	dev = "fk-media"
+	dev = "fk-media" // TODO Fix this, someday.
 	stage = "fkstg-media"
 	prod = "fkprod-media"
   }
