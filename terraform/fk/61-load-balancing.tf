@@ -54,9 +54,10 @@ resource "aws_alb_target_group_attachment" "fk-server-a" {
   target_id        = aws_instance.fk-app-server-a.id
   port             = 8000
 }
-
+/*
 resource "aws_alb_target_group_attachment" "fk-server-fkdev" {
   target_group_arn = aws_alb_target_group.fk-server.arn
   target_id        = aws_instance.fk-app-server-fkdev.id
   port             = 8000
 }
+*/
