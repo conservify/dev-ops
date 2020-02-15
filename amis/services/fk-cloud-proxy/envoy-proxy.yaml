@@ -66,6 +66,20 @@ static_resources:
               socket_address:
                 address: fk-service
                 port_value: 8000
+  - name: fk-ingester
+    connect_timeout: 0.25s
+    type: strict_dns
+    lb_policy: round_robin
+    http2_protocol_options: {}
+    load_assignment:
+      cluster_name: fk-ingester
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: fk-ingester
+                port_value: 8000
 admin:
   access_log_path: "/dev/null"
   address:

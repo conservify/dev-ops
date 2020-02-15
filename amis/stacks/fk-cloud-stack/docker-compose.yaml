@@ -32,7 +32,7 @@ services:
       - FIELDKIT_ARCHIVER=aws
       - FIELDKIT_PRODUCTION_LOGGING=true
     expose:
-      - "80"
+      - "8000"
     logging:
       driver: "gelf"
       options:
@@ -53,7 +53,7 @@ services:
       - FIELDKIT_ARCHIVER=aws
       - FIELDKIT_PRODUCTION_LOGGING=true
     expose:
-      - "80"
+      - "8000"
     logging:
       driver: "gelf"
       options:
