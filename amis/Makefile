@@ -1,7 +1,6 @@
 
 STACKS ?= dummy-stack fk-cloud-stack
 IMAGES ?= dummy-proxy dummy-service fk-cloud-proxy fk-cloud-service
-TAG ?= $(shell date "+%Y%m%d-%H%M%S")
 
 # NOTE: This fails miserably with spaces.
 BUILD := $(abspath build)
@@ -35,6 +34,7 @@ $(DEPDIR)/rules.mk: Makefile
 			fi                                                                      \
 		done                                                                        \
 	done
+	echo TAG=`date "+%Y%m%d-%H%M%S"` >> $@
 
 -include $(DEPDIR)/rules.mk
 
@@ -50,13 +50,16 @@ clean:
 .PHONY: $(IMAGES)
 
 $(IMAGES):
-	docker rmi -f `docker images --filter=reference='conservify/$@' -q` || true
+$(IMAGES):
+	mkdir -p $(BUILD)
+	false && docker rmi -f `docker images --filter=reference='conservify/$@' -q` || true
 	cd services/$@ && docker build --rm -t conservify/$@:${TAG} .
 
 $(BUILD)/%.di: NAME = ${@:${BUILD}/%.di=%}
 
 $(BUILD)/%.di:
-	TAG=$(TAG) $(MAKE) $(NAME)
+	$(MAKE) $(NAME)
+	echo $(TAG)
 	mkdir -p $(BUILD)
 	docker save conservify/$(NAME):$(TAG) > $@
 
@@ -66,7 +69,7 @@ stacks: $(STACK_ARCHIVES)
 
 $(STACK_ARCHIVES): SOURCES = $(abspath stacks/$(@:$(BUILD)/%.tar=%))
 $(STACK_ARCHIVES): WORK = $(BUILD)/$(@:$(BUILD)/%.tar=%)
-$(STACK_ARCHIVES): $(BUILD)/10_tag.env
+$(STACK_ARCHIVES):
 $(STACK_ARCHIVES):
 	@mkdir -p $(WORK)
 	@echo $@: building from $(SOURCES)
@@ -77,13 +80,10 @@ $(STACK_ARCHIVES):
 			ln -sf ../$$name.di $(WORK)/$$name.di               ;\
 		fi                                                       \
 	done
-	cp $(BUILD)/*.env $(SOURCES)/*.yaml $(WORK)
+	echo "TAG=$(TAG)" > $(WORK)/10_tag.env
+	cp $(SOURCES)/*.yaml $(WORK)
 	cd $(WORK) && tar chf $@ *.env *.yaml *.di
 	rm -rf $(WORK)
-
-$(BUILD)/10_tag.env:
-	mkdir -p $(BUILD)
-	echo "TAG=${TAG}" > $@
 
 tools: .bin/yq
 
@@ -92,10 +92,17 @@ tools: .bin/yq
 	wget https://github.com/mikefarah/yq/releases/download/3.1.1/yq_linux_amd64 -O .bin/yq
 	chmod 755 .bin/yq
 
-fk-cloud-stack-run: tools fk-cloud-stack
-	mkdir -p build
-	.bin/yq d stacks/fk-cloud-stack/docker-compose.yaml "services.*.logging" > build/docker-compose.yaml
-	cp 99_local.env build
-	cat build/*_*.env > build/.env
+RUN_STACK_TARGETS := $(STACKS:%=run-%)
+
+$(RUN_STACK_TARGETS): NAME = $(@:run-%=%)
+$(RUN_STACK_TARGETS): tools
+	$(MAKE) $(NAME)
+	@echo $(TAG)
+	@mkdir -p $(BUILD)
+	.bin/yq d stacks/$(NAME)/docker-compose.yaml "services.*.logging" > $(BUILD)/docker-compose.yaml
+	echo "TAG=$(TAG)" > $(BUILD)/10_tag.env
+	cp 99_local.env $(BUILD)
+	cat $(BUILD)/*_*.env > build/.env
+	cd $(BUILD) && docker-compose up
 
 .PHONY: default stacks
