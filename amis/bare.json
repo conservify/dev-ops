@@ -76,8 +76,8 @@
     {
       "type": "shell",
       "inline": [
-		"sudo mkdir -p /etc/telegraf",
-		"sudo mv /tmp/telegraf.conf /etc/telegraf",
+        "sudo mkdir -p /etc/telegraf",
+        "sudo mv /tmp/telegraf.conf /etc/telegraf",
         "sudo chown -R root. /etc/telegraf"
       ]
     },
@@ -93,6 +93,18 @@
         "sudo mv /tmp/refresh.sh /var/lib/conservify",
         "sudo chown root. /var/lib/conservify/refresh.sh",
         "sudo chmod 755 /var/lib/conservify/refresh.sh"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/40-graylog.conf",
+      "destination": "/tmp/40-graylog.conf"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/40-graylog.conf /etc/rsyslog.d",
+        "sudo chown root. /etc/rsyslog.d/40-graylog.conf"
       ]
     }
   ]

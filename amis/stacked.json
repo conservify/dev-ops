@@ -97,6 +97,18 @@
     },
     {
       "type": "file",
+      "source": "files/40-graylog.conf",
+      "destination": "/tmp/40-graylog.conf"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/40-graylog.conf /etc/rsyslog.d",
+        "sudo chown root. /etc/rsyslog.d/40-graylog.conf"
+      ]
+    },
+    {
+      "type": "file",
       "source": "files/stack.tar",
       "destination": "/tmp/stack.tar"
     },

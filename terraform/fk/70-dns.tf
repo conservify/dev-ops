@@ -54,3 +54,19 @@ resource "aws_route53_record" "www" {
 	evaluate_target_health = false
   }
 }
+
+resource "aws_route53_zone" "private" {
+  name = "fk.private"
+
+  vpc {
+    vpc_id = aws_vpc.fk.id
+  }
+}
+
+resource "aws_route53_record" "private-logs" {
+  zone_id = aws_route53_zone.private.id
+  name    = "logs.${aws_route53_zone.private.name}"
+  type    = "A"
+  ttl     = "300"
+  records = [ "172.31.58.48" ]
+}
