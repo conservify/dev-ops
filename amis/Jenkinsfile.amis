@@ -1,0 +1,17 @@
+@Library('conservify') _
+
+properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']]])
+
+timestamps {
+    node () {
+        stage ('git') {
+            git branch: 'master', url: "https://github.com/conservify/dev-ops.git"
+        }
+
+        stage ('build') {
+            withAWS(credentials: 'AWS Default', region: 'us-east-1') {
+                sh "cd amis && make clean && make bare-ami"
+            }
+        }
+    }
+}
