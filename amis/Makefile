@@ -61,10 +61,11 @@ clean:
 tools: .bin/yq
 
 fk-cloud-stack-run: tools images
-	.bin/yq d stacks/fk-cloud-stack/docker-compose.yaml "services.*.logging" > docker-compose.yaml
-	cp build/10_tag.env .env
-	cat 99_local.env >> .env
-	docker-compose up
+	mkdir -p build
+	.bin/yq d stacks/fk-cloud-stack/docker-compose.yaml "services.*.logging" > build/docker-compose.yaml
+	cp 99_local.env build
+	cat build/*_*.env > build/.env
+	cd build && docker-compose up
 
 .bin/yq:
 	mkdir -p .bin
