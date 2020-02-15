@@ -63,6 +63,7 @@ $(BUILD)/%.di:
 	docker save conservify/$(NAME):$(TAG) > $@
 	echo "TAG=$(TAG)" > $(BUILD)/10_tag.env
 	cd $(BUILD) && tar cf $(BUILD)/$(NAME).tar 10_tag.env $(NAME).di
+	docker tag conservify/$(NAME):$(TAG) conservify/$(NAME):active
 
 STACK_ARCHIVES := $(STACKS:%=$(BUILD)/%.tar)
 
@@ -101,7 +102,6 @@ $(RUN_STACK_TARGETS): tools
 	@echo $(TAG)
 	@mkdir -p $(BUILD)
 	.bin/yq d stacks/$(NAME)/docker-compose.yaml "services.*.logging" > $(BUILD)/docker-compose.yaml
-	echo "TAG=$(TAG)" > $(BUILD)/10_tag.env
 	cp 99_local.env $(BUILD)
 	cat $(BUILD)/*_*.env > build/.env
 	cd $(BUILD) && docker-compose up

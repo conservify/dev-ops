@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   front-envoy:
-    image: "conservify/envoy-proxy:${TAG}"
+    image: "conservify/envoy-proxy:active"
     networks:
       - envoy-mesh
     expose:
@@ -17,7 +17,7 @@ services:
         tag: "${GELF_TAGS}"
 
   service1:
-    image: "conservify/dummy-service:${TAG}"
+    image: "conservify/dummy-service:active"
     networks:
       envoy-mesh:
         aliases:
@@ -33,7 +33,7 @@ services:
         tag: "${GELF_TAGS}"
 
   service2:
-    image: "conservify/dummy-service:${TAG}"
+    image: "conservify/dummy-service:active"
     networks:
       envoy-mesh:
         aliases:

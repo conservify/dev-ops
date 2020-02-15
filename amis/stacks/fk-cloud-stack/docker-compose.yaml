@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   proxy:
-    image: "conservify/fk-cloud-proxy:${TAG}"
+    image: "conservify/fk-cloud-proxy:active"
     networks:
       - envoy-mesh
     expose:
@@ -19,7 +19,7 @@ services:
         tag: "${GELF_TAGS}"
 
   fk-ingester:
-    image: "conservify/fk-cloud-service:${TAG}"
+    image: "conservify/fk-cloud-service:active"
     command: [ "/app/ingester" ]
     networks:
       - envoy-mesh
@@ -40,7 +40,7 @@ services:
         tag: "${GELF_TAGS}"
 
   fk-service:
-    image: "conservify/fk-cloud-service:${TAG}"
+    image: "conservify/fk-cloud-service:active"
     command: [ "/app/server" ]
     networks:
       - envoy-mesh
