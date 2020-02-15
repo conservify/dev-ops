@@ -3,6 +3,7 @@
 *.swp
 
 build
+.deps
 .bin
 
 .env
