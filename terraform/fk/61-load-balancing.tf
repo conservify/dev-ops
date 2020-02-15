@@ -43,8 +43,8 @@ resource "aws_alb_target_group" "fk-server" {
 	healthy_threshold   = 2
 	unhealthy_threshold = 2
 	timeout             = 3
-	port                = 7000
-	path                = "/status"
+	port                = 9000
+	path                = "/"
 	interval            = 5
   }
 
