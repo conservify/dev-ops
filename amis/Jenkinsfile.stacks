@@ -22,7 +22,7 @@ timestamps {
                 git branch: 'master', url: "https://github.com/conservify/dev-ops.git"
 
                 withAWS(credentials: 'AWS Default', region: 'us-east-1') {
-                    sh "cd amis && make clean && make stacks -j2"
+                    sh "cd amis && make clean && make stacks -j3"
                 }
             }
         }

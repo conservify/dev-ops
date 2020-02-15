@@ -59,9 +59,10 @@ $(BUILD)/%.di: NAME = ${@:${BUILD}/%.di=%}
 
 $(BUILD)/%.di:
 	$(MAKE) $(NAME)
-	echo $(TAG)
-	mkdir -p $(BUILD)
+	@mkdir -p $(BUILD)
 	docker save conservify/$(NAME):$(TAG) > $@
+	echo "TAG=$(TAG)" > $(BUILD)/10_tag.env
+	cd $(BUILD) && tar cf $(BUILD)/$(NAME).tar 10_tag.env $(NAME).di
 
 STACK_ARCHIVES := $(STACKS:%=$(BUILD)/%.tar)
 
