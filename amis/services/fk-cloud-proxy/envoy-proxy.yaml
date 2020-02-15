@@ -21,7 +21,7 @@ static_resources:
               - match:
                   prefix: "/"
                 route:
-                  cluster: fk-cloud-service
+                  cluster: fk-service
           http_filters:
           - name: envoy.router
             typed_config: {}
@@ -47,24 +47,24 @@ static_resources:
               - match:
                   prefix: "/"
                 route:
-                  cluster: fk-cloud-service
+                  cluster: fk-service
           http_filters:
           - name: envoy.router
             typed_config: {}
   clusters:
-  - name: fk-cloud-service
+  - name: fk-service
     connect_timeout: 0.25s
     type: strict_dns
     lb_policy: round_robin
     http2_protocol_options: {}
     load_assignment:
-      cluster_name: fk-cloud-service
+      cluster_name: fk-service
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: fk-cloud-service
+                address: fk-service
                 port_value: 8000
 admin:
   access_log_path: "/dev/null"
