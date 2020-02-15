@@ -2,10 +2,6 @@ FROM conservify/fk-cloud:master AS fk
 
 FROM envoyproxy/envoy-alpine-dev:latest AS envoy
 
-ADD ./service-envoy.yaml /etc/service-envoy.yaml
-ADD ./startup.sh /usr/local/bin/startup.sh
-RUN chmod u+x /usr/local/bin/startup.sh
-
 RUN mkdir -p /app/api /app/portal /app/ocr-portal /app/legacy
 RUN mkdir -p /etc/ssl/certs/
 
@@ -17,4 +13,9 @@ COPY --from=fk /ocr-portal /app/ocr-portal
 COPY --from=fk /legacy /app/legacy
 COPY --from=fk /ca-certificates.crt /etc/ssl/certs
 
-ENTRYPOINT /usr/local/bin/startup.sh
+ADD ./service-envoy.yaml /etc/service-envoy.yaml
+ADD ./startup.sh /usr/local/bin/startup.sh
+RUN chmod u+x /usr/local/bin/startup.sh
+
+ENTRYPOINT [ "/usr/local/bin/startup.sh" ]
+CMD []
