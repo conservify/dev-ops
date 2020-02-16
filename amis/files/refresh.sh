@@ -8,6 +8,8 @@ else
 	WATCHING=$1
 fi
 
+mkdir -p ${WATCHING}
+
 for archive in `find ${WATCHING} -name "*.tar*"`; do
 	name=`basename $archive .tar`
 	work=/tmp/${name}
