@@ -1,8 +1,8 @@
 resource "aws_alb" "fk-server" {
   name            = "${local.env}-lb"
   internal        = false
-  security_groups = ["${aws_security_group.fk-server-alb.id}"]
-  subnets         = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
+  security_groups = [ aws_security_group.fk-server-alb.id ]
+  subnets         = [ aws_subnet.fk-a.id, aws_subnet.fk-b.id, aws_subnet.fk-e.id ]
 
   tags = {
 	Name = "${local.env}"

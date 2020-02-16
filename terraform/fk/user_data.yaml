@@ -1,0 +1,33 @@
+#cloud-config
+hostname: ${hostname}
+fqdn: ${hostname}.${zone_name}
+manage_etc_hosts: true
+write_files:
+  - path: /etc/user_data.env
+    content: |
+      HOSTNAME=${hostname}
+      ZONE_NAME=${zone_name}
+      ENV_TAG=${env_tag}
+      GELF_TAGS=${env_tag}
+      GELF_URL=${gelf_url}
+      DATABASE_URL=${database_url}
+      INFLUX_URL=${influx_url}
+      INFLUX_DATABASE=${influx_database}
+      INFLUX_USER=${influx_user}
+      INFLUX_PASSWORD=${influx_password}
+      AWS_ACCESS_KEY=${aws_access_key}
+      AWS_SECRET_KEY=${aws_secret_key}
+      APPLICATION_START=${application_start}
+      APPLICATION_STACK=${application_stack}
+  - path: /etc/default/telegraf
+    content: |
+      HOSTNAME=${hostname}
+      INFLUX_URL=${influx_url}
+      INFLUX_DATABASE=${influx_database}
+      INFLUX_USER=${influx_user}
+      INFLUX_PASSWORD=${influx_password}
+      AWS_ACCESS_KEY=${aws_access_key}
+      AWS_SECRET_KEY=${aws_secret_key}
+      ENV_TAG=${env_tag}
+runcmd:
+  - [ /var/lib/conservify/startup.sh ]

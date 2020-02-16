@@ -31,7 +31,7 @@ resource "aws_subnet" "fk-a" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = local.env
+	Name = "${local.env} a"
   }
 }
 
@@ -42,10 +42,10 @@ resource "aws_subnet" "fk-b" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = local.env
+	Name = "${local.env} b"
   }
 }
-
+/*
 resource "aws_subnet" "fk-c" {
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = local.network_c_cidr
@@ -53,10 +53,10 @@ resource "aws_subnet" "fk-c" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = local.env
+	Name = "${local.env} c"
   }
 }
-
+*/
 resource "aws_subnet" "fk-e" {
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = local.network_e_cidr
@@ -64,7 +64,7 @@ resource "aws_subnet" "fk-e" {
   map_public_ip_on_launch = true
 
   tags = {
-	Name = local.env
+	Name = "${local.env} e"
   }
 }
 
@@ -77,9 +77,55 @@ resource "aws_route" "public_access" {
 resource "aws_db_subnet_group" "fk" {
   name        = "${local.env}-db"
   description = "${local.env}-db"
-  subnet_ids  = ["${aws_subnet.fk-a.id}", "${aws_subnet.fk-b.id}", "${aws_subnet.fk-c.id}", "${aws_subnet.fk-e.id}"]
+  subnet_ids  = [ aws_subnet.fk-a.id, aws_subnet.fk-b.id , aws_subnet.fk-e.id ]
 
   tags = {
 	Name = local.env
   }
+}
+
+resource "aws_subnet" "fk-a-private" {
+  vpc_id                  = aws_vpc.fk.id
+  cidr_block              = "10.0.128.0/18"
+  availability_zone       = var.azs[0]
+
+  tags = {
+	Name = "${local.env} a-private"
+  }
+}
+
+resource "aws_eip" "gw-a" {
+}
+
+resource "aws_nat_gateway" "fk-gw-a" {
+  allocation_id = aws_eip.gw-a.id
+  subnet_id     = aws_subnet.fk-a.id
+  depends_on    = [ aws_internet_gateway.fk ]
+
+  tags = {
+	Name = "${local.env} gateway"
+  }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.fk.id
+
+  route {
+    cidr_block = "172.31.0.0/16"
+	vpc_peering_connection_id = var.peering_connection_id
+  }
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.fk-gw-a.id
+  }
+
+  tags = {
+    Name = "${local.env} private"
+  }
+}
+
+resource "aws_route_table_association" "fk-a-private" {
+  subnet_id      = aws_subnet.fk-a-private.id
+  route_table_id = aws_route_table.private.id
 }

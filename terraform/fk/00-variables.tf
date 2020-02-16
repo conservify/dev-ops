@@ -190,3 +190,5 @@ locals {
   zone_name = "${lookup(var.workspace_to_zone_name_map, terraform.workspace, "")}"
   env = "${lookup(var.workspace_to_tag_map, terraform.workspace, "")}"
 }
+
+variable "peering_connection_id" {}
