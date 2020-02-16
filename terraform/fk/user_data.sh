@@ -23,18 +23,28 @@ APPLICATION_START=${application_start}
 APPLICATION_STACK=${application_stack}
 END
 
-# Basic setup and pull down any application stack we've been given.
+# Pull in configuration and do some basic setup.
 
 source /etc/user_data.env
 
 hostname $HOSTNAME
 
+# Make sure the hostname is showing in the logs.
+
+systemctl restart rsyslog
+
+# Configure telegraf.
+
+cp /etc/user_data.env /etc/default/telegraf
+
+systemctl restart telegraf
+
+# Look for any preconfigured stacks and give them the correct config.
+
 for directory in /etc/docker/compose/*; do
 	cp /etc/user_data.env $directory/99_user_data.env
 	cat $directory/*_*.env > $directory/.env
 done
-
-cp /etc/user_data.env /etc/default/telegraf
 
 # If we were given a stack to download, do that now and allow the
 # maintenance servicing to install things.
@@ -43,7 +53,7 @@ if [ ! -z "$APPLICATION_STACK" ]; then
 	mkdir -p /tmp/incoming-stacks
 	mkdir -p /tmp/downloading-stacks
 	pushd /tmp/downloading-stacks
-	wget $APPLICATION_STACK
+	wget --auth-no-challenge $APPLICATION_STACK
 	mv * /tmp/incoming-stacks
 	popd
 fi
