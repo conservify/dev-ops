@@ -37,3 +37,5 @@ docker-compose --version
 # enable telegraf
 
 systemctl enable telegraf
+
+systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent
