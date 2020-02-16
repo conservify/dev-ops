@@ -70,3 +70,11 @@ resource "aws_route53_record" "private-logs" {
   ttl     = "300"
   records = [ "172.31.58.48" ]
 }
+
+resource "aws_route53_record" "private-metrics" {
+  zone_id = aws_route53_zone.private.id
+  name    = "metrics.${aws_route53_zone.private.name}"
+  type    = "A"
+  ttl     = "300"
+  records = [ "172.31.58.48" ]
+}
