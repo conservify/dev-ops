@@ -27,7 +27,9 @@ END
 
 source /etc/user_data.env
 
-hostname $HOSTNAME
+if [ -z "$HOSTNAME" ]; then
+	hostname $HOSTNAME
+fi
 
 # Make sure the hostname is showing in the logs.
 
