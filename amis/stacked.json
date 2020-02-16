@@ -17,7 +17,7 @@
       },
       "spot_price": "auto",
       "instance_type": "t2.micro",
-      "ami_name": "conservify-ubuntu-18.04-{{timestamp}}",
+      "ami_name": "conservify-bare-ubuntu-18.04-{{timestamp}}",
       "ssh_username": "ubuntu"
     }
   ],
@@ -76,8 +76,8 @@
     {
       "type": "shell",
       "inline": [
-		"sudo mkdir -p /etc/telegraf",
-		"sudo mv /tmp/telegraf.conf /etc/telegraf",
+        "sudo mkdir -p /etc/telegraf",
+        "sudo mv /tmp/telegraf.conf /etc/telegraf",
         "sudo chown -R root. /etc/telegraf"
       ]
     },
@@ -87,12 +87,18 @@
       "destination": "/tmp/refresh.sh"
     },
     {
+      "type": "file",
+      "source": "files/startup.sh",
+      "destination": "/tmp/startup.sh"
+    },
+    {
       "type": "shell",
       "inline": [
         "sudo mkdir /var/lib/conservify",
         "sudo mv /tmp/refresh.sh /var/lib/conservify",
-        "sudo chown root. /var/lib/conservify/refresh.sh",
-        "sudo chmod 755 /var/lib/conservify/refresh.sh"
+        "sudo mv /tmp/startup.sh /var/lib/conservify",
+        "sudo chown root. /var/lib/conservify/*.sh",
+        "sudo chmod 755 /var/lib/conservify/*.sh"
       ]
     },
     {

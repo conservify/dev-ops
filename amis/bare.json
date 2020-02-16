@@ -87,12 +87,18 @@
       "destination": "/tmp/refresh.sh"
     },
     {
+      "type": "file",
+      "source": "files/startup.sh",
+      "destination": "/tmp/startup.sh"
+    },
+    {
       "type": "shell",
       "inline": [
         "sudo mkdir /var/lib/conservify",
         "sudo mv /tmp/refresh.sh /var/lib/conservify",
-        "sudo chown root. /var/lib/conservify/refresh.sh",
-        "sudo chmod 755 /var/lib/conservify/refresh.sh"
+        "sudo mv /tmp/startup.sh /var/lib/conservify",
+        "sudo chown root. /var/lib/conservify/*.sh",
+        "sudo chmod 755 /var/lib/conservify/*.sh"
       ]
     },
     {
