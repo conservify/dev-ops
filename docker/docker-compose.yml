@@ -86,6 +86,7 @@ services:
       - logs-elasticsearch:elasticsearch
     ports:
       - "5140:5140"
+      - "6140:6140"
       - "9000:9000"
       - "12201:12201"
       - "12201/udp:12201/udp"
