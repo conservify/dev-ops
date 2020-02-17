@@ -23,7 +23,7 @@ resource "aws_db_instance" "fk-database" {
   password               = local.database.password
   publicly_accessible    = true
   db_subnet_group_name   = aws_db_subnet_group.fk.name
-  vpc_security_group_ids = ["${aws_security_group.db-server.id}"]
+  vpc_security_group_ids = [ aws_security_group.db-server.id ]
 
   tags = {
     Name = local.env

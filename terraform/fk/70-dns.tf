@@ -47,6 +47,14 @@ resource "aws_route53_record" "www" {
   }
 }
 
+resource "aws_route53_record" "app-servers" {
+  zone_id = local.zone.id
+  name    = "app-servers.aws.${local.zone.name}"
+  type    = "A"
+  ttl     = "60"
+  records = [ for key, value in aws_instance.app-servers: value.private_ip ]
+}
+
 resource "aws_route53_zone" "private" {
   name = "fk.private"
 
