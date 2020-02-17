@@ -28,3 +28,5 @@ TM_WORLD_BORDERS_SIMPL-0.3.sql
 *.tfplan*
 
 *-ssh-key*
+
+deployed.json

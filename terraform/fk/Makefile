@@ -5,6 +5,7 @@ plan:
 
 apply: terraform.tfplan
 	terraform apply
+	@terraform output > deployed.json
 
 terraform.tfplan:
 	terraform get
@@ -14,7 +15,7 @@ setup: ~/.terraformrc
 	terraform init
 
 vars:
-	@terraform output
+	terraform output > deployed.json
 
 graph:
 	@rm -f graph.png
