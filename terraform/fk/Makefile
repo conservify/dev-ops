@@ -13,6 +13,9 @@ terraform.tfplan:
 setup: ~/.terraformrc
 	terraform init
 
+vars:
+	@terraform output
+
 graph:
 	@rm -f graph.png
 	@terraform graph -draw-cycles -module-depth=-1 | dot -Tpng > graph.png
