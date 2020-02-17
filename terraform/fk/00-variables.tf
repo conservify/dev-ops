@@ -68,56 +68,6 @@ variable "workspace_to_media_bucket_name" {
   }
 }
 
-variable "workspace_to_network_map" {
-  type = map
-
-  default = {
-	dev = "10.1.0.0/16"
-	stage = ""
-	prod = ""
-  }
-}
-
-variable "workspace_to_network_a_map" {
-  type = map
-
-  default = {
-	dev = "10.0.0.0/18"
-	stage = ""
-	prod = ""
-  }
-}
-
-variable "workspace_to_network_b_map" {
-  type = map
-
-  default = {
-	dev = "10.0.64.0/18"
-	stage = ""
-	prod = ""
-  }
-}
-
-variable "workspace_to_network_c_map" {
-  type = map
-
-  default = {
-	dev = "10.0.128.0/18"
-	stage = ""
-	prod = ""
-  }
-}
-
-variable "workspace_to_network_e_map" {
-  type = map
-
-  default = {
-	dev = "10.0.192.0/18"
-	stage = ""
-	prod = ""
-  }
-}
-
 variable "workspace_to_database_id_map" {
   type = map
 
@@ -186,25 +136,21 @@ locals {
   env = "${lookup(var.workspace_to_tag_map, terraform.workspace, "")}"
 }
 
-variable "peering_connection_id" {}
-
 variable "enable_test_server" {
-  default = false
-}
-
-variable "deploying" {
   default = false
 }
 
 variable "servers" {
   default = {
-	deploying = {
-	  name = "red"
-	  number = 0
-	}
-	running = {
-	  name = "blue"
-	  number = 1
+	dev: {
+		deploying = {
+		name = "red"
+		number = 0
+		}
+		running = {
+		name = "blue"
+		number = 1
+		}
 	}
   }
 }
@@ -212,15 +158,18 @@ variable "servers" {
 variable "network" {
   default = {
 	dev: {
-	  peering: "pcx-004194d2bf8d19d28",
+	  cidr: "10.1.0.0/16"
+	  peering: "pcx-004194d2bf8d19d28"
 	  azs: {
 		"us-east-1a" = {
 		  public: "10.1.1.0/24"
 		  private: "10.1.5.0/24"
+		  exposed: true
 		}
 		"us-east-1e" = {
 		  public: "10.1.4.0/24"
-		  private: "10.1.6.0/24"
+		  private: "10.1.8.0/24"
+		  exposed: false
 		}
 	  }
 	}
@@ -228,12 +177,19 @@ variable "network" {
 }
 
 locals {
+  workspace_servers = lookup(var.servers, terraform.workspace, null)
+  network = lookup(var.network, terraform.workspace, null)
+  azs = local.network.azs
+
+  zones = keys(local.azs)
+
   all = flatten([
-	for k, v in var.servers : [
+	for k, v in local.workspace_servers : [
 	  for r in range(v.number) : {
 		name = "${local.env}-${v.name}-${r}"
 		number = r
 		config = v
+		zone = local.zones[r % length(local.zones)]
 	  }
 	]
   ])

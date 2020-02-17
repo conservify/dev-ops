@@ -7,6 +7,16 @@ locals {
   database_instance_type = "${lookup(var.workspace_to_database_instance_type_map, terraform.workspace, "")}"
 }
 
+resource "aws_db_subnet_group" "fk" {
+  name        = "${local.env}-db"
+  description = "${local.env}-db"
+  subnet_ids  = [ for key, value in local.azs: aws_subnet.private[key].id ]
+
+  tags = {
+	Name = local.env
+  }
+}
+
 resource "aws_db_instance" "fk-database" {
   identifier             = local.database_id
   allocated_storage      = 20

@@ -2,7 +2,7 @@ resource "aws_alb" "app-servers" {
   name            = "${local.env}-lb"
   internal        = false
   security_groups = [ aws_security_group.fk-server-alb.id ]
-  subnets         = [ aws_subnet.public-a.id, aws_subnet.public-b.id, aws_subnet.public-c.id, aws_subnet.public-b.id ]
+  subnets         = [ for key, value in local.azs: aws_subnet.public[key].id ]
 
   tags = {
 	Name = local.env

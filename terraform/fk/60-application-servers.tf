@@ -63,7 +63,7 @@ resource "aws_instance" "app-servers" {
   for_each                    = local.servers
   depends_on                  = [aws_internet_gateway.fk]
   ami                         = data.aws_ami.bare.id
-  subnet_id                   = aws_subnet.private-a.id
+  subnet_id                   = aws_subnet.private[each.value.zone].id
   instance_type               = local.app_instance_type
   vpc_security_group_ids      = ["${aws_security_group.ssh.id}", "${aws_security_group.fk-app-server.id}"]
   user_data                   = data.template_file.app_server_user_data[each.key].rendered
@@ -71,10 +71,10 @@ resource "aws_instance" "app-servers" {
   associate_public_ip_address = false
   key_name                    = "cfy-dev-server"
   iam_instance_profile        = aws_iam_instance_profile.fk-server.id
-  availability_zone           = local.azs[0]
+  availability_zone           = each.value.zone
 
   lifecycle {
-	ignore_changes = [ ami, subnet_id ]
+	ignore_changes = [ ami ]
 	create_before_destroy = true
   }
 
@@ -91,7 +91,7 @@ resource "aws_instance" "app-servers" {
 resource "aws_instance" "app-server-testing" {
   depends_on                  = [aws_internet_gateway.fk]
   ami                         = data.aws_ami.bare.id
-  subnet_id                   = aws_subnet.private-a.id
+  subnet_id                   = aws_subnet.private["us-east-1a"].id
   instance_type               = local.app_instance_type
   vpc_security_group_ids      = ["${aws_security_group.ssh.id}", "${aws_security_group.fk-app-server.id}"]
   user_data                   = data.template_file.app_server_user_data_testing.rendered
