@@ -19,6 +19,7 @@ variable workspace_zones {
   type = map(object({
 	id = string
 	name = string
+	certificate_arn = string
   }))
 }
 
@@ -69,10 +70,6 @@ variable application_start {
 
 variable application_stack {
   default = ""
-}
-
-variable certificate_arn {
-  type = string
 }
 
 variable workspace_servers {
