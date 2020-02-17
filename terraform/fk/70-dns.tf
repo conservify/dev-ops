@@ -2,6 +2,7 @@ resource "aws_route53_record" "home" {
   zone_id = local.zone.id
   name    = local.zone.name
   type    = "A"
+  count   = terraform.workspace == "prod" ? 0 : 1
 
   alias {
 	name                   = aws_alb.app-servers.dns_name
@@ -53,6 +54,7 @@ resource "aws_route53_record" "app-servers" {
   type    = "A"
   ttl     = "60"
   records = [ for key, value in aws_instance.app-servers: value.private_ip ]
+  count   = length(aws_instance.app-servers) > 0 ? 1 : 0
 }
 
 resource "aws_route53_zone" "private" {
