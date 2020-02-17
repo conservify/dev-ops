@@ -1,5 +1,5 @@
 stats_sinks:
-  - name: envoy.statsd
+  - name: envoy.stats_sink.statsd
     config:
       address:
         socket_address:
