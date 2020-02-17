@@ -1,190 +1,106 @@
-variable workspace_to_tag_map {
-  type = map
-
-  default = {
-	dev = "fkdev"
-	stage = "fkstg"
-	prod = "fkprod"
-  }
-}
-
-variable "workspace_to_zone_name_map" {
-  type = map
-
-  default = {
-	dev = "fkdev.org"
-	stage = "fkstg.org"
-	prod = "fieldkit.org"
-  }
-}
-
-variable "workspace_to_server_instance_type_map" {
-  type = map
-
-  default = {
-	dev = "t2.micro"
-	stage = "t2.micro"
-	prod = "db.r4.large"
-  }
-}
-
-variable "workspace_to_database_instance_type_map" {
-  type = map
-
-  default = {
-	dev = "db.t2.micro"
-	stage = "db.t2.micro"
-	prod = "t3.medium"
-  }
-}
-
-variable "workspace_to_zone_id_map" {
-  type = map
-
-  default = {
-	dev = "Z18S4MHBIRCCI4"
-	stage = "ZWSMQWHE9K5XZ"
-	prod = "Z323K3Z1TB3R58"
-  }
-}
-
-variable "workspace_to_streams_bucket_name" {
-  type = map
-
-  default = {
-	dev = "fk-streams" // TODO Fix this, someday.
-	stage = "fkstg-streams"
-	prod = "fkprod-streams"
-  }
-}
-
-variable "workspace_to_media_bucket_name" {
-  type = map
-
-  default = {
-	dev = "fk-media" // TODO Fix this, someday.
-	stage = "fkstg-media"
-	prod = "fkprod-media"
-  }
-}
-
-variable "workspace_to_database_id_map" {
-  type = map
-
-  default = {
-	dev = "fk-staging"
-	stage = "fk-staging"
-	prod = "fk-prod"
-  }
-}
-
-variable "workspace_to_database_password_map" {
-  type = map
-}
-
-variable "access_key" {
-}
-
-variable "secret_key" {
-}
-
-variable "bastion_manual_cidr" {
-  type = list
-}
-
-variable "bastion_manual_name" {
-}
-
-variable "bastion_tooling_cidr" {
-  type = list
-}
-
-variable "bastion_tooling_name" {
-}
-
-variable "region" {
+variable region {
+  type = string
   default = "us-east-1"
 }
 
-variable "database_name" {
-  default = "fk"
+variable access_key {
+  type = string
 }
 
-variable "database_username" {
-  default = "fk"
+variable secret_key {
+  type = string
 }
 
-variable "gelf_url" {}
+variable workspace_tags {
+  type = map(string)
+}
 
-variable "influx_url" {}
-variable "influx_database" {}
-variable "influx_user" {}
-variable "influx_password" {}
+variable workspace_zones {
+  type = map(object({
+	id = string
+	name = string
+  }))
+}
 
-variable "application_start" {
+variable workspace_buckets {
+  type = map(object({
+	streams = string
+	media = string
+  }))
+}
+
+variable workspace_databases {
+  type = map(object({
+	id = string
+	name = string
+	username = string
+	password = string
+	instance = string
+  }))
+}
+
+variable bastions {
+  // This crashes?
+  /*
+  type = map(object({
+	name = string
+	cidr = tuple([string])
+  }))
+  */
+}
+
+variable gelf_url {
+  type = string
+}
+
+variable influx_database {
+  type = object({
+	url = string,
+	name = string,
+	user = string,
+	password = string
+  })
+}
+
+variable application_start {
+  type = string
   default = ""
 }
-variable "application_stack" {
+
+variable application_stack {
   default = ""
 }
 
-variable "certificate_arn" {}
-
-locals {
-  zone_id = "${lookup(var.workspace_to_zone_id_map, terraform.workspace, "")}"
-  zone_name = "${lookup(var.workspace_to_zone_name_map, terraform.workspace, "")}"
-  env = "${lookup(var.workspace_to_tag_map, terraform.workspace, "")}"
+variable certificate_arn {
+  type = string
 }
 
-variable "enable_test_server" {
-  default = false
+variable workspace_servers {
+  type = map(map(object({
+	name = string
+	number = number
+	instance = string
+  })))
 }
 
-variable "servers" {
-  default = {
-	dev: {
-		deploying = {
-		name = "red"
-		number = 0
-		}
-		running = {
-		name = "blue"
-		number = 1
-		}
-	}
-  }
-}
-
-variable "network" {
-  default = {
-	dev: {
-	  cidr: "10.1.0.0/16"
-	  peering: "pcx-004194d2bf8d19d28"
-	  azs: {
-		"us-east-1a" = {
-		  public: "10.1.1.0/24"
-		  private: "10.1.5.0/24"
-		  exposed: true
-		}
-		"us-east-1e" = {
-		  public: "10.1.4.0/24"
-		  private: "10.1.8.0/24"
-		  exposed: false
-		}
-	  }
-	}
-  }
+variable workspace_networks {
+  type = map(object({
+	cidr = string
+	peering = string
+	azs = map(object({
+	  public = string
+	  private = string
+	  gateway = bool
+	}))
+  }))
 }
 
 locals {
-  workspace_servers = lookup(var.servers, terraform.workspace, null)
-  network = lookup(var.network, terraform.workspace, null)
-  azs = local.network.azs
-
-  zones = keys(local.azs)
+  network = var.workspace_networks[terraform.workspace]
+  zones = keys(local.network.azs)
 
   all = flatten([
-	for k, v in local.workspace_servers : [
+	for k, v in var.workspace_servers[terraform.workspace] : [
 	  for r in range(v.number) : {
 		name = "${local.env}-${v.name}-${r}"
 		number = r
@@ -196,4 +112,9 @@ locals {
   servers = {
 	for r in local.all : r.name => r
   }
+
+  zone = var.workspace_zones[terraform.workspace]
+  env = var.workspace_tags[terraform.workspace]
+  buckets = var.workspace_buckets[terraform.workspace]
+  database = var.workspace_databases[terraform.workspace]
 }

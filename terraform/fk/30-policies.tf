@@ -1,15 +1,10 @@
-locals {
-  streams_bucket_name = "${lookup(var.workspace_to_streams_bucket_name, terraform.workspace, "")}"
-  media_bucket_name = "${lookup(var.workspace_to_media_bucket_name, terraform.workspace, "")}"
-}
-
 resource "aws_s3_bucket" "fk-streams" {
-  bucket = local.streams_bucket_name
+  bucket = local.buckets.streams
   acl = "private"
 }
 
 resource "aws_s3_bucket" "fk-media" {
-  bucket = local.media_bucket_name
+  bucket = local.buckets.media
   acl = "private"
 }
 
@@ -25,7 +20,7 @@ resource "aws_s3_bucket_policy" "fk-streams" {
 		"Effect": "Allow",
 		"Principal": "*",
 		"Action": "s3:*",
-		"Resource": "arn:aws:s3:::${local.streams_bucket_name}/*",
+		"Resource": "arn:aws:s3:::${local.buckets.streams}/*",
 		"Condition": {
 			"StringEquals": {
 				"aws:sourceVpc": "${aws_vpc.fk.id}"
@@ -102,8 +97,8 @@ resource "aws_iam_role_policy" "fk-server" {
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::${local.streams_bucket_name}/*",
-                "arn:aws:s3:::${local.media_bucket_name}/*"
+                "arn:aws:s3:::${local.buckets.streams}/*",
+                "arn:aws:s3:::${local.buckets.media}/*"
             ]
         },
         {
@@ -113,8 +108,8 @@ resource "aws_iam_role_policy" "fk-server" {
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::${local.streams_bucket_name}",
-                "arn:aws:s3:::${local.media_bucket_name}"
+                "arn:aws:s3:::${local.buckets.streams}",
+                "arn:aws:s3:::${local.buckets.media}"
             ]
         }
     ]

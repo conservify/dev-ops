@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "fk" {
 }
 
 resource "aws_subnet" "public" {
-  for_each                = local.azs
+  for_each                = local.network.azs
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = each.value.public
   availability_zone       = each.key
@@ -27,7 +27,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  for_each                = local.azs
+  for_each                = local.network.azs
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = each.value.private
   availability_zone       = each.key

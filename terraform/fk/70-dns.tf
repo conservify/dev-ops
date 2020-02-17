@@ -1,6 +1,6 @@
 resource "aws_route53_record" "home" {
-  zone_id = local.zone_id
-  name    = local.zone_name
+  zone_id = local.zone.id
+  name    = local.zone.name
   type    = "A"
 
   alias {
@@ -11,8 +11,8 @@ resource "aws_route53_record" "home" {
 }
 
 resource "aws_route53_record" "api-data" {
-  zone_id = local.zone_id
-  name    = "api.${local.zone_name}"
+  zone_id = local.zone.id
+  name    = "api.${local.zone.name}"
   type    = "A"
 
   alias {
@@ -23,8 +23,8 @@ resource "aws_route53_record" "api-data" {
 }
 
 resource "aws_route53_record" "portal" {
-  zone_id = local.zone_id
-  name    = "portal.${local.zone_name}"
+  zone_id = local.zone.id
+  name    = "portal.${local.zone.name}"
   type    = "A"
 
   alias {
@@ -35,8 +35,8 @@ resource "aws_route53_record" "portal" {
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = local.zone_id
-  name    = "www.${local.zone_name}"
+  zone_id = local.zone.id
+  name    = "www.${local.zone.name}"
   type    = "A"
   count   = terraform.workspace == "dev" ? 1 : 0
 
