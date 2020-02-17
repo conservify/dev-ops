@@ -4,8 +4,8 @@ resource "aws_route53_record" "home" {
   type    = "A"
 
   alias {
-	name                   = aws_alb.fk-server.dns_name
-	zone_id                = aws_alb.fk-server.zone_id
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
 	evaluate_target_health = false
   }
 }
@@ -16,8 +16,8 @@ resource "aws_route53_record" "api-data" {
   type    = "A"
 
   alias {
-	name                   = aws_alb.fk-server.dns_name
-	zone_id                = aws_alb.fk-server.zone_id
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
 	evaluate_target_health = false
   }
 }
@@ -28,8 +28,8 @@ resource "aws_route53_record" "portal" {
   type    = "A"
 
   alias {
-	name                   = aws_alb.fk-server.dns_name
-	zone_id                = aws_alb.fk-server.zone_id
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
 	evaluate_target_health = false
   }
 }
@@ -41,8 +41,8 @@ resource "aws_route53_record" "www" {
   count   = terraform.workspace == "dev" ? 1 : 0
 
   alias {
-	name                   = aws_alb.fk-server.dns_name
-	zone_id                = aws_alb.fk-server.zone_id
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
 	evaluate_target_health = false
   }
 }

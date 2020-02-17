@@ -4,6 +4,7 @@ locals {
   network_b_cidr = "${lookup(var.workspace_to_network_b_map, terraform.workspace, "")}"
   network_c_cidr = "${lookup(var.workspace_to_network_c_map, terraform.workspace, "")}"
   network_e_cidr = "${lookup(var.workspace_to_network_e_map, terraform.workspace, "")}"
+  azs = var.network.dev.azs
 }
 
 resource "aws_vpc" "fk" {
@@ -24,30 +25,75 @@ resource "aws_internet_gateway" "fk" {
   }
 }
 
-resource "aws_subnet" "fk-a" {
+
+resource "aws_subnet" "public-a" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = local.network_a_cidr
-  availability_zone       = var.azs[0]
+  cidr_block              = "10.1.1.0/24"
+  availability_zone       = local.azs[0]
+  tags = {
+	Name = "${local.env} public a"
+  }
+}
+resource "aws_subnet" "public-b" {
+  vpc_id                  = aws_vpc.fk.id
+  cidr_block              = "10.1.2.0/24"
+  availability_zone       = local.azs[1]
+  tags = {
+	Name = "${local.env} public b"
+  }
+}
+
+resource "aws_subnet" "public-c" {
+  vpc_id                  = aws_vpc.fk.id
+  cidr_block              = "10.1.3.0/24"
+  availability_zone       = local.azs[2]
+  tags = {
+	Name = "${local.env} public c"
+  }
+}
+resource "aws_subnet" "public-e" {
+  vpc_id                  = aws_vpc.fk.id
+  cidr_block              = "10.1.4.0/24"
+  availability_zone       = local.azs[3]
+  tags = {
+	Name = "${local.env} public e"
+  }
+}
+
+resource "aws_subnet" "private-a" {
+  vpc_id                  = aws_vpc.fk.id
+  cidr_block              = "10.1.5.0/24"
+  availability_zone       = local.azs[0]
 
   tags = {
 	Name = "${local.env} a"
   }
 }
 
-resource "aws_subnet" "fk-b" {
+resource "aws_subnet" "private-b" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = local.network_b_cidr
-  availability_zone       = var.azs[1]
+  cidr_block              = "10.1.6.0/24"
+  availability_zone       = local.azs[1]
 
   tags = {
 	Name = "${local.env} b"
   }
 }
 
-resource "aws_subnet" "fk-e" {
+resource "aws_subnet" "private-c" {
   vpc_id                  = aws_vpc.fk.id
-  cidr_block              = local.network_e_cidr
-  availability_zone       = var.azs[3]
+  cidr_block              = "10.1.7.0/24"
+  availability_zone       = local.azs[2]
+
+  tags = {
+	Name = "${local.env} c"
+  }
+}
+
+resource "aws_subnet" "private-e" {
+  vpc_id                  = aws_vpc.fk.id
+  cidr_block              = "10.1.8.0/24"
+  availability_zone       = local.azs[3]
 
   tags = {
 	Name = "${local.env} e"
@@ -63,20 +109,10 @@ resource "aws_route" "public_access" {
 resource "aws_db_subnet_group" "fk" {
   name        = "${local.env}-db"
   description = "${local.env}-db"
-  subnet_ids  = [ aws_subnet.fk-a.id, aws_subnet.fk-e.id ]
+  subnet_ids  = [ aws_subnet.private-a.id, aws_subnet.private-b.id, aws_subnet.private-c.id, aws_subnet.private-e.id ]
 
   tags = {
 	Name = local.env
-  }
-}
-
-resource "aws_subnet" "fk-a-private" {
-  vpc_id                  = aws_vpc.fk.id
-  cidr_block              = "10.0.128.0/18"
-  availability_zone       = var.azs[0]
-
-  tags = {
-	Name = "${local.env} a-private"
   }
 }
 
@@ -85,7 +121,7 @@ resource "aws_eip" "gw-a" {
 
 resource "aws_nat_gateway" "fk-gw-a" {
   allocation_id = aws_eip.gw-a.id
-  subnet_id     = aws_subnet.fk-a.id
+  subnet_id     = aws_subnet.public-a.id
   depends_on    = [ aws_internet_gateway.fk ]
 
   tags = {
@@ -93,7 +129,7 @@ resource "aws_nat_gateway" "fk-gw-a" {
   }
 }
 
-resource "aws_route_table" "private" {
+resource "aws_route_table" "private-a" {
   vpc_id = aws_vpc.fk.id
 
   route {
@@ -111,12 +147,7 @@ resource "aws_route_table" "private" {
   }
 }
 
-resource "aws_route_table_association" "fk-a" {
-  subnet_id      = aws_subnet.fk-a.id
-  route_table_id = aws_route_table.private.id
-}
-
-resource "aws_route_table_association" "fk-a-private" {
-  subnet_id      = aws_subnet.fk-a-private.id
-  route_table_id = aws_route_table.private.id
+resource "aws_route_table_association" "private-a" {
+  subnet_id      = aws_subnet.private-a.id
+  route_table_id = aws_route_table.private-a.id
 }

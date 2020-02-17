@@ -1,39 +1,39 @@
-resource "aws_alb" "fk-server" {
+resource "aws_alb" "app-servers" {
   name            = "${local.env}-lb"
   internal        = false
   security_groups = [ aws_security_group.fk-server-alb.id ]
-  subnets         = [ aws_subnet.fk-a.id, aws_subnet.fk-e.id ]
+  subnets         = [ aws_subnet.public-a.id, aws_subnet.public-b.id, aws_subnet.public-c.id, aws_subnet.public-b.id ]
 
   tags = {
 	Name = local.env
   }
 }
 
-resource "aws_alb_listener" "fk-server-80" {
-  load_balancer_arn  = aws_alb.fk-server.arn
+resource "aws_alb_listener" "app-servers-80" {
+  load_balancer_arn  = aws_alb.app-servers.arn
   port               = "80"
   protocol           = "HTTP"
 
   default_action {
-	target_group_arn = aws_alb_target_group.fk-server.arn
+	target_group_arn = aws_alb_target_group.app-servers.arn
 	type             = "forward"
   }
 }
 
-resource "aws_alb_listener" "fk-server-443" {
-  load_balancer_arn  = aws_alb.fk-server.arn
+resource "aws_alb_listener" "app-servers-443" {
+  load_balancer_arn  = aws_alb.app-servers.arn
   port               = "443"
   protocol           = "HTTPS"
   ssl_policy         = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn    = var.certificate_arn
 
   default_action {
-	target_group_arn = aws_alb_target_group.fk-server.arn
+	target_group_arn = aws_alb_target_group.app-servers.arn
 	type             = "forward"
   }
 }
 
-resource "aws_alb_target_group" "fk-server" {
+resource "aws_alb_target_group" "app-servers" {
   name     = "${local.env}-server"
   port     = 8000
   protocol = "HTTP"
@@ -53,9 +53,9 @@ resource "aws_alb_target_group" "fk-server" {
   }
 }
 
-resource "aws_alb_target_group_attachment" "fk-servers" {
+resource "aws_alb_target_group_attachment" "app-servers" {
   for_each         = aws_instance.app-servers
-  target_group_arn = aws_alb_target_group.fk-server.arn
+  target_group_arn = aws_alb_target_group.app-servers.arn
   target_id        = each.value.id
   port             = 8000
 }

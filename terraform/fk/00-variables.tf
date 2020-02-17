@@ -68,21 +68,11 @@ variable "workspace_to_media_bucket_name" {
   }
 }
 
-variable "workspace_to_private_network_map" {
-  type = map
-
-  default = {
-	dev = "10.0.0.0/16"
-	stage = ""
-	prod = ""
-  }
-}
-
 variable "workspace_to_network_map" {
   type = map
 
   default = {
-	dev = "10.0.0.0/16"
+	dev = "10.1.0.0/16"
 	stage = ""
 	prod = ""
   }
@@ -166,11 +156,6 @@ variable "region" {
   default = "us-east-1"
 }
 
-variable "azs" {
-  type    = list
-  default = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1e"]
-}
-
 variable "database_name" {
   default = "fk"
 }
@@ -215,11 +200,29 @@ variable "servers" {
   default = {
 	deploying = {
 	  name = "red"
-	  number = 1
+	  number = 0
 	}
 	running = {
 	  name = "blue"
-	  number = 0
+	  number = 1
+	}
+  }
+}
+
+variable "network" {
+  default = {
+	dev: {
+	  peering: "pcx-004194d2bf8d19d28",
+	  azs: {
+		"us-east-1a" = {
+		  public: "10.1.1.0/24"
+		  private: "10.1.5.0/24"
+		}
+		"us-east-1e" = {
+		  public: "10.1.4.0/24"
+		  private: "10.1.6.0/24"
+		}
+	  }
 	}
   }
 }
