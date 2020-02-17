@@ -80,6 +80,8 @@ variable workspace_servers {
 	name = string
 	number = number
 	instance = string
+	start = string
+	stack = string
   })))
 }
 

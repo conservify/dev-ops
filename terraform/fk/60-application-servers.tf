@@ -23,8 +23,8 @@ data "template_file" "app_server_user_data" {
 	influx_user          = "${var.influx_database.user}"
 	influx_password      = "${var.influx_database.password}"
 
-	application_start    = "${var.application_start}"
-	application_stack    = "${var.application_stack}"
+	application_start    = "${each.value.config.start}"
+	application_stack    = "${each.value.config.stack}"
 
 	database_url         = "${local.database_url}"
   }
