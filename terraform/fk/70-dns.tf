@@ -70,3 +70,12 @@ resource "aws_route53_record" "private-metrics" {
   ttl     = "300"
   records = [ "172.31.58.48" ]
 }
+
+resource "aws_route53_record" "servers" {
+  for_each = aws_instance.app-servers
+  zone_id  = aws_route53_zone.private.id
+  name     = "${each.key}.${aws_route53_zone.private.name}"
+  type     = "A"
+  ttl      = "60"
+  records  = [ each.value.private_ip ]
+}
