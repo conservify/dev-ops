@@ -1,8 +1,10 @@
 all: terraform.tfplan
 
 plan:
-	terraform get
 	terraform plan -out=terraform.tfplan
+
+plan-test:
+	terraform plan -var=enable_test_server=true -out=terraform.tfplan
 
 apply: terraform.tfplan
 	terraform apply

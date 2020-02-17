@@ -23,4 +23,8 @@ resource "aws_db_instance" "fk-database" {
   tags = {
     Name = local.env
   }
+
+  lifecycle {
+	prevent_destroy = true
+  }
 }

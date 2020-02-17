@@ -2,10 +2,10 @@ resource "aws_alb" "fk-server" {
   name            = "${local.env}-lb"
   internal        = false
   security_groups = [ aws_security_group.fk-server-alb.id ]
-  subnets         = [ aws_subnet.fk-a.id, aws_subnet.fk-b.id, aws_subnet.fk-e.id ]
+  subnets         = [ aws_subnet.fk-a.id, aws_subnet.fk-e.id ]
 
   tags = {
-	Name = "${local.env}"
+	Name = local.env
   }
 }
 
@@ -53,8 +53,9 @@ resource "aws_alb_target_group" "fk-server" {
   }
 }
 
-resource "aws_alb_target_group_attachment" "fk-server-fkdev" {
+resource "aws_alb_target_group_attachment" "fk-servers" {
+  for_each         = aws_instance.app-servers
   target_group_arn = aws_alb_target_group.fk-server.arn
-  target_id        = aws_instance.app-server.id
+  target_id        = each.value.id
   port             = 8000
 }

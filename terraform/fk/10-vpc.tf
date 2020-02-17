@@ -28,7 +28,6 @@ resource "aws_subnet" "fk-a" {
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = local.network_a_cidr
   availability_zone       = var.azs[0]
-  map_public_ip_on_launch = true
 
   tags = {
 	Name = "${local.env} a"
@@ -39,29 +38,16 @@ resource "aws_subnet" "fk-b" {
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = local.network_b_cidr
   availability_zone       = var.azs[1]
-  map_public_ip_on_launch = true
 
   tags = {
 	Name = "${local.env} b"
   }
 }
-/*
-resource "aws_subnet" "fk-c" {
-  vpc_id                  = aws_vpc.fk.id
-  cidr_block              = local.network_c_cidr
-  availability_zone       = var.azs[2]
-  map_public_ip_on_launch = true
 
-  tags = {
-	Name = "${local.env} c"
-  }
-}
-*/
 resource "aws_subnet" "fk-e" {
   vpc_id                  = aws_vpc.fk.id
   cidr_block              = local.network_e_cidr
   availability_zone       = var.azs[3]
-  map_public_ip_on_launch = true
 
   tags = {
 	Name = "${local.env} e"
@@ -77,7 +63,7 @@ resource "aws_route" "public_access" {
 resource "aws_db_subnet_group" "fk" {
   name        = "${local.env}-db"
   description = "${local.env}-db"
-  subnet_ids  = [ aws_subnet.fk-a.id, aws_subnet.fk-b.id , aws_subnet.fk-e.id ]
+  subnet_ids  = [ aws_subnet.fk-a.id, aws_subnet.fk-e.id ]
 
   tags = {
 	Name = local.env
@@ -123,6 +109,11 @@ resource "aws_route_table" "private" {
   tags = {
     Name = "${local.env} private"
   }
+}
+
+resource "aws_route_table_association" "fk-a" {
+  subnet_id      = aws_subnet.fk-a.id
+  route_table_id = aws_route_table.private.id
 }
 
 resource "aws_route_table_association" "fk-a-private" {

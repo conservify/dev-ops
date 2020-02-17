@@ -68,13 +68,23 @@ variable "workspace_to_media_bucket_name" {
   }
 }
 
+variable "workspace_to_private_network_map" {
+  type = map
+
+  default = {
+	dev = "10.0.0.0/16"
+	stage = ""
+	prod = ""
+  }
+}
+
 variable "workspace_to_network_map" {
   type = map
 
   default = {
 	dev = "10.0.0.0/16"
-	stage = "10.1.0.0/16"
-	prod = "10.10.0.0/16"
+	stage = ""
+	prod = ""
   }
 }
 
@@ -192,3 +202,39 @@ locals {
 }
 
 variable "peering_connection_id" {}
+
+variable "enable_test_server" {
+  default = false
+}
+
+variable "deploying" {
+  default = false
+}
+
+variable "servers" {
+  default = {
+	deploying = {
+	  name = "red"
+	  number = 1
+	}
+	running = {
+	  name = "blue"
+	  number = 0
+	}
+  }
+}
+
+locals {
+  all = flatten([
+	for k, v in var.servers : [
+	  for r in range(v.number) : {
+		name = "${local.env}-${v.name}-${r}"
+		number = r
+		config = v
+	  }
+	]
+  ])
+  servers = {
+	for r in local.all : r.name => r
+  }
+}

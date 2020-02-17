@@ -1,11 +1,3 @@
-resource "aws_route53_record" "fk-server-a" {
-  zone_id = local.zone_id
-  name    = "fk-server-a.aws.${local.zone_name}"
-  type    = "A"
-  ttl     = "60"
-  records = ["${aws_instance.app-server.public_ip}"]
-}
-
 resource "aws_route53_record" "home" {
   zone_id = local.zone_id
   name    = local.zone_name
