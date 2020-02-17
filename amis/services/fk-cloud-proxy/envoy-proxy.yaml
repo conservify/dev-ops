@@ -1,10 +1,11 @@
 stats_sinks:
-  - name: envoy.stats_sink.statsd
-    config:
-      address:
-        socket_address:
-          address: 172.17.0.1
-          port_value: 8125
+  - name: envoy.stat_sinks.statsd
+    typed_config:
+        "@type": type.googleapis.com/envoy.config.metrics.v2.StatsdSink
+        address:
+            socket_address:
+                address: 172.17.0.1
+                port_value: 8125
 static_resources:
   listeners:
   - address:
