@@ -1,12 +1,12 @@
-output "bare_ami_id" {
+output bare_ami_id {
   value = data.aws_ami.bare.id
 }
 
-output "database_url" {
+output database_url {
   value = local.database_url
 }
 
-output "servers" {
+output servers {
   value = [
 	for key, i in aws_instance.app-servers: {
 	  key = key
