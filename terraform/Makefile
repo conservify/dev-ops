@@ -8,10 +8,10 @@ prod: .terraform
 
 plan: .terraform build/fk_cron_every_five.zip
 	terraform workspace list
-	terraform plan -out=terraform.tfplan
+	terraform plan -out=build/terraform.tfplan
 
-apply: terraform.tfplan
-	terraform apply
+apply: build/terraform.tfplan
+	terraform apply build/terraform.tfplan
 	@terraform output > deployed.json
 
 .terraform:
@@ -22,6 +22,6 @@ build/fk_cron_every_five.zip: fk_cron_every_five.py
 	zip -o $@ $^ && touch $@
 
 clean:
-	rm -f terraform.tfplan build
+	rm -rf build
 
 .PHONY: all apply clean
