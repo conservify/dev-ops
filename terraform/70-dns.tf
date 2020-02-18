@@ -89,3 +89,11 @@ resource "aws_route53_record" "servers" {
   ttl      = "60"
   records  = [ each.value.private_ip ]
 }
+
+resource "aws_route53_record" "db" {
+  zone_id  = aws_route53_zone.private.id
+  name     = "db.${aws_route53_zone.private.name}"
+  type     = "CNAME"
+  ttl      = "60"
+  records  = [ local.database_address ]
+}
