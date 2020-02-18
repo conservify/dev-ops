@@ -116,4 +116,5 @@ locals {
   env = var.workspace_tags[terraform.workspace]
   buckets = var.workspace_buckets[terraform.workspace]
   database = var.workspace_databases[terraform.workspace]
+  prod_instances = terraform.workspace == "prod" ? 1 : 0
 }

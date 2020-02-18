@@ -1,6 +1,6 @@
 all: terraform.tfplan
 
-plan:
+plan: build/fk_cron_every_five.zip
 	terraform workspace list
 	terraform plan -out=terraform.tfplan
 
@@ -17,6 +17,10 @@ apply: terraform.tfplan
 terraform.tfplan:
 	terraform get
 	terraform plan -out=terraform.tfplan
+
+build/fk_cron_every_five.zip: fk_cron_every_five.py
+	mkdir -p build
+	zip -o $@ $^ && touch $@
 
 setup: ~/.terraformrc
 	terraform init
