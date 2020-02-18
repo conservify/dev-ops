@@ -32,14 +32,8 @@ resource "aws_subnet" "private" {
   cidr_block              = each.value.private
   availability_zone       = each.key
   tags = {
-	Name = "${local.env} public ${each.key}"
+	Name = "${local.env} private ${each.key}"
   }
-}
-
-resource "aws_route" "public_access" {
-  route_table_id         = aws_vpc.fk.main_route_table_id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.fk.id
 }
 
 resource "aws_eip" "gw-a" {
@@ -55,11 +49,11 @@ resource "aws_nat_gateway" "fk-gw-a" {
   }
 }
 
-resource "aws_route_table" "private-a" {
+resource "aws_route_table" "private" {
   vpc_id = aws_vpc.fk.id
 
   route {
-    cidr_block = "172.31.0.0/16"
+    cidr_block = var.infrastructure.cidr
 	vpc_peering_connection_id = local.network.peering
   }
 
@@ -73,7 +67,37 @@ resource "aws_route_table" "private-a" {
   }
 }
 
-resource "aws_route_table_association" "private-a" {
-  subnet_id      = aws_subnet.private["us-east-1a"].id
-  route_table_id = aws_route_table.private-a.id
+resource "aws_route_table_association" "private" {
+  for_each       = local.network.azs
+  subnet_id      = aws_subnet.private[each.key].id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.fk.id
+
+  route {
+    cidr_block = var.infrastructure.cidr
+	vpc_peering_connection_id = local.network.peering
+  }
+
+  route {
+	cidr_block = "0.0.0.0/0"
+	gateway_id = aws_internet_gateway.fk.id
+  }
+
+  tags = {
+    Name = "${local.env} public"
+  }
+}
+
+resource "aws_main_route_table_association" "fk" {
+  vpc_id         = aws_vpc.fk.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public" {
+  for_each       = local.network.azs
+  subnet_id      = aws_subnet.public[each.key].id
+  route_table_id = aws_route_table.public.id
 }

@@ -43,6 +43,13 @@ resource "aws_security_group" "db-server" {
     security_groups = [ aws_security_group.fk-app-server.id ]
   }
 
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [ var.infrastructure.sg_id ]
+  }
+
   tags = {
 	Name = local.env
   }

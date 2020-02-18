@@ -94,8 +94,12 @@ variable workspace_networks {
   }))
 }
 
-variable infrastructure_address {
-  type = string
+variable infrastructure {
+  type = object({
+	address = string
+	cidr = string
+	sg_id = string
+  })
 }
 
 locals {

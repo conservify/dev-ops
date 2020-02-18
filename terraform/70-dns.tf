@@ -70,7 +70,7 @@ resource "aws_route53_record" "private-logs" {
   name    = "logs.${aws_route53_zone.private.name}"
   type    = "A"
   ttl     = "300"
-  records = [ var.infrastructure_address ]
+  records = [ var.infrastructure.address ]
 }
 
 resource "aws_route53_record" "private-metrics" {
@@ -78,7 +78,7 @@ resource "aws_route53_record" "private-metrics" {
   name    = "metrics.${aws_route53_zone.private.name}"
   type    = "A"
   ttl     = "300"
-  records = [ var.infrastructure_address ]
+  records = [ var.infrastructure.address ]
 }
 
 resource "aws_route53_record" "servers" {
