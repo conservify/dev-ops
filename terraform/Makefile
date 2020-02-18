@@ -1,27 +1,33 @@
+TERRAFORM := $(abspath bin/terraform)
+
 all: plan
 
 dev: .terraform
-	terraform workspace select dev
+	$(TERRAFORM) workspace select dev
 
 prod: .terraform
-	terraform workspace select prod
+	$(TERRAFORM) workspace select prod
 
 plan: .terraform build/fk_cron_every_five.zip
-	terraform workspace list
-	terraform plan -out=build/terraform.tfplan
+	$(TERRAFORM) workspace list
+	$(TERRAFORM) plan -out=build/terraform.tfplan
 
 apply: build/terraform.tfplan
-	terraform apply build/terraform.tfplan
-	@terraform output > deployed.json
+	$(TERRAFORM) apply build/terraform.tfplan
+	$(TERRAFORM) output > deployed.json
 
-.terraform:
-	terraform init
+$(TERRAFORM):
+	rm -rf bin && mkdir -p bin
+	cd bin && wget https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip && unzip *.zip
+
+.terraform: $(TERRAFORM)
+	$(TERRAFORM) init
 
 build/fk_cron_every_five.zip: fk_cron_every_five.py
 	mkdir -p build
 	zip -o $@ $^ && touch $@
 
 clean:
-	rm -rf build
+	rm -rf build bin
 
 .PHONY: all apply clean

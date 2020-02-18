@@ -4,3 +4,4 @@ terraform.tfplan
 terraform.tfstate.backup
 .terraform
 graph.png
+bin
