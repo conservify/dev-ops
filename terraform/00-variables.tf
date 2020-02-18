@@ -94,6 +94,10 @@ variable workspace_networks {
   }))
 }
 
+variable infrastructure_address {
+  type = string
+}
+
 locals {
   network = var.workspace_networks[terraform.workspace]
   zones = keys(local.network.azs)
