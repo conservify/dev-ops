@@ -1,7 +1,14 @@
 all: terraform.tfplan
 
 plan:
+	terraform workspace list
 	terraform plan -out=terraform.tfplan
+
+dev:
+	terraform workspace select dev
+
+prod:
+	terraform workspace select prod
 
 apply: terraform.tfplan
 	terraform apply
