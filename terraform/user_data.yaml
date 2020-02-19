@@ -10,6 +10,7 @@ write_files:
       ENV_TAG=${env_tag}
       GELF_TAGS=${env_tag}
       GELF_URL=${gelf_url}
+      STATSD_ADDRESS=${statsd_address}
       DATABASE_URL=${database_url}
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}
@@ -22,12 +23,13 @@ write_files:
   - path: /etc/default/telegraf
     content: |
       HOSTNAME=${hostname}
+      ENV_TAG=${env_tag}
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}
       INFLUX_USER=${influx_user}
       INFLUX_PASSWORD=${influx_password}
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
-      ENV_TAG=${env_tag}
+      STATSD_ADDRESS=${statsd_address}
 runcmd:
   - [ /var/lib/conservify/startup.sh ]

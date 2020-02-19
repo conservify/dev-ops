@@ -17,6 +17,8 @@ data "template_file" "app_server_user_data" {
 	aws_secret_key       = "${var.secret_key}"
 
 	gelf_url             = "${var.gelf_url}"
+	statsd_address       = "${var.statsd_address}"
+
 
 	influx_url           = "${var.influx_database.url}"
 	influx_database      = "${var.influx_database.name}"

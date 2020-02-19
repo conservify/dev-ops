@@ -31,6 +31,7 @@ services:
       - FIELDKIT_EMAILER=aws
       - FIELDKIT_ARCHIVER=aws
       - FIELDKIT_PRODUCTION_LOGGING=true
+      - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
     expose:
       - "8000"
     logging:
@@ -52,6 +53,7 @@ services:
       - FIELDKIT_EMAILER=aws
       - FIELDKIT_ARCHIVER=aws
       - FIELDKIT_PRODUCTION_LOGGING=true
+      - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
     expose:
       - "8000"
     logging:

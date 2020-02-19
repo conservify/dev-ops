@@ -54,6 +54,11 @@ variable gelf_url {
   type = string
 }
 
+variable statsd_address {
+  type = string
+  default = "172.17.0.1:8125"
+}
+
 variable influx_database {
   type = object({
 	url = string,
