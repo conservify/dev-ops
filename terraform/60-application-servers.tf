@@ -47,7 +47,7 @@ resource "aws_instance" "app-servers" {
   availability_zone           = each.value.zone
 
   lifecycle {
-	ignore_changes = [ ami ]
+	ignore_changes = [ ami, user_data ]
 	create_before_destroy = true
   }
 
