@@ -89,8 +89,8 @@ services:
       - "6140:6140"
       - "9000:9000"
       - "12201:12201"
-      - "12201/udp:12201/udp"
-      - "1514/udp:1514/udp"
+      - "12201:12201/udp"
+      - "1514:1514/udp"
 
   glacier-status:
     image: conservify/glacier-status
@@ -113,7 +113,7 @@ services:
       - "9090:9090"
 
   logs-viewer:
-    image: jlewallen/logs-viewer:master
+    build: ./logs-viewer
     restart: always
     volumes:
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
