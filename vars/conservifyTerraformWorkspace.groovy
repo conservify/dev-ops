@@ -7,7 +7,7 @@ def call(Map parameters) {
 						dir ('dev-ops') {
 							git url: 'https://github.com/conservify/dev-ops.git'
 							sh "mv -f $TERRAFORM_VARS_JSON terraform"
-							sh "cd terraform && TF_IN_AUTOMATION=true TF_CLI_ARGS='-no-color' make ${parameters.env} env-all"
+							sh "cd terraform && TF_IN_AUTOMATION=true TF_CLI_ARGS='-no-color' make env-all"
 							sh "mv terraform/build/deploy*.json ../"
 						}
 					}
