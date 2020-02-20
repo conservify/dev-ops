@@ -18,6 +18,7 @@ apply: .terraform build/terraform.tfplan
 
 env: .terraform
 	rm -f deploy.env
+	$(TERRAFORM) output -json > deploy.json
 	echo DATABASE_URL=`$(TERRAFORM) output database_url` > deploy.env
 
 $(TERRAFORM):
