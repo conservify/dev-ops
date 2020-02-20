@@ -19,7 +19,7 @@ echo "deb https://download.docker.com/linux/${DISTRIB_ID,,} ${DISTRIB_CODENAME} 
 apt-get update
 
 apt-get install -y \
-		tmux vim git \
+		tmux vim git jq \
 		docker-ce docker-ce-cli containerd.io \
 		telegraf
 

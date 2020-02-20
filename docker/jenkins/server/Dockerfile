@@ -1,6 +1,6 @@
 FROM jenkins/jenkins:lts
 USER root
-RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential zlib1g zlib1g:i386 python3-pip python-pip zip doxygen binutils-arm-none-eabi rsync
+RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential zlib1g zlib1g:i386 python3-pip python-pip zip doxygen binutils-arm-none-eabi rsync jq
 RUN pip install virtualenv
 RUN pip3 install virtualenv
 WORKDIR /tmp

@@ -1,7 +1,7 @@
 set -xe
 
 sudo apt-get update
-sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common unzip build-essential python-pip
+sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common unzip build-essential python-pip jq
 
 sudo pip install --upgrade pip
 
