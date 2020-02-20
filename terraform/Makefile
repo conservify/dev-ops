@@ -27,6 +27,12 @@ apply: fk/.terraform $(BUILD) $(FK_PLAN)
 env: fk/.terraform $(BUILD)
 	cd fk && $(TERRAFORM) output -json > $(DEPLOY_JSON)
 
+env-all: fk/.terraform $(BUILD)
+	cd fk && $(TERRAFORM) workspace select prod
+	cd fk && $(TERRAFORM) output -json > $(BUILD)/deploy-prod.json
+	cd fk && $(TERRAFORM) workspace select dev
+	cd fk && $(TERRAFORM) output -json > $(BUILD)/deploy-dev.json
+
 $(BUILD):
 	mkdir -p $(BUILD) $(BUILD)/fk $(BUILD)/cron
 

@@ -4,6 +4,7 @@ output bare_ami_id {
 
 output database_url {
   value = local.database_url
+  sensitive = true
 }
 
 output servers {
