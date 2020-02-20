@@ -14,12 +14,11 @@ plan: .terraform build/fk_cron_every_five.zip
 
 apply: .terraform build/terraform.tfplan
 	$(TERRAFORM) apply build/terraform.tfplan
-	$(TERRAFORM) output > deployed.json
+	$(TERRAFORM) output -json > deploy.json
 
 env: .terraform
-	rm -f deploy.env
+	rm -f deploy.json
 	$(TERRAFORM) output -json > deploy.json
-	echo DATABASE_URL=`$(TERRAFORM) output database_url` > deploy.env
 
 $(TERRAFORM):
 	rm -rf bin && mkdir -p bin
