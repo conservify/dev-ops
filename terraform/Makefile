@@ -17,12 +17,16 @@ prod: fk/.terraform
 plan: fk/.terraform $(BUILD)
 	cd fk && $(TERRAFORM) plan -out=$(FK_PLAN)
 
-plan-cron: cron/.terraform $(BUILD)/fk_cron_every_five.zip
-	cd cron && $(TERRAFORM) plan -out=$(CRON_PLAN)
-
 apply: fk/.terraform $(BUILD) $(FK_PLAN)
 	cd fk && $(TERRAFORM) apply $(FK_PLAN)
-	cd fk && $(TERRAFORM) output -json > $(DEPLOY_JSON)
+	$(MAKE) env
+
+cron-plan: cron/.terraform $(BUILD)/fk_cron_every_five.zip
+	cd cron && $(TERRAFORM) plan -out=$(CRON_PLAN)
+
+cron-apply: fk/.terraform $(BUILD) $(CRON_PLAN)
+	cd fk && $(TERRAFORM) apply $(CRON_PLAN)
+	$(MAKE) env
 
 env: fk/.terraform $(BUILD)
 	cd fk && $(TERRAFORM) output -json > $(DEPLOY_JSON)
@@ -37,7 +41,7 @@ $(BUILD):
 	mkdir -p $(BUILD) $(BUILD)/fk $(BUILD)/cron
 
 $(BUILD)/fk_cron_every_five.zip: $(BUILD) cron/fk_cron_every_five.py
-	zip -o $@ $^ && touch $@
+	cd cron && zip -o $@ *.py
 
 $(TERRAFORM):
 	rm -rf bin && mkdir -p bin

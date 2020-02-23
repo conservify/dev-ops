@@ -61,16 +61,16 @@ resource "aws_iam_role_policy_attachment" "fk-cron-every-five-logging" {
 }
 
 resource "aws_lambda_function" "fk-cron-every-five" {
-  filename         = "build/fk_cron_every_five.zip"
+  filename         = "../build/fk_cron_every_five.zip"
   function_name    = "fk-cron-every-five"
   role             = aws_iam_role.fk-cron-every-five-role.arn
   handler          = "fk_cron_every_five.handler"
   runtime          = "python2.7"
   timeout          = 10
-  source_code_hash = filesha256("build/fk_cron_every_five.zip")
+  source_code_hash = filesha256("../build/fk_cron_every_five.zip")
 
   lifecycle {
-	ignore_changes = [ source_code_hash ]
+	ignore_changes = [ ]
   }
 }
 
