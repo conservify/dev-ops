@@ -65,30 +65,35 @@ services:
       - /svr0/graylog/mongo:/data/db
 
   logs-elasticsearch:
-    image: "elasticsearch:2"
-    command: "elasticsearch -Des.cluster.name='graylog'"
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.5
     restart: always
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - /svr0/graylog/data/elasticsearch:/usr/share/elasticsearch/data
 
   logs:
-    image: graylog2/server:2.1.1-1
+    image: graylog/graylog:3.2.2-1
     restart: always
     volumes:
       - /svr0/graylog/journal:/usr/share/graylog/data/journal
       - /svr0/graylog/config:/usr/share/graylog/data/config
+    environment:
+      - GRAYLOG_HTTP_PUBLISH_URI=http://127.0.0.1:9000/logs/
+      - GRAYLOG_HTTP_EXTERNAL_URI=https://code.conservify.org/logs/
     env_file:
       - logs.env
-    environment:
-      GRAYLOG_WEB_ENDPOINT_URI: https://code.conservify.org/logs/api
     links:
       - logs-mongo:mongo
       - logs-elasticsearch:elasticsearch
     ports:
+      - "5044:5044"
       - "5140:5140"
       - "6140:6140"
       - "9000:9000"
-      - "12201:12201"
       - "12201:12201/udp"
       - "1514:1514/udp"
 
