@@ -17,17 +17,21 @@ echo "deb https://download.docker.com/linux/${DISTRIB_ID,,} ${DISTRIB_CODENAME} 
 # install log forwarding stuff
 
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-amd64.deb
-
 dpkg -i filebeat-7.6.0-amd64.deb && rm *.deb
-
 systemctl enable filebeat
+
+# jq
+
+curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+chmod 755 jq-linux64
+mv jq-linux64 /usr/bin
 
 # update packages and install the things we need
 
 apt-get update
 
 apt-get install -y \
-		tmux vim git jq \
+		tmux vim git \
 		docker-ce docker-ce-cli containerd.io \
 		telegraf
 
