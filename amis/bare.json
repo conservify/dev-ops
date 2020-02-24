@@ -83,6 +83,11 @@
     },
     {
       "type": "file",
+      "source": "files/filebeat.service",
+      "destination": "/tmp/filebeat.service"
+    },
+    {
+      "type": "file",
       "source": "files/filebeat.yml",
       "destination": "/tmp/filebeat.yml"
     },
@@ -91,7 +96,8 @@
       "inline": [
         "sudo mkdir -p /etc/filebeat",
         "sudo mv /tmp/filebeat.yml /etc/filebeat/filebeat.yml",
-        "sudo chown -R root. /etc/filebeat/filebeat.yml"
+        "sudo mv /tmp/filebeat.service /lib/systemd/system/filebeat.service",
+        "sudo chown -R root. /etc/filebeat/filebeat.yml /lib/systemd/system/filebeat.service"
       ]
     },
     {
