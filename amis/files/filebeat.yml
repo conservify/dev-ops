@@ -11,7 +11,7 @@ filebeat.config.modules:
   reload.enabled: false
 
 fields:
-  tag: ${ENV_ENV}
+  tag: ${ENV_TAG}
 
 output.logstash:
   hosts: [ "logs.fk.private:5044" ]
