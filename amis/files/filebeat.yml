@@ -4,7 +4,7 @@ logging.metrics.enabled: false
 
 filebeat.inputs:
 - type: log
-  enabled: true
+  enabled: false
   paths:
     - /var/log/syslog
 

@@ -18,6 +18,7 @@ echo "deb https://download.docker.com/linux/${DISTRIB_ID,,} ${DISTRIB_CODENAME} 
 
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-amd64.deb
 dpkg -i filebeat-7.6.0-amd64.deb && rm *.deb
+filebeat modules system enable
 systemctl enable filebeat
 
 # jq
