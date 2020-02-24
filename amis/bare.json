@@ -83,13 +83,13 @@
     },
     {
       "type": "file",
-      "source": "files/filebeat.service",
-      "destination": "/tmp/filebeat.service"
+      "source": "files/filebeat.yml",
+      "destination": "/tmp/filebeat.yml"
     },
     {
       "type": "file",
-      "source": "files/filebeat.yml",
-      "destination": "/tmp/filebeat.yml"
+      "source": "files/filebeat.service",
+      "destination": "/tmp/filebeat.service"
     },
     {
       "type": "shell",
