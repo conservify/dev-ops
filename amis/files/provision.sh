@@ -20,6 +20,8 @@ curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-
 
 dpkg -i filebeat-7.6.0-amd64.deb && rm *.deb
 
+systemctl enable filebeat
+
 # update packages and install the things we need
 
 apt-get update
