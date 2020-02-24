@@ -1,0 +1,13 @@
+{
+  "template": "graylog_*",
+  "mappings" : {
+    "message" : {
+      "properties" : {
+        "service_trace" : {
+          "type": "keyword",
+          "index": true
+        }
+      }
+    }
+  }
+}
