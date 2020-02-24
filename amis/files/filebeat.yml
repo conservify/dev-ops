@@ -1,5 +1,7 @@
 fields_under_root: true
 
+logging.metrics.enabled: false
+
 filebeat.inputs:
 - type: log
   enabled: true
