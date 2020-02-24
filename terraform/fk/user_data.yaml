@@ -20,6 +20,10 @@ write_files:
       AWS_SECRET_KEY=${aws_secret_key}
       APPLICATION_START=${application_start}
       APPLICATION_STACK=${application_stack}
+  - path: /etc/default/filebeat
+    content: |
+      HOSTNAME=${hostname}
+      ENV_TAG=${env_tag}
   - path: /etc/default/telegraf
     content: |
       HOSTNAME=${hostname}
