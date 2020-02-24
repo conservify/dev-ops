@@ -91,11 +91,8 @@ services:
       - logs-elasticsearch:elasticsearch
     ports:
       - "5044:5044"
-      - "5140:5140"
-      - "6140:6140"
       - "9000:9000"
       - "12201:12201/udp"
-      - "1514:1514/udp"
 
   glacier-status:
     image: conservify/glacier-status
