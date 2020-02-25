@@ -6,6 +6,7 @@ write_files:
   - path: /etc/user_data.env
     content: |
       HOSTNAME=${hostname}
+      FIELDKIT_SERVER_NAME=${hostname}
       ZONE_NAME=${zone_name}
       ENV_TAG=${env_tag}
       GELF_TAGS=${env_tag}
@@ -24,9 +25,11 @@ write_files:
     content: |
       HOSTNAME=${hostname}
       ENV_TAG=${env_tag}
+      FIELDKIT_SERVER_NAME=${hostname}
   - path: /etc/default/telegraf
     content: |
       HOSTNAME=${hostname}
+      FIELDKIT_SERVER_NAME=${hostname}
       ENV_TAG=${env_tag}
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}
