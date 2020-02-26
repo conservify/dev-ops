@@ -36,6 +36,7 @@ services:
       - FIELDKIT_ARCHIVER=aws
       - FIELDKIT_PRODUCTION_LOGGING=true
       - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
+      - FIELDKIT_BUCKET_NAME=${STREAMS_BUCKET_NAME}
     expose:
       - "8000"
     logging:
@@ -62,6 +63,7 @@ services:
       - FIELDKIT_ARCHIVER=aws
       - FIELDKIT_PRODUCTION_LOGGING=true
       - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
+      - FIELDKIT_BUCKET_NAME=${STREAMS_BUCKET_NAME}
     expose:
       - "8000"
     logging:

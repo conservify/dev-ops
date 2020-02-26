@@ -21,6 +21,8 @@ write_files:
       AWS_SECRET_KEY=${aws_secret_key}
       APPLICATION_START=${application_start}
       APPLICATION_STACK=${application_stack}
+      STREAMS_BUCKET_NAME=${streams_bucket_name}
+      MEDIA_BUCKET_NAME=${media_bucket_name}
   - path: /etc/default/filebeat
     content: |
       HOSTNAME=${hostname}

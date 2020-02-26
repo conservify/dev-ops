@@ -29,6 +29,9 @@ data "template_file" "app_server_user_data" {
 	application_stack    = each.value.config.stack
 
 	database_url         = local.database_url
+
+	streams_bucket_name  = local.buckets.streams
+	media_bucket_name    = local.buckets.media
   }
 }
 
