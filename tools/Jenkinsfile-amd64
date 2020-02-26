@@ -1,7 +1,11 @@
 @Library('conservify') _
 
-conservifyProperties()
+properties([
+	buildDiscarder(logRotator(numToKeepStr: '5')),
+	pipelineTriggers([cron('@weekly')])
+	disableConcurrentBuilds()
+])
 
 timestamps {
-    buildGoTools("amd64")
+	buildGoTools("amd64")
 }

@@ -1,19 +1,12 @@
 @Library('conservify') _
 
-conservifyProperties()
+properties([
+	buildDiscarder(logRotator(numToKeepStr: '5')),
+	pipelineTriggers([cron('@weekly')])
+	disableConcurrentBuilds()
+])
 
 timestamps {
-    // Cross compile golang tools because this is generally faster.
-    buildGoTools("arm")
-
-    /*
-    node ("arm") {
-        def go = tool "golang-arm"
-        sh "${go}/bin/go version"
-
-        stage ('test') {
-            unstash 'tools'
-        }
-    }
-    */
+	// Cross compile golang tools because this is generally faster.
+	buildGoTools("arm")
 }
