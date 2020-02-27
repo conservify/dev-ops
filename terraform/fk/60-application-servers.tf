@@ -32,6 +32,9 @@ data "template_file" "app_server_user_data" {
 
 	streams_bucket_name  = local.buckets.streams
 	media_bucket_name    = local.buckets.media
+
+	email_override       = local.email_override
+	production           = local.production
   }
 }
 

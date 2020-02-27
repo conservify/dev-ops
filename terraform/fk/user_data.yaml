@@ -6,7 +6,7 @@ write_files:
   - path: /etc/user_data.env
     content: |
       HOSTNAME=${hostname}
-      FIELDKIT_SERVER_NAME=${hostname}
+      SERVER_NAME=${hostname}
       ZONE_NAME=${zone_name}
       ENV_TAG=${env_tag}
       GELF_TAGS=${env_tag}
@@ -23,6 +23,8 @@ write_files:
       APPLICATION_STACK=${application_stack}
       STREAMS_BUCKET_NAME=${streams_bucket_name}
       MEDIA_BUCKET_NAME=${media_bucket_name}
+      PRODUCTION=${production}
+      EMAIL_OVERRIDE=${email_override}
   - path: /etc/default/filebeat
     content: |
       HOSTNAME=${hostname}
@@ -31,7 +33,7 @@ write_files:
   - path: /etc/default/telegraf
     content: |
       HOSTNAME=${hostname}
-      FIELDKIT_SERVER_NAME=${hostname}
+      SERVER_NAME=${hostname}
       ENV_TAG=${env_tag}
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}
@@ -40,5 +42,7 @@ write_files:
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
       STATSD_ADDRESS=${statsd_address}
+      PRODUCTION=${production}
+      EMAIL_OVERRIDE=${email_override}
 runcmd:
   - [ /var/lib/conservify/startup.sh ]
