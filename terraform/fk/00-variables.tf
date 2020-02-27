@@ -130,5 +130,5 @@ locals {
   buckets = var.workspace_buckets[terraform.workspace]
   database = var.workspace_databases[terraform.workspace]
   production = terraform.workspace == "prod" ? "true" : "false"
-  email_override = terraform.workspace == "prod" ? "" : "info@conservify.org"
+  email_override = terraform.workspace == "prod" ? "" : "email@conservify.org"
 }
