@@ -12,6 +12,7 @@ COPY --from=fk /portal/ /app/portal
 COPY --from=fk /ocr-portal /app/ocr-portal
 COPY --from=fk /legacy /app/legacy
 COPY --from=fk /ca-certificates.crt /etc/ssl/certs
+COPY --from=fk /static.env /etc/static.env
 
 ADD ./service-envoy.yaml /etc/service-envoy.yaml
 ADD ./startup.sh /usr/local/bin/startup.sh
