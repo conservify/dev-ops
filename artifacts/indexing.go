@@ -112,7 +112,7 @@ func (i *Indexer) GenerateFileIndex(directory string) error {
 func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) error {
 	archive := filepath.Join(directory, "archive")
 
-	log.Printf("Deleting old builds %s", archive)
+	log.Printf("deleting old builds %s", archive)
 
 	now := time.Now()
 
@@ -122,7 +122,7 @@ func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) er
 		age := now.Sub(time.Unix(info.StartTime/1000, 0))
 
 		if age.Hours() > maximumAge.Hours() {
-			log.Printf("DELETING %s %s (%s) (%s)", path, jobName, relative, age)
+			log.Printf("deleting %s %s (%s) (%s)", path, jobName, relative, age)
 			deleting = append(deleting, path)
 			return nil
 		}

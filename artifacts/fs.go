@@ -9,7 +9,9 @@ import (
 
 func mkdirAllIfMissing(p string) error {
 	if _, err := os.Stat(p); os.IsNotExist(err) {
-		log.Printf("Mkdir %v", p)
+		if false {
+			log.Printf("mkdir %v", p)
+		}
 
 		err = os.MkdirAll(p, 0755)
 		if err != nil {
@@ -21,7 +23,9 @@ func mkdirAllIfMissing(p string) error {
 
 func copyFileIfMissing(s, d string) error {
 	if _, err := os.Stat(d); os.IsNotExist(err) {
-		log.Printf("Copying %v -> %v", s, d)
+		if false {
+			log.Printf("copying %v -> %v", s, d)
+		}
 
 		err = copyFile(s, d)
 		if err != nil {

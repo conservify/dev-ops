@@ -180,7 +180,7 @@ func writeMenuFile(directory string, data MenuData) error {
 		return err
 	}
 
-	log.Printf("Wrote %s", indexPath)
+	log.Printf("wrote %s", indexPath)
 
 	return nil
 }
@@ -206,7 +206,7 @@ func toMenuData(options []MenuOption) MenuData {
 func (mg *MenuGenerator) GenerateMenu(directory string) error {
 	archive := filepath.Join(directory, "archive")
 
-	log.Printf("Indexing %s", archive)
+	log.Printf("indexing %s", archive)
 
 	handlers := []FileTypeHandler{
 		&IpaHandler{Destination: directory},
@@ -217,13 +217,15 @@ func (mg *MenuGenerator) GenerateMenu(directory string) error {
 
 	err := walkBuilds(archive, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		if false {
-			log.Printf("Processing %s %s (%s)", path, jobName, relative)
+			log.Printf("processing %s %s (%s)", path, jobName, relative)
 		}
 
 		for _, p := range artifactPaths {
 			for _, handler := range handlers {
 				if handler.CanHandle(p) {
-					log.Printf("- %T (%s)", handler, p)
+					if false {
+						log.Printf("- %T (%s)", handler, p)
+					}
 
 					newOptions, err := handler.Handle(path, relative, jobName, info, artifactPaths, p)
 					if err != nil {

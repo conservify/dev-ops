@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	if o.Source == "" && o.Destination == "" {
-		fmt.Printf("Usage of %s:\n", os.Args[0])
+		fmt.Printf("usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(2)
 	}
@@ -31,7 +31,7 @@ func main() {
 		ac := NewArtifactsCopier(o.Destination)
 		err := ac.Copy(o.Source)
 		if err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("error: %v", err)
 		}
 	}
 
@@ -40,17 +40,17 @@ func main() {
 		maximumAge := (time.Hour * 24) * 30
 		err := indexer.DeleteOldBuilds(o.Destination, maximumAge)
 		if err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("error: %v", err)
 		}
 		err = indexer.GenerateFileIndex(o.Destination)
 		if err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("error: %v", err)
 		}
 
 		mg := NewMenuGenerator()
 		err = mg.GenerateMenu(o.Destination)
 		if err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("error: %v", err)
 		}
 	}
 }

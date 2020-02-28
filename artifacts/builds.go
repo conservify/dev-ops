@@ -68,7 +68,7 @@ func fixXmlVersion(bytes []byte) []byte {
 func walkBuilds(base string, walkFunc BuildWalkFunc) error {
 	return filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			log.Printf("Error: %v %v", path, err)
+			log.Printf("error: %v %v", path, err)
 			return nil
 		}
 		if !info.IsDir() {
@@ -98,7 +98,7 @@ func walkBuilds(base string, walkFunc BuildWalkFunc) error {
 		buildInfo := BuildInfo{}
 		err = xml.Unmarshal(fixXmlVersion(data), &buildInfo)
 		if err != nil {
-			return fmt.Errorf("Error reading %s (%v)", buildXmlPath, err)
+			return fmt.Errorf("error reading %s (%v)", buildXmlPath, err)
 		}
 
 		artifactPaths, err := getFilesUnder([]string{filepath.Join(path, "archive"), filepath.Join(path, "artifacts")})
