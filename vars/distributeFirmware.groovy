@@ -2,7 +2,7 @@
 
 def call(Map parameters = [:]) {
     stage ('distribute') {
-        def command = "fktool --host api.fkdev.org --scheme https"
+        def command = "fktool --scheme https"
 
 		if (parameters.directory) {
 		   command += " --firmware-directory " + parameters.directory
@@ -28,7 +28,10 @@ def call(Map parameters = [:]) {
 			command += " --password " + parameters.password
 		}
 
-		echo command
-		sh command
+		echo command + " --host api.fkdev.org"
+		sh command + " --host api.fkdev.org"
+
+		echo command + " --host api.fieldkit.org"
+		sh command + " --host api.fieldkit.org"
     }
 }
