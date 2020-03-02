@@ -1,3 +1,13 @@
+data "terraform_remote_state" "ssl" {
+  backend = "s3"
+  config = {
+	bucket = "conservify-terraform-state"
+	region = "us-west-2"
+	encrypt = true
+	key = "ssl"
+  }
+}
+
 resource "aws_alb" "app-servers" {
   name            = "${local.env}-lb"
   internal        = false
@@ -25,7 +35,7 @@ resource "aws_alb_listener" "app-servers-443" {
   port               = "443"
   protocol           = "HTTPS"
   ssl_policy         = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn    = local.zone.certificate_arn
+  certificate_arn    = data.terraform_remote_state.ssl.outputs.certificates[local.zone.name].arn
 
   default_action {
 	target_group_arn = aws_alb_target_group.app-servers.arn

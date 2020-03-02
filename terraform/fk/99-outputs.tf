@@ -18,3 +18,13 @@ output servers {
 	}
   ]
 }
+
+output alb {
+  value = {
+	id: aws_alb.app-servers.id,
+	listeners: {
+	  http: aws_alb_listener.app-servers-80.id,
+	  https: aws_alb_listener.app-servers-443.id
+	}
+  }
+}
