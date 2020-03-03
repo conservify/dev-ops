@@ -25,6 +25,7 @@ write_files:
       MEDIA_BUCKET_NAME=${media_bucket_name}
       PRODUCTION=${production}
       EMAIL_OVERRIDE=${email_override}
+      SESSION_KEY=${session_key}
   - path: /etc/default/filebeat
     content: |
       HOSTNAME=${hostname}

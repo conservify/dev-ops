@@ -35,6 +35,8 @@ data "template_file" "app_server_user_data" {
 
 	email_override       = local.email_override
 	production           = local.production
+
+	session_key          = local.session_key
   }
 }
 

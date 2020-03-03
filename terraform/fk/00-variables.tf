@@ -99,6 +99,10 @@ variable workspace_networks {
   }))
 }
 
+variable workspace_session_keys {
+  type = map(string)
+}
+
 variable infrastructure {
   type = object({
 	address = string
@@ -131,4 +135,5 @@ locals {
   database = var.workspace_databases[terraform.workspace]
   production = terraform.workspace == "prod" ? "true" : "false"
   email_override = terraform.workspace == "prod" ? "" : "email@conservify.org"
+  session_key = var.workspace_session_keys[terraform.workspace]
 }
