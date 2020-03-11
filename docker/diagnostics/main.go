@@ -22,8 +22,8 @@ type options struct {
 }
 
 type UploadMeta struct {
-	Batch string
-	Time  time.Time
+	Batch string    `json:"batch"`
+	Time  time.Time `json:"time"`
 }
 
 func saveOrReadMeta(batch, path string) (meta *UploadMeta, err error) {
