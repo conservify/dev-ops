@@ -14,6 +14,8 @@ import (
 	"encoding/json"
 
 	"net/http"
+
+	"github.com/sethvargo/go-diceware/diceware"
 )
 
 type options struct {
@@ -22,8 +24,9 @@ type options struct {
 }
 
 type UploadMeta struct {
-	Batch string    `json:"batch"`
-	Time  time.Time `json:"time"`
+	Phrase string    `json:"phrase"`
+	Batch  string    `json:"batch"`
+	Time   time.Time `json:"time"`
 }
 
 func saveOrReadMeta(batch, path string) (meta *UploadMeta, err error) {
@@ -33,11 +36,14 @@ func saveOrReadMeta(batch, path string) (meta *UploadMeta, err error) {
 			return nil, fmt.Errorf("error: %v", err)
 		}
 
+		phrase, err := diceware.Generate(3)
+
 		defer file.Close()
 
 		meta := &UploadMeta{
-			Batch: batch,
-			Time:  time.Now(),
+			Phrase: strings.Join(phrase, " "),
+			Batch:  batch,
+			Time:   time.Now(),
 		}
 
 		bytes, err := json.Marshal(meta)
