@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	_ "encoding/json"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -20,7 +20,8 @@ type Options struct {
 }
 
 type Services struct {
-	Options *Options
+	Options    *Options
+	Repository *Repository
 }
 
 type UploadMeta struct {
@@ -30,7 +31,23 @@ type UploadMeta struct {
 }
 
 func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	archives, err := s.Repository.ListAll(ctx)
+	if err != nil {
+		return err
+	}
+
+	response := &IndexResponse{
+		Archives: archives,
+	}
+
+	bytes, err := json.Marshal(response)
+	if err != nil {
+		return err
+	}
+
 	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+
 	return nil
 }
 
@@ -60,8 +77,14 @@ func main() {
 		os.Exit(2)
 	}
 
+	repo, err := NewRepository(o.RootPath)
+	if err != nil {
+		panic(err)
+	}
+
 	services := &Services{
-		Options: o,
+		Options:    o,
+		Repository: repo,
 	}
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -71,7 +94,7 @@ func main() {
 
 	log.Printf("listening on :8080")
 
-	err := http.ListenAndServe(":8080", router)
+	err = http.ListenAndServe(":8080", router)
 	if err != nil {
 		panic(err)
 	}
