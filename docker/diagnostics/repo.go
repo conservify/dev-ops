@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Repository struct {
@@ -45,21 +46,52 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 			return nil, err
 		}
 
-		log.Printf("%v", device)
-
 		files := make([]*ArchiveFile, 0)
 
 		a = append(a, &Archive{
-			ID:     e.Name(),
-			Time:   meta.Time,
-			Files:  files,
-			Phrase: meta.Phrase,
-			Device: device,
-			Size:   size,
+			ID:       e.Name(),
+			Time:     meta.Time,
+			Files:    files,
+			Phrase:   meta.Phrase,
+			Device:   device,
+			Size:     size,
+			Location: "/archives/" + e.Name(),
 		})
 	}
 
 	log.Printf("index: %d files", len(a))
+
+	return
+}
+
+func (r *Repository) FindByQuery(ctx context.Context, query string) (archives []*Archive, err error) {
+	archives = make([]*Archive, 0)
+
+	all, err := r.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, a := range all {
+		if strings.Contains(a.Phrase, query) {
+			archives = append(archives, a)
+		}
+	}
+
+	return
+}
+
+func (r *Repository) FindByID(ctx context.Context, id string) (archive *Archive, err error) {
+	all, err := r.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, a := range all {
+		if a.ID == id {
+			return a, nil
+		}
+	}
 
 	return
 }

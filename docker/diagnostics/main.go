@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -24,16 +23,55 @@ type Services struct {
 	Repository *Repository
 }
 
-type UploadMeta struct {
-	Phrase string    `json:"phrase"`
-	Batch  string    `json:"batch"`
-	Time   time.Time `json:"time"`
-}
-
 func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
 	archives, err := s.Repository.ListAll(ctx)
 	if err != nil {
 		return err
+	}
+
+	response := &IndexResponse{
+		Archives: archives,
+	}
+
+	bytes, err := json.Marshal(response)
+	if err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+
+	return nil
+}
+
+func view(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	id := mux.Vars(r)["id"]
+
+	archive, err := s.Repository.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("found %+v", archive)
+
+	w.WriteHeader(http.StatusOK)
+
+	return nil
+}
+
+func search(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	query := mux.Vars(r)["query"]
+
+	archives, err := s.Repository.FindByQuery(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("found %+v", archives)
+
+	if len(archives) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return nil
 	}
 
 	response := &IndexResponse{
@@ -89,8 +127,10 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
+	router.HandleFunc("/archives", middleware(services, index)).Methods("GET")
+	router.HandleFunc("/archives/{id}", middleware(services, view)).Methods("GET")
+	router.HandleFunc("/search/{query}", middleware(services, search)).Methods("GET")
 	router.HandleFunc("/", middleware(services, receive)).Methods("POST")
-	router.HandleFunc("/", middleware(services, index)).Methods("GET")
 
 	log.Printf("listening on :8080")
 
