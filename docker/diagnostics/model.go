@@ -27,3 +27,22 @@ type UploadMeta struct {
 	Batch  string    `json:"batch"`
 	Time   time.Time `json:"time"`
 }
+
+type LoginPayload struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+}
+
+type ByTime []*Archive
+
+func (s ByTime) Len() int {
+	return len(s)
+}
+
+func (s ByTime) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s ByTime) Less(i, j int) bool {
+	return s[i].Time.After(s[j].Time)
+}

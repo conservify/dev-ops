@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -58,6 +59,8 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 			Location: "/archives/" + e.Name(),
 		})
 	}
+
+	sort.Sort(ByTime(a))
 
 	log.Printf("index: %d files", len(a))
 

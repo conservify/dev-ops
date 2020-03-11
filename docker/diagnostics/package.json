@@ -1,0 +1,33 @@
+{
+    "name": "jlewallen-dynamic",
+    "sideEffects": false,
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "lodash": "^4.17.15",
+        "moment": "^2.24.0",
+        "vue": "^2.6.11",
+        "vuejs": "^3.0.1"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.149",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^8.0.6",
+        "babel-preset-es2015": "^6.24.1",
+        "css-loader": "^3.4.1",
+        "ts-loader": "^6.2.1",
+        "typescript": "^3.7.4",
+        "vue-loader": "^15.8.3",
+        "vue-style-loader": "^4.1.2",
+        "vue-template-compiler": "^2.6.11",
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.10.1"
+    }
+}

@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"fmt"
-	"io"
+	_ "fmt"
+	_ "io"
 	"log"
 	"net/http"
 	"os"
@@ -44,6 +44,21 @@ func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Requ
 	return nil
 }
 
+func login(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	payload := &LoginPayload{}
+
+	dec := json.NewDecoder(r.Body)
+
+	err := dec.Decode(payload)
+	if err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	return nil
+}
+
 func view(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
 	id := mux.Vars(r)["id"]
 
@@ -52,9 +67,36 @@ func view(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Reque
 		return err
 	}
 
-	log.Printf("found %+v", archive)
+	log.Printf("view %+v", archive)
+
+	bytes, err := json.Marshal(archive)
+	if err != nil {
+		return err
+	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+
+	return nil
+}
+
+func download(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	id := mux.Vars(r)["id"]
+
+	archive, err := s.Repository.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("download %+v", archive)
+
+	bytes, err := json.Marshal(archive)
+	if err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
 
 	return nil
 }
@@ -96,8 +138,18 @@ func middleware(services *Services, h func(context.Context, *Services, http.Resp
 		ctx := req.Context()
 		err := h(ctx, services, w, req)
 		if err != nil {
+			details := struct {
+				Error string `json:"error"`
+			}{
+				err.Error(),
+			}
+			bytes, err := json.Marshal(details)
+			if err != nil {
+				panic(err)
+			}
+
 			w.WriteHeader(http.StatusInternalServerError)
-			io.WriteString(w, fmt.Sprintf("error: %v", err))
+			w.Write(bytes)
 		}
 	}
 }
@@ -127,10 +179,19 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
+	static := http.FileServer(http.Dir("./static"))
+
 	router.HandleFunc("/archives", middleware(services, index)).Methods("GET")
+	router.HandleFunc("/archives/{id}.zip", middleware(services, download)).Methods("GET")
 	router.HandleFunc("/archives/{id}", middleware(services, view)).Methods("GET")
 	router.HandleFunc("/search/{query}", middleware(services, search)).Methods("GET")
+	router.HandleFunc("/login", middleware(services, login)).Methods("POST")
 	router.HandleFunc("/", middleware(services, receive)).Methods("POST")
+
+	// NOTE Move this to PathPrefix
+	router.Handle("/", static).Methods("GET")
+	router.Handle("/App.js", static).Methods("GET")
+	router.Handle("/App.css", static).Methods("GET")
 
 	log.Printf("listening on :8080")
 
