@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io"
@@ -14,6 +15,8 @@ import (
 	"encoding/json"
 
 	"net/http"
+
+	"github.com/gorilla/mux"
 
 	"github.com/sethvargo/go-diceware/diceware"
 )
@@ -71,17 +74,17 @@ func saveOrReadMeta(batch, path string) (meta *UploadMeta, err error) {
 	return
 }
 
-func serve(o *options, w http.ResponseWriter, req *http.Request) (meta *UploadMeta, err error) {
+func saveIncomingFile(s *Services, w http.ResponseWriter, req *http.Request) (meta *UploadMeta, err error) {
 	log.Printf("[http] %s", req.URL)
 
 	p := strings.Split(req.URL.Path[1:], "/")
-	if len(p) != o.Strip+2 {
+	if len(p) != s.options.Strip+2 {
 		return nil, fmt.Errorf("bad path")
 	}
 
-	batch := p[o.Strip]
-	filename := p[o.Strip+1]
-	localDirectory := filepath.Join(o.RootPath, batch)
+	batch := p[s.options.Strip]
+	filename := p[s.options.Strip+1]
+	localDirectory := filepath.Join(s.options.RootPath, batch)
 
 	err = os.MkdirAll(localDirectory, 0755)
 	if err != nil {
@@ -112,6 +115,43 @@ func serve(o *options, w http.ResponseWriter, req *http.Request) (meta *UploadMe
 	return meta, nil
 }
 
+func receive(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	meta, err := saveIncomingFile(s, w, r)
+	if err != nil {
+		return err
+	}
+
+	bytes, err := json.Marshal(meta)
+	if err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+
+	return nil
+}
+
+func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	w.WriteHeader(http.StatusOK)
+	return nil
+}
+
+type Services struct {
+	options *options
+}
+
+func middleware(services *Services, h func(context.Context, *Services, http.ResponseWriter, *http.Request) error) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		err := h(ctx, services, w, r)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, fmt.Sprintf("error: %v", err))
+		}
+	}
+}
+
 func main() {
 	o := &options{}
 
@@ -125,30 +165,18 @@ func main() {
 		os.Exit(2)
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		meta, err := serve(o, w, req)
-		if err != nil {
-			log.Printf("error: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(fmt.Sprintf("error: %v", err)))
-			return
-		}
+	services := &Services{
+		options: o,
+	}
 
-		bytes, err := json.Marshal(meta)
-		if err != nil {
-			log.Printf("error: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(fmt.Sprintf("error: %v", err)))
-			return
-		}
+	router := mux.NewRouter().StrictSlash(true)
 
-		w.WriteHeader(http.StatusOK)
-		w.Write(bytes)
-	})
+	router.HandleFunc("/", middleware(services, receive)).Methods("POST")
+	router.HandleFunc("/", middleware(services, index)).Methods("GET")
 
 	log.Printf("starting...")
 
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", router)
 	if err != nil {
 		panic(err)
 	}
