@@ -28,18 +28,38 @@
         <div class="alert alert-primary" role="alert">
             Mobile App DB
         </div>
+		<div class="row" v-if="analysis">
+			<div class="col-md-12">
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Station</th>
+							<th>Device ID</th>
+							<th>Generation ID</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="station in analysis.stations">
+							<td>{{ station.name }}</td>
+							<td>{{ station.device_id }}</td>
+							<td>{{ station.generation }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<a :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
 			</div>
 		</div>
 
-        <div class="alert alert-primary" role="alert">
+        <div class="alert alert-primary" role="alert" v-if="mobileAppLogs">
             Mobile App Logs
         </div>
-        <div class="row">
+        <div class="row" v-if="mobileAppLogs">
 			<div class="col-md-12">
-				<pre class="app-logs">{{ appLogs }}</pre>
+				<pre class="app-logs">{{ mobileAppLogs }}</pre>
 			</div>
         </div>
     </div>
@@ -61,7 +81,8 @@ export default {
         return {
             archive: null,
             device: null,
-            appLogs: null,
+            mobileAppLogs: null,
+			analysis: null,
         }
     },
     created() {
@@ -79,16 +100,22 @@ export default {
                 this.archive = archive
             })
 
+        fetch('archives/' + this.query.id + '/app.txt', options)
+            .then(response => response.text())
+            .then(mobileAppLogs => {
+                this.mobileAppLogs = mobileAppLogs
+            })
+
         fetch('archives/' + this.query.id + '/device.json', options)
             .then(response => response.json())
             .then(device => {
                 this.device = device
             })
 
-        fetch('archives/' + this.query.id + '/app.txt', options)
-            .then(response => response.text())
-            .then(appLogs => {
-                this.appLogs = appLogs
+        fetch('archives/' + this.query.id + '/analysis', options)
+            .then(response => response.json())
+            .then(analysis => {
+                this.analysis = analysis
             })
     },
     filters: {

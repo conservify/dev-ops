@@ -176,6 +176,42 @@ func archiveFile(ctx context.Context, s *Services, w http.ResponseWriter, r *htt
 	return nil
 }
 
+func analysis(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	id := mux.Vars(r)["id"]
+
+	archive, err := s.Repository.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	dbPath := filepath.Join(archive.Path, "fk.db")
+	db, err := NewApplicationDB(dbPath)
+	if err != nil {
+		return err
+	}
+
+	stations, err := db.ListStations()
+	if err != nil {
+		return err
+	}
+
+	analysis := struct {
+		Stations []*Station `json:"stations"`
+	}{
+		stations,
+	}
+
+	bytes, err := json.Marshal(analysis)
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+
+	return nil
+}
+
 func middleware(services *Services, h func(context.Context, *Services, http.ResponseWriter, *http.Request) error) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Printf("[http] %s %s", req.Method, req.URL)
@@ -229,6 +265,7 @@ func main() {
 	router.HandleFunc("/diagnostics/archives", middleware(services, secure(index))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}", middleware(services, secure(view))).Methods("GET")
+	router.HandleFunc("/diagnostics/archives/{id}/analysis", middleware(services, secure(analysis))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}/{file}", middleware(services, secure(archiveFile))).Methods("GET")
 	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
 	router.HandleFunc("/diagnostics/", middleware(services, receive)).Methods("POST")
