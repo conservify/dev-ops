@@ -26,10 +26,21 @@
         </div>
 
         <div class="alert alert-primary" role="alert">
-            Application Logs
+            Mobile App DB
         </div>
-        <div>
-            <pre class="app-logs">{{ appLogs }}</pre>
+		<div class="row">
+			<div class="col-md-12">
+				<a :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
+			</div>
+		</div>
+
+        <div class="alert alert-primary" role="alert">
+            Mobile App Logs
+        </div>
+        <div class="row">
+			<div class="col-md-12">
+				<pre class="app-logs">{{ appLogs }}</pre>
+			</div>
         </div>
     </div>
 </template>
