@@ -4,6 +4,7 @@
 
 const { DefinePlugin } = require("webpack");
 const { VueLoaderPlugin } = require("vue-loader");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const path = require("path");
 
@@ -45,6 +46,10 @@ module.exports = {
 		new VueLoaderPlugin(),
 		new DefinePlugin({
 			"process.env.PUBLIC_PATH": JSON.stringify(PUBLIC_PATH)
+		}),
+		new HtmlWebpackPlugin({
+			title: 'conservify: diagnostics',
+			template: 'static/index.html'
 		}),
 	]
 };

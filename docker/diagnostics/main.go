@@ -226,6 +226,7 @@ func main() {
 
 	// NOTE Move this to PathPrefix
 	router.Handle("/", static).Methods("GET")
+	router.Handle("/bundle.js", static).Methods("GET")
 	router.Handle("/App.js", static).Methods("GET")
 	router.Handle("/App.css", static).Methods("GET")
 
