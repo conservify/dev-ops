@@ -32,6 +32,10 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 	}
 
 	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+
 		meta, err := readMeta(filepath.Join(r.Path, e.Name(), "meta.json"))
 		if err != nil {
 			return nil, err
@@ -57,6 +61,7 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 			Device:   device,
 			Size:     size,
 			Location: "/archives/" + e.Name(),
+			Path:     filepath.Join(r.Path, e.Name()),
 		})
 	}
 
@@ -95,6 +100,17 @@ func (r *Repository) FindByID(ctx context.Context, id string) (archive *Archive,
 			return a, nil
 		}
 	}
+
+	return
+}
+
+func (r *Repository) FindZipByID(ctx context.Context, id string) (path string, err error) {
+	archive, err := r.FindByID(ctx, id)
+	if err != nil {
+		return "", err
+	}
+
+	_ = archive
 
 	return
 }

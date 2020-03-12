@@ -4,8 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	_ "fmt"
-	_ "io"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -90,13 +89,21 @@ func download(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 
 	log.Printf("download %+v", archive)
 
-	bytes, err := json.Marshal(archive)
+	path, err := ZipDirectory(archive.Path)
 	if err != nil {
 		return err
 	}
 
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
 	w.WriteHeader(http.StatusOK)
-	w.Write(bytes)
+
+	io.Copy(w, f)
 
 	return nil
 }

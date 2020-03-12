@@ -16,6 +16,7 @@ type Archive struct {
 	Device   map[string]string `json:"device"`
 	Size     int64             `json:"size"`
 	Location string            `json:"location"`
+	Path     string            `json:"-"`
 }
 
 type IndexResponse struct {

@@ -6,6 +6,7 @@
                 <tr>
                     <th class="track" style="width: 50;">Time</th>
                     <th class="artist" style="width: 50;">Phrase</th>
+                    <th class="download" style="">Download</th>
                 </tr>
             </thead>
             <tbody>
@@ -13,6 +14,9 @@
                     <td class="time">{{ archive.time }}</td>
                     <td class="phrase">
                         <a :href="'?id=' + archive.id" v-on:click.prevent="view(archive)">{{ archive.phrase }}</a>
+                    </td>
+                    <td class="download">
+                        <a :href="'/archives/' + archive.id + '.zip'">Download</a>
                     </td>
                 </tr>
             </tbody>
