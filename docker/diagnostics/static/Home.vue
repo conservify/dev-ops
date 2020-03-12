@@ -73,6 +73,9 @@ export default {
 }
 </script>
 <style>
+html {
+    overflow-y: scroll;
+}
 table.archives {
     width: 100%;
 }

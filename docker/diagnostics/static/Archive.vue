@@ -93,6 +93,9 @@ export default {
 }
 </script>
 <style>
+html {
+	overflow-y: scroll;
+}
 .device-table {
     font-size: 80%;
     width: 100%;
