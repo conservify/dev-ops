@@ -16,7 +16,7 @@
                         <a :href="'?id=' + archive.id" v-on:click.prevent="view(archive)">{{ archive.phrase }}</a>
                     </td>
                     <td class="download">
-                        <a :href="'/archives/' + archive.id + '.zip?token=' + token">Download</a>
+                        <a :href="'/diagnostics/archives/' + archive.id + '.zip?token=' + token">Download</a>
                     </td>
                 </tr>
             </tbody>
@@ -27,10 +27,10 @@
 export default {
     name: 'Home',
     props: {
-		token: {
-			required: true
-		}
-	},
+        token: {
+            required: true,
+        },
+    },
     data: () => {
         return {
             archives: [],
@@ -45,13 +45,16 @@ export default {
             this.$emit('navigate', '?id=' + archive.id)
         },
         refresh() {
-            fetch('/archives', {
-				headers: {
-					"Authorization": this.token
-				}
-			}) .then(response => {
+            const options = {
+                headers: {
+                    Authorization: this.token,
+                },
+            }
+            fetch('archives', options)
+                .then(response => {
                     return response.json()
-                }) .then(archives => {
+                })
+                .then(archives => {
                     this.archives = archives.archives
                 })
         },

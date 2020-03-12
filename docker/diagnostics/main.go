@@ -215,20 +215,20 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	static := http.FileServer(http.Dir("./static"))
+	static := http.StripPrefix("/diagnostics/", http.FileServer(http.Dir("./static")))
 
-	router.HandleFunc("/archives", middleware(services, secure(index))).Methods("GET")
-	router.HandleFunc("/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
-	router.HandleFunc("/archives/{id}", middleware(services, secure(view))).Methods("GET")
-	router.HandleFunc("/search/{query}", middleware(services, secure(search))).Methods("GET")
-	router.HandleFunc("/login", middleware(services, login)).Methods("POST")
-	router.HandleFunc("/", middleware(services, receive)).Methods("POST")
+	router.HandleFunc("/diagnostics/archives", middleware(services, secure(index))).Methods("GET")
+	router.HandleFunc("/diagnostics/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
+	router.HandleFunc("/diagnostics/archives/{id}", middleware(services, secure(view))).Methods("GET")
+	router.HandleFunc("/diagnostics/search/{query}", middleware(services, secure(search))).Methods("GET")
+	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
+	router.HandleFunc("/diagnostics/", middleware(services, receive)).Methods("POST")
 
 	// NOTE Move this to PathPrefix
-	router.Handle("/", static).Methods("GET")
-	router.Handle("/bundle.js", static).Methods("GET")
-	router.Handle("/App.js", static).Methods("GET")
-	router.Handle("/App.css", static).Methods("GET")
+	router.Handle("/diagnostics/", static).Methods("GET")
+	router.Handle("/diagnostics/bundle.js", static).Methods("GET")
+	router.Handle("/diagnostics/App.js", static).Methods("GET")
+	router.Handle("/diagnostics/App.css", static).Methods("GET")
 
 	log.Printf("listening on :8080")
 
