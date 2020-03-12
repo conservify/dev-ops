@@ -51,7 +51,10 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 			return nil, err
 		}
 
-		files := make([]*ArchiveFile, 0)
+		files, err := getFiles(filepath.Join(r.Path, e.Name()))
+		if err != nil {
+			return nil, err
+		}
 
 		a = append(a, &Archive{
 			ID:       e.Name(),
@@ -153,4 +156,24 @@ func sizeOfDirectory(path string) (int64, error) {
 		return err
 	})
 	return size, err
+}
+
+func getFiles(path string) (files []*ArchiveFile, err error) {
+	entries, err := ioutil.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+
+	files = make([]*ArchiveFile, 0)
+
+	for _, e := range entries {
+		if !e.IsDir() {
+			files = append(files, &ArchiveFile{
+				Name: e.Name(),
+				Size: e.Size(),
+			})
+		}
+	}
+
+	return
 }

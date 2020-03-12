@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -26,7 +27,18 @@ type Services struct {
 }
 
 func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
-	archives, err := s.Repository.ListAll(ctx)
+	query := r.URL.Query()["q"]
+
+	var archives []*Archive
+	var err error
+
+	if len(query) == 0 {
+		log.Printf("listing")
+		archives, err = s.Repository.ListAll(ctx)
+	} else {
+		log.Printf("searching %v", query[0])
+		archives, err = s.Repository.FindByQuery(ctx, query[0])
+	}
 	if err != nil {
 		return err
 	}
@@ -137,32 +149,29 @@ func download(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 	return nil
 }
 
-func search(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
-	query := mux.Vars(r)["query"]
+func archiveFile(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	id := mux.Vars(r)["id"]
+	file := mux.Vars(r)["file"]
 
-	archives, err := s.Repository.FindByQuery(ctx, query)
+	archive, err := s.Repository.FindByID(ctx, id)
 	if err != nil {
 		return err
 	}
 
-	log.Printf("found %+v", archives)
+	path := filepath.Join(archive.Path, file)
 
-	if len(archives) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		return nil
-	}
+	log.Printf("serving %v", path)
 
-	response := &IndexResponse{
-		Archives: archives,
-	}
-
-	bytes, err := json.Marshal(response)
+	f, err := os.Open(path)
 	if err != nil {
 		return err
 	}
+
+	defer f.Close()
 
 	w.WriteHeader(http.StatusOK)
-	w.Write(bytes)
+
+	io.Copy(w, f)
 
 	return nil
 }
@@ -215,19 +224,18 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	static := http.StripPrefix("/diagnostics/", http.FileServer(http.Dir("./static")))
+	static := http.StripPrefix("/diagnostics/", http.FileServer(http.Dir("./public")))
 
 	router.HandleFunc("/diagnostics/archives", middleware(services, secure(index))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}", middleware(services, secure(view))).Methods("GET")
-	router.HandleFunc("/diagnostics/search/{query}", middleware(services, secure(search))).Methods("GET")
+	router.HandleFunc("/diagnostics/archives/{id}/{file}", middleware(services, secure(archiveFile))).Methods("GET")
 	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
 	router.HandleFunc("/diagnostics/", middleware(services, receive)).Methods("POST")
 
 	// NOTE Move this to PathPrefix
 	router.Handle("/diagnostics/", static).Methods("GET")
 	router.Handle("/diagnostics/bundle.js", static).Methods("GET")
-	router.Handle("/diagnostics/App.js", static).Methods("GET")
 	router.Handle("/diagnostics/App.css", static).Methods("GET")
 
 	log.Printf("listening on :8080")

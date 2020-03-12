@@ -1,11 +1,17 @@
 <!-- Login.vue -->
 
 <template>
-    <div>
-        <form>
-            <input type="text" name="user" v-model="user" />
-            <input type="password" name="password" v-model="password" />
-            <button v-on:click.prevent="login">Login</button>
+    <div class="container-fluid">
+        <form class="col-md-4">
+			<div class="form-group">
+				<label for="user">Password</label>
+				<input type="text" name="user" v-model="user" class="form-control" />
+			</div>
+			<div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" name="password" v-model="password" class="form-control" />
+			</div>
+            <button v-on:click.prevent="login" class="btn btn-default" type="submit">Login</button>
         </form>
     </div>
 </template>

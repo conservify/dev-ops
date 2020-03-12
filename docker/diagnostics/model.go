@@ -6,6 +6,7 @@ import (
 
 type ArchiveFile struct {
 	Name string `json:"name"`
+	Size int64  `json:"size"`
 }
 
 type Archive struct {

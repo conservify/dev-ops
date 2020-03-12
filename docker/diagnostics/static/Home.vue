@@ -1,17 +1,17 @@
 <!-- Home.vue -->
 <template>
-    <div>
-        <table>
+    <div class="container">
+        <table class="archives">
             <thead>
                 <tr>
-                    <th class="track" style="width: 50;">Time</th>
-                    <th class="artist" style="width: 50;">Phrase</th>
-                    <th class="download" style="">Download</th>
+                    <th class="track" style="">Time</th>
+                    <th class="artist" style="">Phrase</th>
+                    <th class="download" style=""></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="archive in archives" class="archive">
-                    <td class="time">{{ archive.time }}</td>
+                    <td class="time">{{ archive.time | prettyTime }}</td>
                     <td class="phrase">
                         <a :href="'?id=' + archive.id" v-on:click.prevent="view(archive)">{{ archive.phrase }}</a>
                     </td>
@@ -24,9 +24,14 @@
     </div>
 </template>
 <script>
+import moment from 'moment'
+
 export default {
     name: 'Home',
     props: {
+		query: {
+            required: true,
+		},
         token: {
             required: true,
         },
@@ -37,28 +42,37 @@ export default {
         }
     },
     created() {
-        this.refresh()
+		const options = {
+			headers: {
+				Authorization: this.token,
+			},
+		}
+
+		fetch('archives?q=' + (this.query.q || ""), options)
+            .then(response => response.json())
+			.then(archives => {
+				if (archives.archives.length == 1) {
+					this.$emit('navigate', '?id=' + archives.archives[0].id)
+				}
+				else {
+					this.archives = archives.archives
+				}
+			})
     },
-    filters: {},
+    filters: {
+        prettyTime(value) {
+            return moment(value).format('MMM Do YYYY hh:mm:ss')
+        },
+	},
     methods: {
         view(archive) {
             this.$emit('navigate', '?id=' + archive.id)
         },
-        refresh() {
-            const options = {
-                headers: {
-                    Authorization: this.token,
-                },
-            }
-            fetch('archives', options)
-                .then(response => {
-                    return response.json()
-                })
-                .then(archives => {
-                    this.archives = archives.archives
-                })
-        },
     },
 }
 </script>
-<style></style>
+<style>
+	table.archives {
+	width: 100%;
+	}
+</style>
