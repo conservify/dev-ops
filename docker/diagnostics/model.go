@@ -34,6 +34,11 @@ type LoginPayload struct {
 	Password string `json:"password"`
 }
 
+type User struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+}
+
 type ByTime []*Archive
 
 func (s ByTime) Len() int {

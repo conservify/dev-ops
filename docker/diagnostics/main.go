@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -43,17 +46,43 @@ func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Requ
 	return nil
 }
 
+func tryAuthenticate(payload *LoginPayload) *User {
+	for _, user := range Users {
+		if user.User == payload.User && user.Password == payload.Password {
+			return &user
+		}
+	}
+	return nil
+}
+
 func login(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
 	payload := &LoginPayload{}
 
 	dec := json.NewDecoder(r.Body)
-
 	err := dec.Decode(payload)
 	if err != nil {
 		return err
 	}
 
-	w.WriteHeader(http.StatusOK)
+	user := tryAuthenticate(payload)
+	if user == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return nil
+	}
+
+	key, err := base64.StdEncoding.DecodeString(SessionKey)
+	if err != nil {
+		return fmt.Errorf("error decoding session key: %v", err)
+	}
+
+	token := NewToken(time.Now())
+	signed, err := token.SignedString(key)
+	if err != nil {
+		return fmt.Errorf("error signing token: %v", err)
+	}
+
+	w.Header().Set("Authorization", "Bearer "+signed)
+	w.WriteHeader(http.StatusNoContent)
 
 	return nil
 }
@@ -188,10 +217,10 @@ func main() {
 
 	static := http.FileServer(http.Dir("./static"))
 
-	router.HandleFunc("/archives", middleware(services, index)).Methods("GET")
-	router.HandleFunc("/archives/{id}.zip", middleware(services, download)).Methods("GET")
-	router.HandleFunc("/archives/{id}", middleware(services, view)).Methods("GET")
-	router.HandleFunc("/search/{query}", middleware(services, search)).Methods("GET")
+	router.HandleFunc("/archives", middleware(services, secure(index))).Methods("GET")
+	router.HandleFunc("/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
+	router.HandleFunc("/archives/{id}", middleware(services, secure(view))).Methods("GET")
+	router.HandleFunc("/search/{query}", middleware(services, secure(search))).Methods("GET")
 	router.HandleFunc("/login", middleware(services, login)).Methods("POST")
 	router.HandleFunc("/", middleware(services, receive)).Methods("POST")
 

@@ -31,7 +31,11 @@ export default {
                 method: 'POST',
                 body: JSON.stringify(payload),
             }).then(r => {
-                console.log(r)
+				const token = r.headers.get("Authorization")
+				if (token) {
+					localStorage.setItem("token", token)
+					this.$emit('authenticated', token)
+				}
             })
         },
     },

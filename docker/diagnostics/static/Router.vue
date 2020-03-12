@@ -2,7 +2,7 @@
 
 <template>
     <div>
-        <component :is="visible" :query="query" @navigate="handleNavigate"></component>
+        <component :is="visible" :token="token" :query="query" @navigate="handleNavigate" @authenticated="handleAuthenticated"></component>
     </div>
 </template>
 
@@ -28,6 +28,7 @@ export default {
         return {
             path: window.location.pathname,
             rawQuery: window.location.search,
+			token: null,
         }
     },
     methods: {
@@ -36,20 +37,30 @@ export default {
             history.pushState({}, '', url)
             this.rawQuery = url
         },
+        handleAuthenticated(token) {
+			console.log("authenticated")
+			this.token = token;
+        },
     },
     computed: {
-        query() {
-            return parseQuery(this.rawQuery)
-        },
         visible() {
+			if (!this.token) {
+				return Login
+			}
+
             const query = parseQuery(this.rawQuery)
             if (query.id) {
                 return Archive
             }
             return Home
         },
+        query() {
+            return parseQuery(this.rawQuery)
+        },
     },
     created() {
+		this.token = localStorage.getItem("token")
+
         window.onpopstate = ev => {
             console.log('location: ' + window.location + ', state: ' + JSON.stringify(event.state))
             this.handleNavigate(window.location.search)
