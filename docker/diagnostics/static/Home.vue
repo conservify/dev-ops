@@ -2,6 +2,16 @@
 <template>
     <div class="container">
         <div class="col-md-12">
+            &nbsp;
+        </div>
+        <div class="col-md-12">
+            <form class="form-inline">
+                <label class="sr-only" for="search">Search</label>
+                <input type="text" name="search" v-model="search" class="form-control mb-2 mr-sm-2" />
+                <button v-on:click.prevent="refresh" class="btn btn-primary mb-2" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="col-md-12">
             <table class="archives">
                 <thead>
                     <tr>
@@ -41,24 +51,11 @@ export default {
     data: () => {
         return {
             archives: [],
+            search: null,
         }
     },
     created() {
-        const options = {
-            headers: {
-                Authorization: this.token,
-            },
-        }
-
-        fetch('archives?q=' + (this.query.q || ''), options)
-            .then(response => response.json())
-            .then(archives => {
-                if (archives.archives.length == 1) {
-                    this.$emit('navigate', '?id=' + archives.archives[0].id)
-                } else {
-                    this.archives = archives.archives
-                }
-            })
+        this.refresh()
     },
     filters: {
         prettyTime(value) {
@@ -68,6 +65,24 @@ export default {
     methods: {
         view(archive) {
             this.$emit('navigate', '?id=' + archive.id)
+        },
+        refresh() {
+            const filter = this.search || (this.query.q || '')
+            const url = 'archives?q=' + filter
+            const options = {
+                headers: {
+                    Authorization: this.token,
+                },
+            }
+            fetch(url, options)
+                .then(response => response.json())
+                .then(archives => {
+                    if (archives.archives.length == 1) {
+                        this.$emit('navigate', '?id=' + archives.archives[0].id)
+                    } else {
+                        this.archives = archives.archives
+                    }
+                })
         },
     },
 }
