@@ -30,7 +30,7 @@
         </div>
 		<div class="row" v-if="analysis">
 			<div class="col-md-12">
-				<table class="table table-condensed">
+				<table class="table table-condensed stations">
 					<thead>
 						<tr>
 							<th>Station</th>
@@ -140,5 +140,10 @@ html {
 }
 .app-logs {
     font-size: 80%;
+}
+table.stations th, table.stations td {
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-left: 0;
 }
 </style>
