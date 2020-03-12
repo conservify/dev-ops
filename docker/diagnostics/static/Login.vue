@@ -27,7 +27,7 @@ export default {
                 user: this.user,
                 password: this.password,
             }
-            return fetch('/login', {
+            return fetch('login', {
                 method: 'POST',
                 body: JSON.stringify(payload),
             }).then(r => {
