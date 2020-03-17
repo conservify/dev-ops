@@ -281,7 +281,7 @@ func main() {
 	router.HandleFunc("/diagnostics/archives/{id}/analysis", middleware(services, secure(analysis))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}/{file}", middleware(services, secure(archiveFile))).Methods("GET")
 	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
-	router.HandleFunc("/diagnostics/", middleware(services, receive)).Methods("POST")
+	router.PathPrefix("/diagnostics/").HandlerFunc(middleware(services, receive)).Methods("POST")
 
 	// NOTE Move this to PathPrefix
 	router.Handle("/diagnostics/", static).Methods("GET")
