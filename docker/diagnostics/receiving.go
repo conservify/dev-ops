@@ -27,7 +27,7 @@ func saveOrReadMeta(batch, path string) (meta *UploadMeta, created bool, err err
 
 		defer file.Close()
 
-		meta := &UploadMeta{
+		meta = &UploadMeta{
 			Phrase: strings.Join(phrase, " "),
 			Batch:  batch,
 			Time:   time.Now(),
@@ -114,9 +114,11 @@ func receive(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Re
 	w.Write(bytes)
 
 	if created {
-		err := s.Notifier.NotifyReceived(meta)
-		if err != nil {
-			return err
+		if meta != nil {
+			err := s.Notifier.NotifyReceived(meta)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

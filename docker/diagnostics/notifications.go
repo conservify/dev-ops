@@ -23,6 +23,11 @@ func NewSlackNotifier(url, channel, token string) (n *Notifier, err error) {
 
 func (n *Notifier) NotifyReceived(meta *UploadMeta) error {
 	if len(n.Channel) == 0 || len(n.Token) == 0 {
+		log.Printf("notifications: no configuration")
+		return nil
+	}
+	if meta == nil {
+		log.Printf("notifications: no meta")
 		return nil
 	}
 
