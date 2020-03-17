@@ -17,13 +17,17 @@ import (
 )
 
 type Options struct {
-	RootPath string
-	Strip    int
+	RootPath     string
+	Strip        int
+	URL          string
+	SlackToken   string
+	SlackChannel string
 }
 
 type Services struct {
 	Options    *Options
 	Repository *Repository
+	Notifier   *Notifier
 }
 
 func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
@@ -238,8 +242,11 @@ func middleware(services *Services, h func(context.Context, *Services, http.Resp
 func main() {
 	o := &Options{}
 
-	flag.StringVar(&o.RootPath, "path", "", "path")
 	flag.IntVar(&o.Strip, "strip", 0, "strip")
+	flag.StringVar(&o.RootPath, "path", "", "path")
+	flag.StringVar(&o.URL, "url", "", "url")
+	flag.StringVar(&o.SlackChannel, "slack-channel", "", "slack-channel")
+	flag.StringVar(&o.SlackToken, "slack-token", "", "slack-token")
 
 	flag.Parse()
 
@@ -253,9 +260,15 @@ func main() {
 		panic(err)
 	}
 
+	notifier, err := NewSlackNotifier(o.URL, o.SlackChannel, o.SlackToken)
+	if err != nil {
+		panic(err)
+	}
+
 	services := &Services{
 		Options:    o,
 		Repository: repo,
+		Notifier:   notifier,
 	}
 
 	router := mux.NewRouter().StrictSlash(true)
