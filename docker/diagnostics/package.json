@@ -12,6 +12,7 @@
         "lodash": "^4.17.15",
         "moment": "^2.24.0",
         "vue": "^2.6.11",
+        "vue-json-pretty": "^1.6.3",
         "vuejs": "^3.0.1"
     },
     "devDependencies": {

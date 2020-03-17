@@ -6,3 +6,6 @@ docker-test: docker-image
 
 test:
 	webpack-dev-server
+
+pack:
+	webpack --mode production

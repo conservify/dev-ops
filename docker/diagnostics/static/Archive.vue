@@ -9,23 +9,6 @@
         <h4>{{ archive.time | prettyTime }}</h4>
 
         <div class="alert alert-primary" role="alert">
-            Device
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <table class="device-table">
-                    <tbody>
-                        <tr v-for="(value, key) in device">
-                            <th>{{ key }}</th>
-                            <td>{{ value }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-6"></div>
-        </div>
-
-        <div class="alert alert-primary" role="alert">
             Mobile App DB
         </div>
 		<div class="row" v-if="analysis">
@@ -53,6 +36,16 @@
 				<a :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
 			</div>
 		</div>
+		
+        <div class="alert alert-primary" role="alert">
+            Device / Configuration
+        </div>
+        <div class="row">
+            <div class="col-md-6 device-json">
+				<vue-json-pretty :data="device" :showDoubleQuotes="false"></vue-json-pretty>
+            </div>
+            <div class="col-md-6"></div>
+        </div>
 
         <div class="alert alert-primary" role="alert" v-if="mobileAppLogs">
             Mobile App Logs
@@ -65,10 +58,15 @@
     </div>
 </template>
 <script>
+import _ from 'lodash'
 import moment from 'moment'
+import VueJsonPretty from 'vue-json-pretty'
 
 export default {
     name: 'Archive',
+	components: {
+		VueJsonPretty 
+	},
     props: {
         token: {
             required: true,
@@ -138,12 +136,21 @@ html {
     font-size: 80%;
     width: 100%;
 }
+.alert {
+	margin-top: 20px;
+}
 .app-logs {
     font-size: 80%;
 }
+.device-json .vjs-tree {
+    font-size: 90%;
+}
+table.stations {
+    font-size: 90%;
+}
 table.stations th, table.stations td {
-	padding-top: 1;
-	padding-bottom: 1;
+	padding-top: 4px;
+	padding-bottom: 4px;
 	padding-left: 0;
 }
 </style>
