@@ -18,6 +18,7 @@
 						<tr>
 							<th>Station</th>
 							<th>Device ID</th>
+							<th>Device ID</th>
 							<th>Generation ID</th>
 						</tr>
 					</thead>
@@ -25,6 +26,7 @@
 						<tr v-for="station in analysis.stations">
 							<td>{{ station.name }}</td>
 							<td>{{ station.device_id }}</td>
+							<td><a target="_blank" :href="station.device_id | deviceLogsUrl">{{ station.device_id | hexToBase64 }}</a></td>
 							<td>{{ station.generation }}</td>
 						</tr>
 					</tbody>
@@ -33,7 +35,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<a :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
+				<a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
 			</div>
 		</div>
 		
@@ -120,6 +122,12 @@ export default {
         prettyTime(value) {
             return moment(value).format('MMM Do YYYY hh:mm:ss')
         },
+		hexToBase64(value) {
+			return Buffer.from(value, 'hex').toString('base64')
+		},
+		deviceLogsUrl(value) {
+			return 'https://code.conservify.org/logs-viewer?range=864000&query=device_id:"' + Buffer.from(value, 'hex').toString('base64') + '"'
+		},
     },
     methods: {
         back() {
