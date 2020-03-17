@@ -131,12 +131,12 @@ func readMeta(path string) (meta *UploadMeta, err error) {
 	return
 }
 
-func readDevice(path string) (meta map[string]string, err error) {
+func readDevice(path string) (meta map[string]interface{}, err error) {
 	rawMeta, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("error: %v", err)
 	}
-	meta = make(map[string]string)
+	meta = make(map[string]interface{})
 	err = json.Unmarshal(rawMeta, &meta)
 	if err != nil {
 		return nil, fmt.Errorf("error: %v", err)

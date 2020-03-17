@@ -10,14 +10,14 @@ type ArchiveFile struct {
 }
 
 type Archive struct {
-	ID       string            `json:"id"`
-	Time     time.Time         `json:"time"`
-	Files    []*ArchiveFile    `json:"files"`
-	Phrase   string            `json:"phrase"`
-	Device   map[string]string `json:"device"`
-	Size     int64             `json:"size"`
-	Location string            `json:"location"`
-	Path     string            `json:"-"`
+	ID       string                 `json:"id"`
+	Time     time.Time              `json:"time"`
+	Files    []*ArchiveFile         `json:"files"`
+	Phrase   string                 `json:"phrase"`
+	Device   map[string]interface{} `json:"device"`
+	Size     int64                  `json:"size"`
+	Location string                 `json:"location"`
+	Path     string                 `json:"-"`
 }
 
 type IndexResponse struct {
