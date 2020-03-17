@@ -246,7 +246,7 @@ func main() {
 	flag.StringVar(&o.RootPath, "path", "", "path")
 	flag.StringVar(&o.URL, "url", "", "url")
 	flag.StringVar(&o.SlackChannel, "slack-channel", "", "slack-channel")
-	flag.StringVar(&o.SlackToken, "slack-token", "", "slack-token")
+	flag.StringVar(&o.SlackToken, "slack-token", SlackToken, "slack-token")
 
 	flag.Parse()
 

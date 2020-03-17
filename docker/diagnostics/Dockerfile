@@ -17,4 +17,4 @@ COPY --from=js /app/public/* /app/public/
 
 RUN go build -o diagnostics *.go
 
-ENTRYPOINT [ "/app/diagnostics", "--strip", "1", "--path", "/data" ]
+ENTRYPOINT [ "/app/diagnostics", "--strip", "1", "--path", "/data", "--slack-channel", "automation", "--url", "https://code.conservify.org/diagnostics" ]
