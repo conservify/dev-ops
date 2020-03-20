@@ -28,7 +28,7 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 
 	entries, err := ioutil.ReadDir(r.Path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading directory: %v", err)
 	}
 
 	for _, e := range entries {
@@ -36,24 +36,28 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 			continue
 		}
 
-		meta, err := readMeta(filepath.Join(r.Path, e.Name(), "meta.json"))
+		metaPath := filepath.Join(r.Path, e.Name(), "meta.json")
+		meta, err := readMeta(metaPath)
 		if err != nil {
-			return nil, err
+			log.Printf("malformed: %v", metaPath)
+			continue
 		}
 
-		device, err := readDevice(filepath.Join(r.Path, e.Name(), "device.json"))
+		devicePath := filepath.Join(r.Path, e.Name(), "device.json")
+		device, err := readDevice(devicePath)
 		if err != nil {
+			log.Printf("malformed: %v", devicePath)
 			return nil, err
 		}
 
 		size, err := sizeOfDirectory(filepath.Join(r.Path, e.Name()))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error getting repo %v size: %v", e.Name(), err)
 		}
 
 		files, err := getFiles(filepath.Join(r.Path, e.Name()))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error getting repo %v files: %v", e.Name(), err)
 		}
 
 		a = append(a, &Archive{
