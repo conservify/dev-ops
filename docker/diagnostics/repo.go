@@ -123,6 +123,10 @@ func (r *Repository) FindZipByID(ctx context.Context, id string) (path string, e
 }
 
 func readMeta(path string) (meta *UploadMeta, err error) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		meta = &UploadMeta{}
+		return meta, nil
+	}
 	rawMeta, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("error: %v", err)
@@ -136,6 +140,10 @@ func readMeta(path string) (meta *UploadMeta, err error) {
 }
 
 func readDevice(path string) (meta map[string]interface{}, err error) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		meta = make(map[string]interface{})
+		return meta, nil
+	}
 	rawMeta, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("error: %v", err)
