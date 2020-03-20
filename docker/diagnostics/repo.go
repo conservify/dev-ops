@@ -47,7 +47,7 @@ func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
 		device, err := readDevice(devicePath)
 		if err != nil {
 			log.Printf("malformed: %v", devicePath)
-			return nil, err
+			continue
 		}
 
 		size, err := sizeOfDirectory(filepath.Join(r.Path, e.Name()))
