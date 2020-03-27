@@ -17,7 +17,7 @@ func NewToken(now time.Time) *jwtgo.Token {
 	token := jwtgo.New(jwtgo.SigningMethodHS512)
 	token.Claims = jwtgo.MapClaims{
 		"iat":    now.Unix(),
-		"exp":    now.Add(time.Hour * 168).Unix(),
+		"exp":    now.Add(time.Hour * 168 * 52).Unix(),
 		"scopes": scopes,
 	}
 

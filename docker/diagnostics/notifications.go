@@ -33,7 +33,7 @@ func (n *Notifier) NotifyReceived(meta *UploadMeta) error {
 
 	api := slack.New(n.Token)
 
-	message := fmt.Sprintf("received diagnostics: %v (%v?id=%v)", meta.Phrase, n.URL, meta.Batch)
+	message := fmt.Sprintf("diagnostics: %v (%v?id=%v)", meta.Phrase, n.URL, meta.Batch)
 	channelID, ts, err := api.PostMessage(n.Channel, slack.MsgOptionText(message, false))
 	if err != nil {
 		return err
