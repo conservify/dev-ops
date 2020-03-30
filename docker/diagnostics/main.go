@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -290,7 +291,13 @@ func main() {
 
 	log.Printf("listening on :8080")
 
-	err = http.ListenAndServe(":8080", router)
+	withCors := handlers.CORS(
+		handlers.ExposedHeaders([]string{"Authorization"}),
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"*"}))(router)
+
+	err = http.ListenAndServe(":8080", withCors)
 	if err != nil {
 		panic(err)
 	}
