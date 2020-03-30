@@ -37,6 +37,7 @@
 </template>
 <script>
 import moment from 'moment'
+import Config from './config'
 
 export default {
     name: 'Home',
@@ -67,8 +68,8 @@ export default {
             this.$emit('navigate', '?id=' + archive.id)
         },
         refresh() {
-            const filter = this.search || (this.query.q || '')
-            const url = 'archives?q=' + filter
+            const filter = this.search || this.query.q || ''
+            const url = Config.BaseUrl + 'archives?q=' + filter
             const options = {
                 headers: {
                     Authorization: this.token,

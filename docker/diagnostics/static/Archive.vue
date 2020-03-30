@@ -11,40 +11,42 @@
         <div class="alert alert-primary" role="alert">
             Mobile App DB
         </div>
-		<div class="row" v-if="analysis">
-			<div class="col-md-12">
-				<table class="table table-condensed stations">
-					<thead>
-						<tr>
-							<th>Station</th>
-							<th>Device ID</th>
-							<th>Device ID</th>
-							<th>Generation ID</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="station in analysis.stations">
-							<td>{{ station.name }}</td>
-							<td>{{ station.device_id }}</td>
-							<td><a target="_blank" :href="station.device_id | deviceLogsUrl">{{ station.device_id | hexToBase64 }}</a></td>
-							<td>{{ station.generation }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
-			</div>
-		</div>
-		
+        <div class="row" v-if="analysis">
+            <div class="col-md-12">
+                <table class="table table-condensed stations">
+                    <thead>
+                        <tr>
+                            <th>Station</th>
+                            <th>Device ID</th>
+                            <th>Device ID</th>
+                            <th>Generation ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="station in analysis.stations">
+                            <td>{{ station.name }}</td>
+                            <td>{{ station.device_id }}</td>
+                            <td>
+                                <a target="_blank" :href="station.device_id | deviceLogsUrl">{{ station.device_id | hexToBase64 }}</a>
+                            </td>
+                            <td>{{ station.generation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token">Download</a>
+            </div>
+        </div>
+
         <div class="alert alert-primary" role="alert">
             Device / Configuration
         </div>
         <div class="row">
             <div class="col-md-6 device-json">
-				<vue-json-pretty :data="device" :showDoubleQuotes="false"></vue-json-pretty>
+                <vue-json-pretty :data="device" :showDoubleQuotes="false"></vue-json-pretty>
             </div>
             <div class="col-md-6"></div>
         </div>
@@ -53,9 +55,9 @@
             Mobile App Logs
         </div>
         <div class="row" v-if="mobileAppLogs">
-			<div class="col-md-12">
-				<pre class="app-logs">{{ mobileAppLogs }}</pre>
-			</div>
+            <div class="col-md-12">
+                <pre class="app-logs">{{ mobileAppLogs }}</pre>
+            </div>
         </div>
     </div>
 </template>
@@ -63,12 +65,13 @@
 import _ from 'lodash'
 import moment from 'moment'
 import VueJsonPretty from 'vue-json-pretty'
+import Config from './config'
 
 export default {
     name: 'Archive',
-	components: {
-		VueJsonPretty 
-	},
+    components: {
+        VueJsonPretty,
+    },
     props: {
         token: {
             required: true,
@@ -82,7 +85,7 @@ export default {
             archive: null,
             device: null,
             mobileAppLogs: null,
-			analysis: null,
+            analysis: null,
         }
     },
     created() {
@@ -94,25 +97,25 @@ export default {
             },
         }
 
-        fetch('archives/' + this.query.id, options)
+        fetch(Config.BaseUrl + 'archives/' + this.query.id, options)
             .then(response => response.json())
             .then(archive => {
                 this.archive = archive
             })
 
-        fetch('archives/' + this.query.id + '/app.txt', options)
+        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/app.txt', options)
             .then(response => response.text())
             .then(mobileAppLogs => {
                 this.mobileAppLogs = mobileAppLogs
             })
 
-        fetch('archives/' + this.query.id + '/device.json', options)
+        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/device.json', options)
             .then(response => response.json())
             .then(device => {
                 this.device = device
             })
 
-        fetch('archives/' + this.query.id + '/analysis', options)
+        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/analysis', options)
             .then(response => response.json())
             .then(analysis => {
                 this.analysis = analysis
@@ -122,12 +125,16 @@ export default {
         prettyTime(value) {
             return moment(value).format('MMM Do YYYY hh:mm:ss')
         },
-		hexToBase64(value) {
-			return Buffer.from(value, 'hex').toString('base64')
-		},
-		deviceLogsUrl(value) {
-			return 'https://code.conservify.org/logs-viewer?range=864000&query=device_id:"' + Buffer.from(value, 'hex').toString('base64') + '"'
-		},
+        hexToBase64(value) {
+            return Buffer.from(value, 'hex').toString('base64')
+        },
+        deviceLogsUrl(value) {
+            return (
+                'https://code.conservify.org/logs-viewer?range=864000&query=device_id:"' +
+                Buffer.from(value, 'hex').toString('base64') +
+                '"'
+            )
+        },
     },
     methods: {
         back() {
@@ -138,14 +145,14 @@ export default {
 </script>
 <style>
 html {
-	overflow-y: scroll;
+    overflow-y: scroll;
 }
 .device-table {
     font-size: 80%;
     width: 100%;
 }
 .alert {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 .app-logs {
     font-size: 80%;
@@ -156,9 +163,10 @@ html {
 table.stations {
     font-size: 90%;
 }
-table.stations th, table.stations td {
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 0;
+table.stations th,
+table.stations td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 0;
 }
 </style>
