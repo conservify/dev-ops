@@ -44,8 +44,7 @@ func secure(h func(context.Context, *Services, http.ResponseWriter, *http.Reques
 	return func(ctx context.Context, services *Services, w http.ResponseWriter, req *http.Request) error {
 		authorization := getToken(req)
 		if authorization == "" {
-			w.WriteHeader(http.StatusUnauthorized)
-			return nil
+			return StatusError{http.StatusUnauthorized, fmt.Errorf("unauthorized")}
 		}
 
 		key, err := base64.StdEncoding.DecodeString(SessionKey)
@@ -60,14 +59,13 @@ func secure(h func(context.Context, *Services, http.ResponseWriter, *http.Reques
 			return key, nil
 		})
 		if err != nil {
-			return err
+			return StatusError{http.StatusUnauthorized, err}
 		}
 
 		if _, ok := token.Claims.(jwtgo.MapClaims); ok && token.Valid {
 			return h(ctx, services, w, req)
 		}
 
-		w.WriteHeader(http.StatusUnauthorized)
-		return nil
+		return StatusError{http.StatusUnauthorized, fmt.Errorf("unauthorized")}
 	}
 }

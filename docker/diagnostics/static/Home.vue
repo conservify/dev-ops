@@ -76,6 +76,13 @@ export default {
                 },
             }
             fetch(url, options)
+                .then(response => {
+                    if (response.status == 401) {
+                        this.$emit('logout')
+                        return Promise.reject('unauthorized')
+                    }
+                    return response
+                })
                 .then(response => response.json())
                 .then(archives => {
                     if (archives.archives.length == 1) {

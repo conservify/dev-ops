@@ -222,20 +222,26 @@ func middleware(services *Services, h func(context.Context, *Services, http.Resp
 		log.Printf("[http] %s %s", req.Method, req.URL)
 
 		ctx := req.Context()
-		err := h(ctx, services, w, req)
-		if err != nil {
+		handlerError := h(ctx, services, w, req)
+		if handlerError != nil {
 			details := struct {
 				Error string `json:"error"`
 			}{
-				err.Error(),
+				handlerError.Error(),
 			}
 			bytes, err := json.Marshal(details)
 			if err != nil {
 				panic(err)
 			}
 
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(bytes)
+			switch e := handlerError.(type) {
+			case StatusError:
+				w.WriteHeader(e.Status())
+				w.Write(bytes)
+			default:
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write(bytes)
+			}
 		}
 	}
 }

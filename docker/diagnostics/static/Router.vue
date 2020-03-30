@@ -2,7 +2,14 @@
 
 <template>
     <div>
-        <component :is="visible" :token="token" :query="query" @navigate="handleNavigate" @authenticated="handleAuthenticated"></component>
+        <component
+            :is="visible"
+            :token="token"
+            :query="query"
+            @navigate="handleNavigate"
+            @authenticated="handleAuthenticated"
+            @logout="handleLogout"
+        ></component>
     </div>
 </template>
 
@@ -28,7 +35,7 @@ export default {
         return {
             path: window.location.pathname,
             rawQuery: window.location.search,
-			token: null,
+            token: null,
         }
     },
     methods: {
@@ -38,15 +45,20 @@ export default {
             this.rawQuery = url
         },
         handleAuthenticated(token) {
-			console.log("authenticated")
-			this.token = token;
+            console.log('authenticated')
+            this.token = token
+        },
+        handleLogout() {
+            console.log('logout')
+            history.pushState({}, '', '')
+            this.token = null
         },
     },
     computed: {
         visible() {
-			if (!this.token) {
-				return Login
-			}
+            if (!this.token) {
+                return Login
+            }
 
             const query = parseQuery(this.rawQuery)
             if (query.id) {
@@ -59,7 +71,7 @@ export default {
         },
     },
     created() {
-		this.token = localStorage.getItem("token")
+        this.token = localStorage.getItem('token')
 
         window.onpopstate = ev => {
             console.log('location: ' + window.location + ', state: ' + JSON.stringify(event.state))
