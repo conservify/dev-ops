@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <form class="col-md-4">
             <div class="form-group">
-                <label for="user">Password</label>
+                <label for="user">User</label>
                 <input type="text" name="user" v-model="user" class="form-control" />
             </div>
             <div class="form-group">
