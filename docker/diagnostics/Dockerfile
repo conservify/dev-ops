@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . /app/
 
 RUN yarn install
-RUN node_modules/.bin/webpack --mode production
+RUN node_modules/.bin/webpack
 
 
 FROM golang:latest
