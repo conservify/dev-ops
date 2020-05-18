@@ -65,6 +65,7 @@ func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Requ
 
 func tryAuthenticate(payload *LoginPayload) *User {
 	for _, user := range Users {
+		log.Printf("checking %v %v", user.User, payload.User)
 		if user.User == payload.User && user.Password == payload.Password {
 			return &user
 		}
