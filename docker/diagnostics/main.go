@@ -39,7 +39,7 @@ func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Requ
 
 	if len(query) == 0 {
 		log.Printf("listing")
-		archives, err = s.Repository.ListAll(ctx)
+		archives, err = s.Repository.ListRecent(ctx)
 	} else {
 		log.Printf("searching %v", query[0])
 		archives, err = s.Repository.FindByQuery(ctx, query[0])

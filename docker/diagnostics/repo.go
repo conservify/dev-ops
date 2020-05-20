@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 )
 
 type Repository struct {
@@ -21,6 +22,25 @@ func NewRepository(path string) (r *Repository, err error) {
 		Path: path,
 	}
 	return
+}
+
+func (r *Repository) ListRecent(ctx context.Context) (a []*Archive, err error) {
+	all, err := r.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	filtered := make([]*Archive, 0)
+
+	cutoff := time.Now().Add(-21 * 24 * time.Hour)
+
+	for _, entry := range all {
+		if entry.Time.After(cutoff) {
+			filtered = append(filtered, entry)
+		}
+	}
+
+	return filtered, nil
 }
 
 func (r *Repository) ListAll(ctx context.Context) (a []*Archive, err error) {
