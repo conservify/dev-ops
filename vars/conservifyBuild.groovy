@@ -8,6 +8,7 @@ def call(Map parameters = [:]) {
     distribute = parameters.distribute
     clean = parameters.clean ?: "clean"
 	python = parameters.python ?: "python"
+	cmake = tool "cmake"
 
     if (!name) {
         error 'conservifyBuild: Name is required'
