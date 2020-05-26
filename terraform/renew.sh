@@ -24,10 +24,13 @@ docker run \
 	   -e AWS_SECRET_ACCESS_KEY \
 	   danihodovic/certbot-route53 -d fieldkit.org -d www.fieldkit.org -d portal.fieldkit.org -d api.fieldkit.org -m jacob@conservify.org
 
-# echo ../bin/terraform plan
-# echo ../bin/terraform apply
 
-# echo make dev plan apply
-# echo make prod plan apply
+# Right now this will successfully renew the certificates. Unfortunately the
+# way things are, it's tricky getting this to update the ELBs so I've been
+# doing this manually
+
+# Login to the EC2 Console and then go to the ELB and Edit the listener to
+# change the default certificate. Then you can run the plan again to delete the
+# old certificates.
 
 popd
