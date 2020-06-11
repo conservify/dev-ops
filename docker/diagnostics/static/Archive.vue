@@ -19,7 +19,6 @@
                             <th>Station</th>
                             <th>Device ID</th>
                             <th>Device ID</th>
-                            <th>Generation ID</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,7 +28,6 @@
                             <td>
                                 <a target="_blank" :href="station.device_id | deviceLogsUrl">{{ station.device_id | hexToBase64 }}</a>
                             </td>
-                            <td>{{ station.generation }}</td>
                         </tr>
                     </tbody>
                 </table>
