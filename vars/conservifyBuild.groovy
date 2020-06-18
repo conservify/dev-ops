@@ -17,7 +17,7 @@ def call(Map parameters = [:]) {
     try {
         stage ('git') {
             if (repository) {
-                git branch: 'master', url: repository
+                git branch: 'main', url: repository
             }
             else {
                 checkout scm

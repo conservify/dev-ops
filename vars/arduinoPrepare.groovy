@@ -26,10 +26,10 @@ fi
 
             dir ("cmake") {
                 if (!fileExists('.git/config')) {
-                    git branch: 'master', url: 'https://github.com/Conservify/cmake.git'
+                    git branch: 'main', url: 'https://github.com/Conservify/cmake.git'
                 }
                 else {
-                    sh "git checkout master && git pull origin master"
+                    sh "git checkout main && git pull origin main"
                 }
             }
 

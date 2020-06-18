@@ -1,5 +1,5 @@
 def call(goArch) {
-    node ("master") {
+    node ("primary") {
         def go = tool "golang-amd64"
         def build = createDirectory("build")
         def pkg = createDirectory("package")
@@ -12,7 +12,7 @@ def call(goArch) {
 
             stage ("simple-deps") {
                 dir ("github.com/conservify/simple-deps") {
-                    git branch: 'master', url: 'https://github.com/Conservify/simple-deps.git'
+                    git branch: 'main', url: 'https://github.com/Conservify/simple-deps.git'
 
                     sh "make deps && make"
                     sh "cp build/* ${pkg}"
@@ -20,7 +20,7 @@ def call(goArch) {
             }
             stage ("flasher") {
                 dir ("github.com/conservify/flasher") {
-                    git branch: 'master', url: 'https://github.com/Conservify/flasher.git'
+                    git branch: 'main', url: 'https://github.com/Conservify/flasher.git'
 
                     sh "make deps && make"
                     sh "cp -ar build/linux-arm/* ${pkg}"
@@ -28,14 +28,14 @@ def call(goArch) {
             }
             stage ("dev-ops") {
                 dir ("github.com/conservify/dev-ops") {
-                    git branch: 'master', url: 'https://github.com/Conservify/dev-ops.git'
+                    git branch: 'main', url: 'https://github.com/Conservify/dev-ops.git'
 
                     sh "make"
                 }
             }
             stage ("fktool") {
                 dir ("github.com/fieldkit/cloud") {
-                    git branch: 'master', url: 'https://github.com/fieldkit/cloud.git'
+                    git branch: 'main', url: 'https://github.com/fieldkit/cloud.git'
 
                     sh "make fktool"
                     sh "cp build/fktool ${pkg}"
