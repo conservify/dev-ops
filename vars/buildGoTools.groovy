@@ -1,5 +1,5 @@
 def call(goArch) {
-    node ("primary") {
+    node ("master") {
         def go = tool "golang-amd64"
         def build = createDirectory("build")
         def pkg = createDirectory("package")
