@@ -11,22 +11,43 @@ import (
 )
 
 /*
-   <hudson.plugins.git.util.BuildData plugin="git@4.1.1">
+   <hudson.plugins.git.util.BuildData plugin="git@4.2.2">
      <buildsByBranchName>
+       <entry>
+         <string>main</string>
+         <hudson.plugins.git.util.Build>
+           <marked plugin="git-client@3.2.1">
+             <sha1>d323e748cdc0cbd56bd4ee206611f7597fc92186</sha1>
+             <branches class="singleton-set">
+               <hudson.plugins.git.Branch>
+                 <sha1 reference="../../../sha1"/>
+                 <name>main</name>
+               </hudson.plugins.git.Branch>
+             </branches>
+           </marked>
+           <revision reference="../marked"/>
+           <hudsonBuildNumber>621</hudsonBuildNumber>
+         </hudson.plugins.git.util.Build>
+       </entry>
        <entry>
          <string>master</string>
          <hudson.plugins.git.util.Build>
-           <marked plugin="git-client@3.1.1">
-             <sha1>c517ccee19e8539338c9a2082db7326cfab255c2</sha1>
-             <branches class="singleton-set">
+           <marked plugin="git-client@3.2.1">
+             <sha1>498d3641af0924267a1fefbbc97e2671d6f0d42e</sha1>
+             <branches class="list">
                <hudson.plugins.git.Branch>
                  <sha1 reference="../../../sha1"/>
                  <name>master</name>
                </hudson.plugins.git.Branch>
              </branches>
            </marked>
-           <revision reference="../marked"/>
-           <hudsonBuildNumber>408</hudsonBuildNumber>
+           <revision plugin="git-client@3.2.1">
+             <sha1 reference="../../marked/sha1"/>
+             <branches class="list">
+               <hudson.plugins.git.Branch reference="../../../marked/branches/hudson.plugins.git.Branch"/>
+             </branches>
+           </revision>
+           <hudsonBuildNumber>613</hudsonBuildNumber>
          </hudson.plugins.git.util.Build>
        </entry>
      </buildsByBranchName>
@@ -37,10 +58,14 @@ import (
    </hudson.plugins.git.util.BuildData>
 */
 
+type BuildBranch struct {
+	BranchName  string `xml:"string"`
+	BuildNumber int32  `xml:"hudson.plugins.git.util.Build>hudsonBuildNumber"`
+	BuildCommit string `xml:"hudson.plugins.git.util.Build>marked/sha1"`
+}
+
 type BuildData struct {
-	BranchName  string `xml:"buildsByBranchName>entry>string"`
-	BuildNumber int32  `xml:"buildsByBranchName>entry>hudson.plugins.git.util.Build>hudsonBuildNumber"`
-	BuildCommit string `xml:"buildsByBranchName>entry>hudson.plugins.git.util.Build>marked/sha1"`
+	Branches []*BuildBranch `xml:"buildsByBranchName>entry"`
 }
 
 type BuildInfo struct {
@@ -52,8 +77,12 @@ type BuildInfo struct {
 }
 
 func (i *BuildInfo) BuildNumber() int32 {
-	for _, b := range i.BuildData {
-		return b.BuildNumber
+	buildsByBranch := make(map[string]int32)
+	for _, data := range i.BuildData {
+		for _, branch := range data.Branches {
+			buildsByBranch[branch.BranchName] = branch.BuildNumber
+			return branch.BuildNumber
+		}
 	}
 	return -1
 }
