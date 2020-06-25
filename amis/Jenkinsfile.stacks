@@ -1,34 +1,33 @@
 @Library('conservify') _
 
 properties([
-        buildDiscarder(logRotator(numToKeepStr: '5')),
-        disableConcurrentBuilds()
+	buildDiscarder(logRotator(numToKeepStr: '5')),
+	disableConcurrentBuilds()
 ])
 
 timestamps {
-    node () {
-        stage ('deps - cloud') {
-            dir ('cloud') {
-                withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
-                    git url: 'https://github.com/fieldkit/cloud.git'
+	node () {
+		stage ('deps - cloud') {
+			dir ('cloud') {
+				withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
+					git url: 'https://github.com/fieldkit/cloud.git'
+					sh "WORKING_DIRECTORY=/svr0/jenkins/workspace/fk/aws-build-stacks/cloud DOCKER_TAG=main make aws-image"
+				}
+			}
+		}
 
-    				sh "WORKING_DIRECTORY=/svr0/jenkins/workspace/fk/aws-build-stacks/cloud DOCKER_TAG=master make aws-image"
-                }
-            }
-        }
+		stage ('build') {
+			dir ('dev-ops') {
+				git branch: 'main', url: "https://github.com/conservify/dev-ops.git"
 
-        stage ('build') {
-            dir ('dev-ops') {
-                git branch: 'master', url: "https://github.com/conservify/dev-ops.git"
+				withAWS(credentials: 'AWS Default', region: 'us-east-1') {
+					sh "cd amis && make clean && make stacks -j3"
+				}
+			}
+		}
 
-                withAWS(credentials: 'AWS Default', region: 'us-east-1') {
-                    sh "cd amis && make clean && make stacks -j3"
-                }
-            }
-        }
-
-        stage ('archive') {
-            archiveArtifacts(artifacts: "dev-ops/amis/build/*.tar")
-        }
-    }
+		stage ('archive') {
+			archiveArtifacts(artifacts: "dev-ops/amis/build/*.tar")
+		}
+	}
 }
