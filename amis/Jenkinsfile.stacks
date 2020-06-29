@@ -10,7 +10,7 @@ timestamps {
 		stage ('deps - cloud') {
 			dir ('cloud') {
 				withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
-					git url: 'https://github.com/fieldkit/cloud.git'
+					git branch: 'main', url: 'https://github.com/fieldkit/cloud.git'
 					sh "WORKING_DIRECTORY=/svr0/jenkins/workspace/fk/aws-build-stacks/cloud DOCKER_TAG=main make aws-image"
 				}
 			}
