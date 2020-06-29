@@ -9,8 +9,6 @@ COPY --from=fk /ingester /app
 COPY --from=fk /server /app
 COPY --from=fk /api /app/api
 COPY --from=fk /portal/ /app/portal
-COPY --from=fk /ocr-portal /app/ocr-portal
-COPY --from=fk /legacy /app/legacy
 COPY --from=fk /ca-certificates.crt /etc/ssl/certs
 COPY --from=fk /static.env /etc/static.env
 
