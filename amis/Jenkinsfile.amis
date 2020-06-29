@@ -5,7 +5,7 @@ properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', 
 timestamps {
     node () {
         stage ('git') {
-            git branch: 'master', url: "https://github.com/conservify/dev-ops.git"
+            git branch: 'main', url: "https://github.com/conservify/dev-ops.git"
         }
 
         stage ('build') {

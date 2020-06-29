@@ -1,4 +1,4 @@
-FROM conservify/fk-cloud:master AS fk
+FROM conservify/fk-cloud:main AS fk
 
 FROM envoyproxy/envoy-alpine-dev:latest AS envoy
 
