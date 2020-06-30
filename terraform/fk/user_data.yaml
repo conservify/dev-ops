@@ -19,6 +19,7 @@ write_files:
       INFLUX_PASSWORD=${influx_password}
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
+      MAPBOX_TOKEN=${mapbox_token}
       APPLICATION_START=${application_start}
       APPLICATION_STACK=${application_stack}
       STREAMS_BUCKET_NAME=${streams_bucket_name}

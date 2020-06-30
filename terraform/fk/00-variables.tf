@@ -15,6 +15,12 @@ variable workspace_tags {
   type = map(string)
 }
 
+variable workspace_tokens {
+  type = map(object({
+	mapbox = string
+  }))
+}
+
 variable workspace_zones {
   type = map(object({
 	id = string
@@ -136,4 +142,5 @@ locals {
   production = terraform.workspace == "prod" ? "true" : "false"
   email_override = terraform.workspace == "prod" ? "" : "fkdev@conservify.org"
   session_key = var.workspace_session_keys[terraform.workspace]
+  tokens = var.workspace_tokens[terraform.workspace]
 }
