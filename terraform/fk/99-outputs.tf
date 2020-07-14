@@ -28,3 +28,12 @@ output alb {
 	}
   }
 }
+
+output user_data {
+  value = [
+	for key, i in data.template_file.app_server_user_data: {
+	  key = key
+	  value = data.template_file.app_server_user_data[key].rendered
+	}
+  ]
+}
