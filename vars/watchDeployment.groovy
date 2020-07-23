@@ -30,6 +30,7 @@ def call(Map parameters = [:]) {
 					if (previous != gitHash) {
 						slackSend channel: '#automation', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Deployed And Ready (<${env.BUILD_URL}|Open>)"
 
+						println("returning, true")
 						return true
 					}
 				}
@@ -39,6 +40,7 @@ def call(Map parameters = [:]) {
 
 			slackSend channel: '#automation', color: 'danger', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Oh, no. Deploy took too long (<${env.BUILD_URL}|Open>)"
 
+			println("returning(a), false")
 			return false
 		}
 	}
@@ -46,5 +48,6 @@ def call(Map parameters = [:]) {
 		throw e;
 	}
 
+	println("returning(b), false")
 	return false
 }
