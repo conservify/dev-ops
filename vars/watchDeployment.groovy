@@ -28,12 +28,16 @@ def call(Map parameters = [:]) {
 				if (gitHash) {
 					println(gitHash);
 					if (previous != gitHash) {
+						slackSend channel: '#automation', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Deployed And Ready (<${env.BUILD_URL}|Open>)"
+
 						return true
 					}
 				}
 				sleep(1)
 				counter += 1
 			}
+
+			slackSend channel: '#automation', color: 'danger', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Oh, no. Deploy took too long (<${env.BUILD_URL}|Open>)"
 
 			return false
 		}
@@ -42,5 +46,5 @@ def call(Map parameters = [:]) {
 		throw e;
 	}
 
-	return
+	return false
 }
