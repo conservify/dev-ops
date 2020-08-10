@@ -11,7 +11,7 @@ static_resources:
           "@type": type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
           codec_type: auto
           stat_prefix: ingress_http
-          request_timeout: 300s
+          request_timeout: 3000s
           route_config:
             name: local_route
             virtual_hosts:
@@ -23,7 +23,7 @@ static_resources:
                   prefix: "/"
                 route:
                   cluster: local_service
-                  timeout: 300s
+                  timeout: 3000s
           http_filters:
           - name: envoy.router
             typed_config: {}
