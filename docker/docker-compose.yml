@@ -1,5 +1,15 @@
 version: '2'
 services:
+  strapi:
+    build: ./strapi
+    restart: always
+    depends_on:
+      - logs
+    volumes:
+      - /svr0/strapi:/srv/app
+    ports:
+      - "1337:1337"
+
   jenkins:
     image: "conservify/jenkins"
     restart: always
@@ -37,6 +47,7 @@ services:
       - /svr0/glacier:/var/lib/glacier-data
       - /svr0/web/conservify.org:/var/www/conservify.org
     links:
+      - strapi
       - jenkins
       - logs
       - glacier-status
