@@ -21,11 +21,11 @@ sudo apt-get update
 
 sudo apt-get install -qy docker-ce
 
-wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.15.2.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
 
-wget https://nodejs.org/dist/v6.11.4/node-v6.11.4-linux-x64.tar.xz
-sudo tar -C /usr/local -xf node-v6.11.4-linux-x64.tar.xz
+wget https://nodejs.org/dist/v12.18.4/node-v12.18.4-linux-x64.tar.xz
+sudo tar -C /usr/local -xf node-v12.18.4-linux-x64.tar.xz
 sudo mv /usr/local/node-* /usr/local/node
 
 wget https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz
