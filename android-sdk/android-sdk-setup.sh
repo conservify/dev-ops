@@ -34,3 +34,4 @@ sdkmanager --list
 
 yes | sdkmanager "build-tools;23.0.1" "build-tools;25.0.0" "build-tools;25.0.1" "build-tools;25.0.3" "build-tools;26.0.1" "build-tools;28.0.2" "build-tools;29.0.2"
 yes | sdkmanager "platforms;android-23" "platforms;android-25" "platforms;android-26" "platforms;android-27" "platforms;android-28" "platforms;android-29"
+yes | sdkmanager "platform-tools"
