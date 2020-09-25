@@ -22,11 +22,11 @@ fi
 
 ls -alh
 
-if [ ! -d android-sdk/bin ]; then
+if [ ! -d android-sdk/tools/bin ]; then
 	ls -alh android-sdk
 	mkdir -p android-sdk
     cd android-sdk
-    unzip ../*tools*linux*.zip
+    unzip -o ../*tools*linux*.zip
     cd ..
 fi
 
