@@ -20,7 +20,10 @@ if [ ! -f gradle-${GRADLE_VERSION}-bin.zip ]; then
     unzip gradle*.zip
 fi
 
+ls -alh
+
 if [ ! -d android-sdk/bin ]; then
+	ls -alh android-sdk
 	mkdir -p android-sdk
     cd android-sdk
     unzip ../*tools*linux*.zip
