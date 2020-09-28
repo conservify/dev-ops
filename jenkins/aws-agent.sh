@@ -46,6 +46,12 @@ for a in /usr/local/docker/*; do
 done
 
 sudo usermod -aG docker ubuntu
+sudo id
+
+id
+
+# This is annoying.
+sudo chmod 777 /var/run/docker.sock
 
 sudo mkdir -p /var/jenkins_home
 
