@@ -47,9 +47,17 @@ done
 
 sudo usermod -aG docker ubuntu
 
-sudo mkdir /var/jenkins_home
+sudo mkdir -p /var/jenkins_home
+
+if [ -e /dev/xvdd ]; then
+	sudo mkfs.ext4 /dev/xvdd
+	sudo mount /dev/xvdd /var/jenkins_home
+fi
+
 sudo chown -R ubuntu. /var/jenkins_home
 
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-echo Done!
+sudo whoami
+
+echo done!
