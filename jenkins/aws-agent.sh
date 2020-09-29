@@ -65,6 +65,8 @@ if [ -e /dev/xvdd ]; then
 	sudo mount /dev/xvdd /var/jenkins_home
 fi
 
+mkdir -p /var/jenkins_home/docker
+
 sudo chown -R ubuntu. /var/jenkins_home
 
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
