@@ -1,4 +1,15 @@
+#!/bin/bash
+
 set -xe
+
+sudo mkdir -p /var/jenkins_home
+
+if [ -e /dev/xvdd ]; then
+	sudo mkfs.ext4 /dev/xvdd
+	sudo mount /dev/xvdd /var/jenkins_home
+fi
+
+sudo mkdir -p /var/jenkins_home/docker
 
 sudo apt-get update
 sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common unzip build-essential python-pip jq
@@ -51,26 +62,13 @@ for a in /usr/local/docker/*; do
 done
 
 sudo usermod -aG docker ubuntu
-sudo id
-
-id
-
-# This is annoying.
-sudo chmod 777 /var/run/docker.sock
-
-sudo mkdir -p /var/jenkins_home
-
-if [ -e /dev/xvdd ]; then
-	sudo mkfs.ext4 /dev/xvdd
-	sudo mount /dev/xvdd /var/jenkins_home
-fi
-
-mkdir -p /var/jenkins_home/docker
 
 sudo chown -R ubuntu. /var/jenkins_home
 
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
 sudo whoami
+sudo id
+id
 
 echo done!
