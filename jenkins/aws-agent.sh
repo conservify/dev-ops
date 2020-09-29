@@ -10,6 +10,9 @@ sudo pip install virtualenv
 # This is necessary to run android-sdk's aapt.
 sudo apt-get install -qy lib32stdc++6 lib32z1
 
+mkdir -p /etc/docker
+echo '{"graph": "/var/jenkins_home/docker"}' > /etc/docker/daemon.json
+
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 sudo add-apt-repository \
@@ -20,6 +23,8 @@ sudo add-apt-repository \
 sudo apt-get update
 
 sudo apt-get install -qy docker-ce
+
+cat /etc/docker/daemon.json
 
 wget https://golang.org/dl/go1.15.2.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
