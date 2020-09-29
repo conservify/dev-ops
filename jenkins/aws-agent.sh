@@ -2,28 +2,30 @@
 
 set -xe
 
+# See if we have been created with a mapped block device for extra space.
 sudo mkdir -p /var/jenkins_home
-
 if [ -e /dev/xvdd ]; then
 	sudo mkfs.ext4 /dev/xvdd
 	sudo mount /dev/xvdd /var/jenkins_home
 fi
 
+# When docker installs, it'll find this and end up on extra space.
 sudo mkdir -p /var/jenkins_home/docker
+mkdir -p /etc/docker
+echo '{"graph": "/var/jenkins_home/docker"}' > /etc/docker/daemon.json
 
+# Start installing packages
 sudo apt-get update
 sudo apt-get install -qy openjdk-8-jdk-headless wget apt-transport-https ca-certificates curl software-properties-common unzip build-essential python-pip jq
 
+# Python stuffs.
 sudo pip install --upgrade pip
-
 sudo pip install virtualenv
 
 # This is necessary to run android-sdk's aapt.
 sudo apt-get install -qy lib32stdc++6 lib32z1
 
-mkdir -p /etc/docker
-echo '{"graph": "/var/jenkins_home/docker"}' > /etc/docker/daemon.json
-
+# Docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 sudo add-apt-repository \
@@ -35,7 +37,7 @@ sudo apt-get update
 
 sudo apt-get install -qy docker-ce
 
-cat /etc/docker/daemon.json
+# Build tools
 
 wget https://golang.org/dl/go1.15.2.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
@@ -61,11 +63,21 @@ for a in /usr/local/docker/*; do
     # sudo ln -sf $a /usr/local/bin/$n
 done
 
+# Cleanup
+rm -f *.tar.* *.tgz
+
+# Permissions. We're run from the cloud initialize so that jenkins
+# agent starts with the correct group permissions. Otherwise if we're
+# run from jenkins this never gets inherited.
 sudo usermod -aG docker ubuntu
 
 sudo chown -R ubuntu. /var/jenkins_home
 
+# System settings and some diagnostics.
+
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+cat /etc/docker/daemon.json
 
 sudo whoami
 sudo id
