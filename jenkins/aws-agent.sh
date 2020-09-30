@@ -8,8 +8,8 @@ if [ -e /dev/xvdd ]; then
 	sudo mkfs.ext4 /dev/xvdd
 	sudo mount /dev/xvdd /svr0
 fi
-mkdir -p /svr0/workspace
-mkdir -p /svr0/docker
+sudo mkdir -p /svr0/workspace
+sudo mkdir -p /svr0/docker
 
 # When docker installs, it'll find this and end up on extra space.
 mkdir -p /var/jenkins_home
@@ -78,6 +78,7 @@ rm -f *.tar.* *.tgz
 sudo usermod -aG docker ubuntu
 
 sudo chown -R ubuntu. /var/jenkins_home
+sudo chown -R ubuntu. /svr0/workspace
 
 # System settings and some diagnostics.
 
