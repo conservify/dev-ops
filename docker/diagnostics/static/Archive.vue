@@ -1,6 +1,6 @@
 <!-- Archive.vue -->
 <template>
-    <div class="container" v-if="archive">
+    <div class="archive-container" v-if="archive">
         <h1>
             <a href="#" v-on:click.prevent="back()">Archives</a>
             / {{ archive.phrase }}
@@ -144,6 +144,9 @@ export default {
 <style>
 html {
     overflow-y: scroll;
+}
+.archive-container {
+	padding: 1em;
 }
 .device-table {
     font-size: 80%;
