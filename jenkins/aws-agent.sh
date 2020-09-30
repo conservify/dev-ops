@@ -8,11 +8,12 @@ if [ -e /dev/xvdd ]; then
 	sudo mkfs.ext4 /dev/xvdd
 	sudo mount /dev/xvdd /svr0
 fi
-mkdir -p /svr0/jenkins_home
+mkdir -p /svr0/workspace
 mkdir -p /svr0/docker
 
 # When docker installs, it'll find this and end up on extra space.
-sudo ln -sf /svr0/jenkins_home /var/jenkins_home
+mkdir -p /var/jenkins_home
+sudo ln -sf /svr0/workspace /var/jenkins_home/workspace
 mkdir -p /etc/docker
 echo '{"graph": "/svr0/docker"}' > /etc/docker/daemon.json
 
