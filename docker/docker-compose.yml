@@ -152,5 +152,15 @@ services:
     volumes:
       - /svr0/influxdb:/var/lib/influxdb
 
+  squid:
+    image: sameersbn/squid:3.5.27-2
+    restart: always
+    ports:
+      - 3128:3128
+    volumes:
+      - ./squid.conf:/etc/squid/squid.conf
+      - /svr0/squid/cache:/var/spool/squid 
+      - /svr0/squid/logs:/var/log/squid 
+
 volumes:
   jenkins_home:
