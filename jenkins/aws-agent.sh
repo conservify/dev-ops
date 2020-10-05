@@ -86,6 +86,8 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 
 cat /etc/docker/daemon.json
 
+sudo rm -rf ~/.npm
+
 sudo whoami
 sudo id
 id
