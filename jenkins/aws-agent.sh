@@ -8,6 +8,10 @@ if [ -e /dev/xvdd ]; then
 	sudo mkfs.ext4 /dev/xvdd
 	sudo mount /dev/xvdd /svr0
 fi
+if [ -e /dev/nvme1n1 ]; then
+	sudo mkfs.ext4 /dev/nvme1n1
+	sudo mount /dev/nvme1n1 /svr0
+fi
 sudo mkdir -p /svr0/workspace
 sudo mkdir -p /svr0/docker
 
