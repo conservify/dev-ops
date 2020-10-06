@@ -26,7 +26,7 @@ sudo apt-get update
 sudo apt-get install -qy \
 	 apt-transport-https ca-certificates software-properties-common build-essential python-pip \
 	 openjdk-8-jdk-headless \
-	 wget unzip jq curl htop
+	 wget unzip jq curl htop tig
 
 # Python stuffs.
 sudo pip install --upgrade pip
