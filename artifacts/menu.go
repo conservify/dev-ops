@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	htmltemplate "html/template"
@@ -96,6 +97,11 @@ func (h *IpaHandler) Handle(path string, relative string, jobName string, build 
 		return nil, err
 	}
 
+	if strings.HasSuffix(jobName, "-test") {
+		options = []MenuOption{}
+		return
+	}
+
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.UTC().In(location).Format("2006/01/02 15:04:05")
 	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/manifest.plist", relative)
@@ -131,6 +137,11 @@ func (h *ApkHandler) Handle(path string, relative string, jobName string, build 
 	location, err := time.LoadLocation("America/Los_Angeles")
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.HasSuffix(jobName, "-test") {
+		options = []MenuOption{}
+		return
 	}
 
 	buildTime := time.Unix(build.Timestamp/1000, 0)
