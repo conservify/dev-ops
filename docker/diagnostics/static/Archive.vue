@@ -41,6 +41,7 @@
                 >
                     Logs
                 </a>
+                <a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/analysis?token=' + token">Summary</a>
             </div>
         </div>
 
