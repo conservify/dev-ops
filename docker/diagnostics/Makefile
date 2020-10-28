@@ -9,3 +9,6 @@ test:
 
 pack:
 	webpack --mode production
+
+clean:
+	rm -rf node_modules
