@@ -57,6 +57,7 @@ func index(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Requ
 		return err
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 
@@ -120,6 +121,7 @@ func view(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Reque
 		return err
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 
@@ -212,6 +214,7 @@ func analysis(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 		panic(err)
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 
