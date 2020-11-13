@@ -8,6 +8,10 @@
 
         <h4>{{ archive.time | prettyTime }}</h4>
 
+        <div class="download">
+            <a :href="'/diagnostics/archives/' + archive.id + '.zip?token=' + token">Download</a>
+        </div>
+
         <div class="alert alert-primary" role="alert">Mobile App DB</div>
         <div class="row" v-if="analysis">
             <div class="col-md-12">
@@ -36,7 +40,7 @@
                 <a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token" download="fk.db">DB</a>
                 <a
                     target="_blank"
-                    :href="'/diagnostics/archives/' + archive.id + '/app.txt?token=' + token"
+                    :href="'/diagnostics/archives/' + archive.id + '/logs.txt?token=' + token"
                     :download="archive.id + '.txt'"
                 >
                     Logs
@@ -103,7 +107,7 @@ export default {
                 this.archive = archive
             })
 
-        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/app.txt', options)
+        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/logs.txt', options)
             .then((response) => response.text())
             .then((mobileAppLogs) => {
                 this.mobileAppLogs = mobileAppLogs
