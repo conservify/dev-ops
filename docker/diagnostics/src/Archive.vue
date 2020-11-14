@@ -193,21 +193,36 @@ export default Vue.extend({
             }
             throw new Error(`unsupported browser`)
         },
-        findBackwards(offset: number): number | null {
-            return null
+        findBackwards(haystack: string, offset: number, c: string): number {
+            for (let i = offset; i >= 0; --i) {
+                if (haystack[i] == c) {
+                    return i
+                }
+            }
+            return 0
         },
-        findForwards(offset: number): number | null {
-            return null
+        findForwards(haystack: string, offset: number, c: string): number {
+            for (let i = offset; i < haystack.length; ++i) {
+                if (haystack[i] == c) {
+                    return i
+                }
+            }
+            return haystack.length - 1
         },
         getLine(text: string, offset: number): string {
-            return ''
+            if (text[offset] == '\n') {
+                const b = this.findBackwards(text, offset - 1, '\n')
+                return text.substring(b, offset).trim()
+            }
+            const b = this.findBackwards(text, offset, '\n')
+            const e = this.findForwards(text, offset, '\n')
+            return text.substring(b, e).trim()
         },
         down(ev: { clientX: number; clientY: number }): void {
             const cp = this.getCaret(ev)
             if (cp && cp.node.nodeType == 3 && cp.node.textContent) {
                 const line = this.getLine(cp.node.textContent, cp.offset)
-                console.log(`down`, cp.node.nodeType, cp.offset, cp.range)
-                console.log(cp.node.textContent[cp.offset])
+                console.log(`down`, cp.offset, cp.range, line)
             }
         },
         over(ev: Event): void {
