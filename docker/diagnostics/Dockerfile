@@ -12,7 +12,7 @@ RUN mkdir -p /data /app
 WORKDIR /app
 
 COPY . /app/
-COPY --from=js /app/dist/* /app/public/
+COPY --from=js /app/dist/ /app/public/
 
 RUN go build -o diagnostics *.go
 
