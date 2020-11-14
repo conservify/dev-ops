@@ -1,4 +1,4 @@
-FROM envoyproxy/envoy-dev
+FROM envoyproxy/envoy:v1.16.0
 
 RUN apt-get update && apt-get -q install -y curl && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
