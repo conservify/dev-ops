@@ -1,6 +1,6 @@
 FROM conservify/fk-cloud:main AS fk
 
-FROM envoyproxy/envoy-alpine-dev:latest AS envoy
+FROM envoyproxy/envoy-alpine:v1.16.0 AS envoy
 
 RUN mkdir -p /app/api /app/portal /app/ocr-portal /app/legacy
 RUN mkdir -p /etc/ssl/certs/

@@ -25,6 +25,7 @@ def call(Map parameters = [:]) {
 		while (counter < seconds) {
 			def gitHash = getStatusHash(parameters.url)
 			if (gitHash) {
+				println(previous);
 				println(gitHash);
 				if (previous != gitHash) {
 					slackSend channel: '#automation', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Deployed And Ready (<${env.BUILD_URL}|Open>)"
