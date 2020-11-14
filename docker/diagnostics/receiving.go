@@ -100,6 +100,8 @@ func saveIncomingFile(s *Services, w http.ResponseWriter, req *http.Request) (me
 }
 
 func receive(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	log.Printf("[http] %s receiving", r.URL)
+
 	meta, created, err := saveIncomingFile(s, w, r)
 	if err != nil {
 		return err
