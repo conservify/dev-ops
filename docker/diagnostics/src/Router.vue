@@ -1,5 +1,3 @@
-<!-- Router.vue -->
-
 <template>
     <div>
         <component
@@ -13,13 +11,16 @@
     </div>
 </template>
 
-<script>
-import Login from './Login'
-import Home from './Home'
-import Archive from './Archive'
+<script lang="ts">
+import Vue, { Component, PropType } from 'vue'
+import Login from './Login.vue'
+import Home from './Home.vue'
+import Archive from './Archive.vue'
 
-function parseQuery(queryString) {
-    const query = {}
+type Query = Record<string, unknown>
+
+function parseQuery(queryString: string): Query {
+    const query: Query = {}
     const pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&')
     for (let i = 0; i < pairs.length; i++) {
         const pair = pairs[i].split('=')
@@ -28,10 +29,12 @@ function parseQuery(queryString) {
     return query
 }
 
-export default {
-    data() {
-        console.log('data', navigator)
-
+export default Vue.extend({
+    data(): {
+        path: string
+        rawQuery: string
+        token: string | null
+    } {
         return {
             path: window.location.pathname,
             rawQuery: window.location.search,
@@ -39,23 +42,23 @@ export default {
         }
     },
     methods: {
-        handleNavigate(url) {
+        handleNavigate(url: string): void {
             console.log('navigate', url)
             history.pushState({}, '', url)
             this.rawQuery = url
         },
-        handleAuthenticated(token) {
+        handleAuthenticated(token: string): void {
             console.log('authenticated')
             this.token = token
         },
-        handleLogout() {
+        handleLogout(): void {
             console.log('logout')
             history.pushState({}, '', '')
             this.token = null
         },
     },
     computed: {
-        visible() {
+        visible(): Component {
             if (!this.token) {
                 return Login
             }
@@ -66,17 +69,18 @@ export default {
             }
             return Home
         },
-        query() {
+        query(): Query {
             return parseQuery(this.rawQuery)
         },
     },
-    created() {
+    created(): void {
         this.token = localStorage.getItem('token')
 
-        window.onpopstate = ev => {
-            console.log('location: ' + window.location + ', state: ' + JSON.stringify(event.state))
+        window.onpopstate = (ev: Event) => {
+            const psEvent = <PopStateEvent>ev
+            console.log('location: ' + window.location + ', state: ' + JSON.stringify(psEvent.state))
             this.handleNavigate(window.location.search)
         }
     },
-}
+})
 </script>

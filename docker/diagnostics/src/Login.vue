@@ -15,30 +15,33 @@
         </form>
     </div>
 </template>
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue'
 import Config from './config'
 
-export default {
+export default Vue.extend({
     name: 'Login',
     props: {},
-    data: () => {
+    data(): {
+        user: string
+        password: string
+    } {
         return {
             user: '',
             password: '',
         }
     },
-    created() {},
-    filters: {},
     methods: {
-        login() {
+        login(): Promise<void> {
             const payload = {
                 user: this.user,
                 password: this.password,
             }
+            console.log('HELLO', Config.BaseUrl)
             return fetch(Config.BaseUrl + 'login', {
                 method: 'POST',
                 body: JSON.stringify(payload),
-            }).then(r => {
+            }).then((r) => {
                 const token = r.headers.get('Authorization')
                 if (token) {
                     localStorage.setItem('token', token)
@@ -47,5 +50,5 @@ export default {
             })
         },
     },
-}
+})
 </script>

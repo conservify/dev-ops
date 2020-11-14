@@ -1,9 +1,7 @@
 <!-- Home.vue -->
 <template>
     <div class="container">
-        <div class="col-md-12">
-            &nbsp;
-        </div>
+        <div class="col-md-12">&nbsp;</div>
         <div class="col-md-12">
             <form class="form-inline">
                 <label class="sr-only" for="search">Search</label>
@@ -21,7 +19,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="archive in archives" class="archive">
+                    <tr v-for="archive in archives" class="archive" v-bind:key="archive.id">
                         <td class="time">{{ archive.time | prettyTime }}</td>
                         <td class="phrase">
                             <a :href="'?id=' + archive.id" v-on:click.prevent="view(archive)">{{ archive.phrase }}</a>
@@ -35,39 +33,45 @@
         </div>
     </div>
 </template>
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue'
 import moment from 'moment'
 import Config from './config'
 
-export default {
+export default Vue.extend({
     name: 'Home',
     props: {
         query: {
+            type: Object,
             required: true,
         },
         token: {
+            type: String,
             required: true,
         },
     },
-    data: () => {
+    data(): {
+        search: string | null
+        archives: { id: string }[]
+    } {
         return {
             archives: [],
             search: null,
         }
     },
-    created() {
+    created(): void {
         this.refresh()
     },
     filters: {
-        prettyTime(value) {
+        prettyTime(value: string | Date): string {
             return moment(value).format('MMM Do YYYY hh:mm:ss')
         },
     },
     methods: {
-        view(archive) {
+        view(archive: { id: string }): void {
             this.$emit('navigate', '?id=' + archive.id)
         },
-        refresh() {
+        refresh(): void {
             const filter = this.search || this.query.q || ''
             const url = Config.BaseUrl + 'archives?q=' + filter
             const options = {
@@ -76,15 +80,14 @@ export default {
                 },
             }
             fetch(url, options)
-                .then(response => {
+                .then((response) => {
                     if (response.status == 401) {
                         this.$emit('logout')
                         return Promise.reject('unauthorized')
                     }
-                    return response
+                    return response.json()
                 })
-                .then(response => response.json())
-                .then(archives => {
+                .then((archives) => {
                     if (archives.archives.length == 1) {
                         this.$emit('navigate', '?id=' + archives.archives[0].id)
                     } else {
@@ -93,7 +96,7 @@ export default {
                 })
         },
     },
-}
+})
 </script>
 <style>
 html {

@@ -26,7 +26,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="station in analysis.stations">
+                        <tr v-for="station in analysis.stations" v-bind:key="station.id">
                             <td>{{ station.name }}</td>
                             <td>{{ station.device_id }}</td>
                             <td>
@@ -63,31 +63,57 @@
         <div class="alert alert-primary" role="alert" v-if="mobileAppLogs">Mobile App Logs</div>
         <div class="row" v-if="mobileAppLogs">
             <div class="col-md-12">
-                <pre class="app-logs">{{ mobileAppLogs }}</pre>
+                <pre class="app-logs" @mousedown="down" @mousemove="over">{{ mobileAppLogs }}</pre>
             </div>
         </div>
     </div>
 </template>
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue'
 import _ from 'lodash'
 import moment from 'moment'
 import VueJsonPretty from 'vue-json-pretty'
 import Config from './config'
 
-export default {
+interface SimpleBuffer {
+    toString(encoding: string): string
+}
+
+declare const Buffer: {
+    from(value: string, encoding: string): SimpleBuffer
+}
+
+export type Archive = any
+export type Device = any
+
+export interface StationAnalysis {
+    id: number
+}
+export interface Analysis {
+    stations: StationAnalysis[]
+}
+
+export default Vue.extend({
     name: 'Archive',
     components: {
         VueJsonPretty,
     },
     props: {
         token: {
+            type: String,
             required: true,
         },
         query: {
+            type: Object as PropType<{ id: string }>,
             required: true,
         },
     },
-    data: () => {
+    data(): {
+        archive: Archive | null
+        device: Device | null
+        mobileAppLogs: string | null
+        analysis: Analysis | null
+    } {
         return {
             archive: null,
             device: null,
@@ -129,13 +155,13 @@ export default {
             })
     },
     filters: {
-        prettyTime(value) {
+        prettyTime(value: string): string {
             return moment(value).format('MMM Do YYYY hh:mm:ss')
         },
-        hexToBase64(value) {
+        hexToBase64(value: string): string {
             return Buffer.from(value, 'hex').toString('base64')
         },
-        deviceLogsUrl(value) {
+        deviceLogsUrl(value: string): string {
             return (
                 'https://code.conservify.org/logs-viewer?range=864000&query=device_id:"' +
                 Buffer.from(value, 'hex').toString('base64') +
@@ -144,11 +170,51 @@ export default {
         },
     },
     methods: {
-        back() {
+        back(): void {
             this.$emit('navigate', '?')
         },
+        getCaret(ev: { clientX: number; clientY: number }) {
+            if (document.caretPositionFromPoint) {
+                const range = document.caretPositionFromPoint(ev.clientX, ev.clientY)
+                if (!range) return null
+                return {
+                    range: range,
+                    node: range.offsetNode,
+                    offset: range.offset,
+                }
+            } else if (document.caretRangeFromPoint) {
+                const range = document.caretRangeFromPoint(ev.clientX, ev.clientY)
+                if (!range) return null
+                return {
+                    range: range,
+                    node: range.startContainer,
+                    offset: range.startOffset,
+                }
+            }
+            throw new Error(`unsupported browser`)
+        },
+        findBackwards(offset: number): number | null {
+            return null
+        },
+        findForwards(offset: number): number | null {
+            return null
+        },
+        getLine(text: string, offset: number): string {
+            return ''
+        },
+        down(ev: { clientX: number; clientY: number }): void {
+            const cp = this.getCaret(ev)
+            if (cp && cp.node.nodeType == 3 && cp.node.textContent) {
+                const line = this.getLine(cp.node.textContent, cp.offset)
+                console.log(`down`, cp.node.nodeType, cp.offset, cp.range)
+                console.log(cp.node.textContent[cp.offset])
+            }
+        },
+        over(ev: Event): void {
+            // console.log('over', ev)
+        },
     },
-}
+})
 </script>
 <style>
 html {

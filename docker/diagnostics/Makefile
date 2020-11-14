@@ -5,16 +5,16 @@ docker-test: docker-image
 	docker run --rm -p 8080:8080 temp
 
 test:
-	webpack-dev-server
+	npm run dev
+
+pack:
+	npm run build
 
 run: diagnostics
 	./diagnostics --path ~/conservify/diagnostics
 
 diagnostics: *.go
 	go build -o diagnostics $^
-
-pack:
-	webpack --mode production
 
 clean:
 	rm -rf node_modules
