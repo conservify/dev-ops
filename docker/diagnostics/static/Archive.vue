@@ -14,10 +14,10 @@
             <a :href="'/diagnostics/archives/' + archive.id + '.zip?token=' + token">Download</a>
         </div>
 
-        <div class="alert alert-primary" role="alert">Mobile App DB</div>
+        <div class="alert alert-primary" role="alert">App Database</div>
         <div class="row" v-if="analysis">
             <div class="col-md-12">
-                <table class="table table-condensed stations">
+                <table class="table table-condensed stations" v-if="analysis.stations">
                     <thead>
                         <tr>
                             <th>Station</th>
@@ -35,6 +35,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-else>No stations.</div>
             </div>
         </div>
         <div class="row">
@@ -151,7 +152,7 @@ export default {
 </script>
 <style>
 html {
-    overflow-y: scroll;
+    overflow: scroll;
 }
 .archive-container {
     padding: 1em;
@@ -162,6 +163,9 @@ html {
 }
 .alert {
     margin-top: 20px;
+}
+pre {
+    overflow: inherit;
 }
 .app-logs {
     font-size: 80%;
