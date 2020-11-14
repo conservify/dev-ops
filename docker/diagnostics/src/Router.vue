@@ -77,8 +77,7 @@ export default Vue.extend({
         this.token = localStorage.getItem('token')
 
         window.onpopstate = (ev: Event) => {
-            const psEvent = <PopStateEvent>ev
-            console.log('location: ' + window.location + ', state: ' + JSON.stringify(psEvent.state))
+            console.log(`location: ${window.location} state: ${JSON.stringify((ev as PopStateEvent).state)}`)
             this.handleNavigate(window.location.search)
         }
     },
