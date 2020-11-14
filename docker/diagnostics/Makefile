@@ -7,6 +7,12 @@ docker-test: docker-image
 test:
 	webpack-dev-server
 
+run: diagnostics
+	./diagnostics --path ~/conservify/diagnostics
+
+diagnostics: *.go
+	go build -o diagnostics $^
+
 pack:
 	webpack --mode production
 
