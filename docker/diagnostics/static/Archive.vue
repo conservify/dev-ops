@@ -1,6 +1,8 @@
 <!-- Archive.vue -->
 <template>
     <div class="archive-container" v-if="archive">
+        <vue-headful :title="archive.phrase" />
+
         <h1>
             <a href="#" v-on:click.prevent="back()">Archives</a>
             / {{ archive.phrase }}
