@@ -17,6 +17,8 @@ import Login from './Login.vue'
 import Home from './Home.vue'
 import Archive from './Archive.vue'
 
+import './bootstrap.min.css'
+
 type Query = Record<string, unknown>
 
 function parseQuery(queryString: string): Query {
