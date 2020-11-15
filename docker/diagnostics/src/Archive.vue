@@ -231,7 +231,7 @@ export default Vue.extend({
                 const range = this.getLineRange(cp.node.textContent, cp.offset)
                 const line = this.getLine(cp.node.textContent, range)
                 const replacing = (cp.node as Text).splitText(range[0])
-                const keeping = replacing.splitText(range[1] - range[0] + 1) // Removes extra new line.
+                const keeping = replacing.splitText(range[1] - range[0]) // Removes extra new line.
                 const fancy = document.createElement('span')
                 replacing.replaceWith(fancy)
                 console.log(`down`, cp.offset, range)

@@ -3,7 +3,7 @@
         <div class="fancy-line">{{ fancy.text }}</div>
         <div v-if="hasExtras" class="extras">
             <div v-for="(o, i) in json" v-bind:key="i">
-                <json-view :data="JSON.parse(o)" colorScheme="dark" />
+                <json-view :data="JSON.parse(o)" colorScheme="dark" :maxDepth="2" />
             </div>
         </div>
     </div>
@@ -74,6 +74,17 @@ export default Vue.extend({
 .extras {
     margin-top: 1em;
     margin-bottom: 1em;
-    line-height: 0.5;
+    /* line-height: 1; */
 }
+/*
+::v-deep div.data-key,
+::v-deep span.data-key,
+::v-deep button.data-key {
+    padding: 0;
+}
+::v-deep div.value-key,
+::v-deep span.value-key {
+    padding: 0;
+}
+*/
 </style>
