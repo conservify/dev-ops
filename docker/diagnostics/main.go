@@ -292,12 +292,8 @@ func main() {
 	router.HandleFunc("/diagnostics/archives/{id}/analysis", middleware(services, secure(analysis))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}/{file}", middleware(services, secure(archiveFile))).Methods("GET")
 	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
-	router.PathPrefix("/diagnostics/").HandlerFunc(middleware(services, receive)).Methods("POST")
-
-	// NOTE Move this to PathPrefix
-	router.Handle("/diagnostics/", static).Methods("GET")
-	router.Handle("/diagnostics/bundle.js", static).Methods("GET")
-	router.Handle("/diagnostics/App.css", static).Methods("GET")
+	router.PathPrefix("/diagnostics/").Methods("POST").HandlerFunc(middleware(services, receive))
+	router.PathPrefix("/diagnostics").Methods("GET").Handler(static)
 
 	log.Printf("listening on :8080")
 
