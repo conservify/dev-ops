@@ -3,7 +3,7 @@
         <div class="fancy-line">{{ fancy.text }}</div>
         <div v-if="hasExtras" class="extras">
             <div v-for="(o, i) in json" v-bind:key="i">
-                <json-viewer theme="jv-diagnostics" :value="o.parsed" :expand-depth="3" copyable sort />
+                <json-viewer theme="jv-diagnostics" :value="o.parsed" :expand-depth="3" copyable sort v-if="o.parsed" />
             </div>
         </div>
     </div>
@@ -14,9 +14,16 @@ import JsonViewer from 'vue-json-viewer'
 
 class JSONField {
     public readonly parsed: unknown
+    public readonly error: boolean
 
     constructor(public readonly text: string) {
-        this.parsed = JSON.parse(text)
+        try {
+            this.parsed = JSON.parse(text)
+            this.error = false
+        } catch (error) {
+            this.error = true
+            console.log(`error parsing:`, error)
+        }
     }
 }
 
