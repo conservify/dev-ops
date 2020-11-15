@@ -55,7 +55,8 @@
         <div class="alert alert-primary" role="alert">Device / Configuration</div>
         <div class="row">
             <div class="col-md-6 device-json">
-                <vue-json-pretty :data="device" :showDoubleQuotes="false"></vue-json-pretty>
+                <json-viewer :value="device" theme="jv-diagnostics" :expand-depth="1" copyable sort v-if="device" />
+                <div v-else>Unavailable</div>
             </div>
             <div class="col-md-6"></div>
         </div>
@@ -72,10 +73,9 @@
 import Vue, { PropType } from 'vue'
 import _ from 'lodash'
 import moment from 'moment'
-import VueJsonPretty from 'vue-json-pretty'
-import Config from './config'
-
+import JsonViewer from 'vue-json-viewer'
 import FancyLine from './FancyLine.vue'
+import Config from './config'
 
 interface SimpleBuffer {
     toString(encoding: string): string
@@ -98,7 +98,7 @@ export interface Analysis {
 export default Vue.extend({
     name: 'Archive',
     components: {
-        VueJsonPretty,
+        'json-viewer': JsonViewer,
     },
     props: {
         token: {
@@ -277,5 +277,69 @@ table.stations td {
     padding-top: 4px;
     padding-bottom: 4px;
     padding-left: 0;
+}
+::v-deep .jv-diagnostics {
+    white-space: nowrap;
+    color: #525252;
+    font-size: 12px;
+    font-family: Consolas, Menlo, Courier, monospace;
+    .jv-ellipsis {
+        color: #999;
+        background-color: #eee;
+        display: inline-block;
+        line-height: 0.9;
+        font-size: 0.9em;
+        padding: 0px 4px 2px 4px;
+        margin: 0 4px;
+        border-radius: 3px;
+        vertical-align: 2px;
+        cursor: pointer;
+        user-select: none;
+    }
+    .jv-button {
+        color: #49b3ff;
+    }
+    .jv-key {
+        color: #efefef;
+        margin-right: 4px;
+    }
+    .jv-item {
+        &.jv-array {
+            color: #efefef;
+        }
+        &.jv-boolean {
+            color: #fc1e70;
+        }
+        &.jv-function {
+            color: #067bca;
+        }
+        &.jv-number {
+            color: #fc1e70;
+        }
+        &.jv-object {
+            color: #efefef;
+        }
+        &.jv-undefined {
+            color: #e08331;
+        }
+        &.jv-string {
+            color: #42b983;
+            word-break: break-word;
+            white-space: normal;
+        }
+    }
+    .jv-code {
+        .jv-toggle {
+            &:before {
+                padding: 0px 2px;
+                border-radius: 2px;
+            }
+            &:hover {
+                &:before {
+                    background: #eee;
+                }
+            }
+        }
+    }
 }
 </style>
