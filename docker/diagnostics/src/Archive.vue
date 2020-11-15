@@ -207,7 +207,7 @@ export default Vue.extend({
                     return i
                 }
             }
-            return haystack.length - 1
+            return haystack.length
         },
         getLineRange(text: string, offset: number): [number, number] {
             if (text[offset] == '\n') {
@@ -216,7 +216,7 @@ export default Vue.extend({
             }
             const b = this.findBackwards(text, offset, '\n')
             const e = this.findForwards(text, offset, '\n')
-            return [b, e]
+            return [b, Math.min(e, text.length)]
         },
         getLine(text: string, range: [number, number]): string {
             return text.substring(range[0], range[1]).trim()
@@ -231,7 +231,9 @@ export default Vue.extend({
                 const range = this.getLineRange(cp.node.textContent, cp.offset)
                 const line = this.getLine(cp.node.textContent, range)
                 const replacing = (cp.node as Text).splitText(range[0])
-                const keeping = replacing.splitText(range[1] - range[0]) // Removes extra new line.
+                if (!replacing || !replacing.textContent) throw new Error(`failure`)
+                const hasNl = replacing.textContent[range[1] - range[0]] == '\n'
+                const keeping = replacing.splitText((hasNl ? 1 : 0) + range[1] - range[0])
                 const fancy = document.createElement('span')
                 replacing.replaceWith(fancy)
                 console.log(`down`, cp.offset, range)
