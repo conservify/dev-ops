@@ -285,7 +285,7 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	static := http.StripPrefix("/diagnostics/", http.FileServer(http.Dir("./public")))
+	static := http.StripPrefix("/diagnostics", http.FileServer(http.Dir("./public")))
 
 	router.HandleFunc("/diagnostics/archives", middleware(services, secure(index))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
@@ -294,7 +294,10 @@ func main() {
 	router.HandleFunc("/diagnostics/archives/{id}/{file}", middleware(services, secure(archiveFile))).Methods("GET")
 	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
 	router.PathPrefix("/diagnostics/").Methods("POST").HandlerFunc(middleware(services, receive))
-	router.PathPrefix("/diagnostics").Methods("GET").Handler(static)
+	router.PathPrefix("/diagnostics").Methods("GET").HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		log.Printf("[http] %s %s", req.Method, req.URL)
+		static.ServeHTTP(rw, req)
+	})
 
 	log.Printf("listening on :8080")
 
