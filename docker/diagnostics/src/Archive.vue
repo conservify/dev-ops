@@ -75,6 +75,8 @@ import moment from 'moment'
 import VueJsonPretty from 'vue-json-pretty'
 import Config from './config'
 
+import FancyLine from './FancyLine.vue'
+
 interface SimpleBuffer {
     toString(encoding: string): string
 }
@@ -209,20 +211,29 @@ export default Vue.extend({
             }
             return haystack.length - 1
         },
-        getLine(text: string, offset: number): string {
+        getLineRange(text: string, offset: number): [number, number] {
             if (text[offset] == '\n') {
                 const b = this.findBackwards(text, offset - 1, '\n')
-                return text.substring(b, offset).trim()
+                return [b, offset]
             }
             const b = this.findBackwards(text, offset, '\n')
             const e = this.findForwards(text, offset, '\n')
-            return text.substring(b, e).trim()
+            return [b, e]
+        },
+        getLine(text: string, range: [number, number]): string {
+            return text.substring(range[0], range[1]).trim()
         },
         down(ev: { clientX: number; clientY: number }): void {
             const cp = this.getCaret(ev)
             if (cp && cp.node.nodeType == 3 && cp.node.textContent) {
-                const line = this.getLine(cp.node.textContent, cp.offset)
-                console.log(`down`, cp.offset, cp.range, line)
+                const range = this.getLineRange(cp.node.textContent, cp.offset)
+                const line = this.getLine(cp.node.textContent, range)
+                const fancy = document.createElement('span')
+                const replacing = (cp.node as Text).splitText(range[0])
+                const keeping = replacing.splitText(range[1] - range[0] + 1)
+                replacing.replaceWith(fancy)
+                const vm = new FancyLine({ propsData: { line: line } }).$mount(fancy)
+                console.log(`down`, cp.offset, cp.range, range)
             }
         },
         over(ev: Event): void {
