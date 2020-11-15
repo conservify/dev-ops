@@ -172,7 +172,8 @@ func archiveFile(ctx context.Context, s *Services, w http.ResponseWriter, r *htt
 
 	f, err := os.Open(path)
 	if err != nil {
-		return err
+		w.WriteHeader(http.StatusNotFound)
+		return nil
 	}
 
 	defer f.Close()

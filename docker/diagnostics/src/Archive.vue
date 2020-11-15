@@ -180,7 +180,6 @@ export default Vue.extend({
                 const range = document.caretPositionFromPoint(ev.clientX, ev.clientY)
                 if (!range) return null
                 return {
-                    range: range,
                     node: range.offsetNode,
                     offset: range.offset,
                 }
@@ -188,7 +187,6 @@ export default Vue.extend({
                 const range = document.caretRangeFromPoint(ev.clientX, ev.clientY)
                 if (!range) return null
                 return {
-                    range: range,
                     node: range.startContainer,
                     offset: range.startOffset,
                 }
@@ -226,14 +224,18 @@ export default Vue.extend({
         down(ev: { clientX: number; clientY: number }): void {
             const cp = this.getCaret(ev)
             if (cp && cp.node.nodeType == 3 && cp.node.textContent) {
+                // Yeah yeah yeah this sucks.
+                if (!cp.node.parentNode || (cp.node.parentNode as Element).className != 'app-logs') {
+                    return
+                }
                 const range = this.getLineRange(cp.node.textContent, cp.offset)
                 const line = this.getLine(cp.node.textContent, range)
-                const fancy = document.createElement('span')
                 const replacing = (cp.node as Text).splitText(range[0])
-                const keeping = replacing.splitText(range[1] - range[0] + 1)
+                const keeping = replacing.splitText(range[1] - range[0] + 1) // Removes extra new line.
+                const fancy = document.createElement('span')
                 replacing.replaceWith(fancy)
+                console.log(`down`, cp.offset, range)
                 const vm = new FancyLine({ propsData: { line: line } }).$mount(fancy)
-                console.log(`down`, cp.offset, cp.range, range)
             }
         },
         over(ev: Event): void {
