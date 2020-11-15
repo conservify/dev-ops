@@ -13,8 +13,6 @@
         "moment": "^2.29.1",
         "vue": "^2.6.11",
         "vue-headful": "^2.1.0",
-        "vue-json-component": "^0.4.1",
-        "vue-json-pretty": "^1.7.1",
         "vue-json-viewer": "^2.2.16",
         "vue-router": "^3.2.0",
         "vuex": "^3.4.0"
