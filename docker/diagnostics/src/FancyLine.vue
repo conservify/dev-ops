@@ -3,7 +3,7 @@
         <div class="fancy-line">{{ fancy.text }}</div>
         <div v-if="hasExtras" class="extras">
             <div v-for="(o, i) in json" v-bind:key="i">
-                <json-viewer theme="jv-diagnostics" :value="JSON.parse(o)" :expand-depth="3" copyable sort />
+                <json-viewer theme="jv-diagnostics" :value="o.parsed" :expand-depth="3" copyable sort />
             </div>
         </div>
     </div>
@@ -12,11 +12,19 @@
 import Vue from 'vue'
 import JsonViewer from 'vue-json-viewer'
 
+class JSONField {
+    public readonly parsed: unknown
+
+    constructor(public readonly text: string) {
+        this.parsed = JSON.parse(text)
+    }
+}
+
 class FancyLogLine {
     constructor(public readonly text: string) {}
 
-    public findJson(): string[] {
-        const found: string[] = []
+    public findJson(): JSONField[] {
+        const fields: JSONField[] = []
         let depth = 0
         let mark = -1
         for (let i = 0; i < this.text.length; ++i) {
@@ -29,12 +37,12 @@ class FancyLogLine {
             if (this.text[i] == '}') {
                 depth--
                 if (depth == 0) {
-                    found.push(this.text.substring(mark, i + 1))
+                    fields.push(new JSONField(this.text.substring(mark, i + 1)))
                     mark = -1
                 }
             }
         }
-        return found
+        return fields
     }
 }
 
@@ -54,7 +62,7 @@ export default Vue.extend({
         }
     },
     computed: {
-        json(): string[] {
+        json(): JSONField[] {
             return this.fancy.findJson()
         },
         hasExtras(): boolean {
