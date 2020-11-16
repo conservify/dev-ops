@@ -78,13 +78,26 @@ export default Vue.extend({
                 }
                 const range = this.getLineRange(cp.node.textContent, cp.offset)
                 const line = this.getLine(cp.node.textContent, range)
-                const replacing = (cp.node as Text).splitText(range[0])
-                if (!replacing || !replacing.textContent) throw new Error(`failure`)
-                const hasNl = replacing.textContent[range[1] - range[0]] == '\n'
-                const keeping = replacing.splitText((hasNl ? 1 : 0) + range[1] - range[0])
+
+                const originalNode = cp.node as Text
+
+                const replacingNode = originalNode.splitText(range[0])
+                if (!replacingNode || !replacingNode.textContent) throw new Error(`failure`)
+
+                if (!originalNode.textContent || originalNode.textContent.length == 0) {
+                    originalNode.remove()
+                }
+
+                const hasNl = replacingNode.textContent[range[1] - range[0]] == '\n'
+                const keepingNode = replacingNode.splitText((hasNl ? 1 : 0) + range[1] - range[0])
+                if (!keepingNode.textContent || keepingNode.textContent.length == 0) {
+                    keepingNode.remove()
+                }
+
                 const fancy = document.createElement('span')
-                replacing.replaceWith(fancy)
-                console.log(`down`, cp.offset, range)
+                fancy.className = 'fancy-container'
+                replacingNode.replaceWith(fancy)
+                console.log(`down`, cp.offset, range, hasNl, line)
                 const vm = new FancyLine({ propsData: { line: line } }).$mount(fancy)
             }
         },
@@ -98,6 +111,7 @@ export default Vue.extend({
 pre {
     overflow: inherit;
 }
+
 .app-logs {
     font-size: 80%;
 }
