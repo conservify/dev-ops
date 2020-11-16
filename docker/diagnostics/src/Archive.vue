@@ -73,12 +73,11 @@
             </div>
         </template>
 
-        <template v-else>
-            <div class="alert alert-primary" role="alert">Mobile App Logs</div>
-            <div class="row">
+        <template>
+            <div class="alert alert-primary" role="alert" v-on:click="onShowLogs">Mobile App Logs</div>
+            <div class="row" v-if="logs">
                 <div class="col-md-12">
-                    <LogsViewer :logs="logs" v-if="logs" />
-                    <div v-else>No logs</div>
+                    <LogsViewer :logs="logs" />
                 </div>
             </div>
         </template>
@@ -152,22 +151,12 @@ export default Vue.extend({
     created() {
         this.archive = null
 
-        const options = {
-            headers: {
-                Authorization: this.token,
-            },
-        }
+        const options = this.getFetchOptions()
 
         fetch(Config.BaseUrl + 'archives/' + this.query.id, options)
             .then((response) => response.json())
             .then((archive) => {
                 this.archive = archive
-            })
-
-        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/logs.txt', options)
-            .then((response) => response.text())
-            .then((logs) => {
-                this.logs = logs
             })
 
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/device.json', options)
@@ -198,6 +187,8 @@ export default Vue.extend({
                 const numberLaunches = this.launches.launches.length
                 if (numberLaunches > 0) {
                     this.launches.launches[numberLaunches - 1].opened = true
+                } else {
+                    this.onShowLogs()
                 }
             })
     },
@@ -224,6 +215,24 @@ export default Vue.extend({
             const before = launch.opened
             launch.opened = !(launch.opened || false)
             console.log('toggle-launch', before, launch.opened)
+        },
+        getFetchOptions() {
+            return {
+                headers: {
+                    Authorization: this.token,
+                },
+            }
+        },
+        onShowLogs(): void {
+            if (this.logs) {
+                return
+            }
+
+            fetch(Config.BaseUrl + 'archives/' + this.query.id + '/logs.txt', this.getFetchOptions())
+                .then((response) => response.text())
+                .then((logs) => {
+                    this.logs = logs
+                })
         },
     },
 })
