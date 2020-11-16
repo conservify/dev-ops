@@ -232,6 +232,7 @@ type Launch struct {
 
 // 2020-11-14T11:54:59-08:00
 var timeRegex = regexp.MustCompile(`\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d-\d\d:\d\d`)
+var nlRegex = regexp.MustCompile(`\n+`)
 
 func getTime(line string) time.Time {
 	values := timeRegex.FindAllString(line, -1)
@@ -290,6 +291,10 @@ func launches(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 		}
 
 		launch.Logs += line + "\n"
+	}
+
+	for _, launch := range launches {
+		launch.Logs = nlRegex.ReplaceAllString(launch.Logs, "\n")
 	}
 
 	response := struct {
