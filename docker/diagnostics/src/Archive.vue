@@ -174,21 +174,23 @@ export default Vue.extend({
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/launches', options)
             .then((response) => response.json())
             .then((body) => {
-                this.launches = {
-                    launches: body.launches.map((l: { time: number; logs: string }) => {
-                        return {
-                            time: l.time,
-                            opened: false,
-                            logs: l.logs,
-                        } as Launch
-                    }),
-                }
+                const launches = body.launches.map((l: { time: number; logs: string }) => {
+                    return {
+                        time: l.time,
+                        opened: false,
+                        logs: l.logs,
+                    } as Launch
+                })
 
-                const numberLaunches = this.launches.launches.length
-                if (numberLaunches > 0) {
-                    this.launches.launches[numberLaunches - 1].opened = true
+                const ordered = _.reverse(_.sortBy(launches, (l) => l.time))
+                if (ordered.length > 0) {
+                    ordered[0].opened = true
                 } else {
                     this.onShowLogs()
+                }
+
+                this.launches = {
+                    launches: ordered,
                 }
             })
     },
