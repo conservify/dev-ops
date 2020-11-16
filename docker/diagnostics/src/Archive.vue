@@ -60,10 +60,11 @@
             <div class="col-md-6"></div>
         </div>
 
-        <div class="alert alert-primary" role="alert" v-if="mobileAppLogs">Mobile App Logs</div>
-        <div class="row" v-if="mobileAppLogs">
+        <div class="alert alert-primary" role="alert">Mobile App Logs</div>
+        <div class="row">
             <div class="col-md-12">
-                <LogsViewer :logs="mobileAppLogs" />
+                <LogsViewer :logs="logs" v-if="logs" />
+                <div v-else>No logs</div>
             </div>
         </div>
     </div>
@@ -115,13 +116,13 @@ export default Vue.extend({
     data(): {
         archive: Archive | null
         device: Device | null
-        mobileAppLogs: string | null
+        logs: string | null
         analysis: Analysis | null
     } {
         return {
             archive: null,
             device: null,
-            mobileAppLogs: null,
+            logs: null,
             analysis: null,
         }
     },
@@ -142,8 +143,8 @@ export default Vue.extend({
 
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/logs.txt', options)
             .then((response) => response.text())
-            .then((mobileAppLogs) => {
-                this.mobileAppLogs = mobileAppLogs
+            .then((logs) => {
+                this.logs = logs
             })
 
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/device.json', options)
