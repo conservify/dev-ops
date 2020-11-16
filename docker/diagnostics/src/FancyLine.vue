@@ -76,9 +76,6 @@ export default Vue.extend({
             return this.json.length > 0
         },
     },
-    created() {
-        console.log()
-    },
 })
 </script>
 <style lang="scss" scoped>
