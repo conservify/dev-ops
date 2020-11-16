@@ -9,37 +9,16 @@
 
         <h4>{{ archive.time | prettyTime }}</h4>
 
-        <div class="download">
-            <a :href="'/diagnostics/archives/' + archive.id + '.zip?token=' + token">Download</a>
-        </div>
-
-        <div class="alert alert-primary" role="alert">App Database</div>
-        <div class="row" v-if="analysis">
-            <div class="col-md-12">
-                <table class="table table-condensed stations" v-if="analysis.stations">
-                    <thead>
-                        <tr>
-                            <th>Station</th>
-                            <th>Device ID</th>
-                            <th>Device ID</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="station in analysis.stations" v-bind:key="station.id">
-                            <td>{{ station.name }}</td>
-                            <td>{{ station.device_id }}</td>
-                            <td>
-                                <a target="_blank" :href="station.device_id | deviceLogsUrl">{{ station.device_id | hexToBase64 }}</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div v-else>No stations.</div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-12">
+                <a :href="'/diagnostics/archives/' + archive.id + '.zip?token=' + token">ZIP</a>
+
+                &nbsp;
+
                 <a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/fk.db?token=' + token" download="fk.db">DB</a>
+
+                &nbsp;
+
                 <a
                     target="_blank"
                     :href="'/diagnostics/archives/' + archive.id + '/logs.txt?token=' + token"
@@ -47,19 +26,52 @@
                 >
                     Logs
                 </a>
+
+                &nbsp;
+
                 <a target="_blank" :href="'/diagnostics/archives/' + archive.id + '/analysis?token=' + token">Summary</a>
+            </div>
+        </div>
+
+        <div class="alert alert-primary" role="alert">App Database</div>
+        <div class="row">
+            <div class="col-md-12">
+                <div v-if="busy.analysis">Loading Analysis...</div>
+                <template v-else>
+                    <table class="table table-condensed stations" v-if="analysis && analysis.stations">
+                        <thead>
+                            <tr>
+                                <th>Station</th>
+                                <th>Device ID</th>
+                                <th>Device ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="station in analysis.stations" v-bind:key="station.id">
+                                <td>{{ station.name }}</td>
+                                <td>{{ station.device_id }}</td>
+                                <td>
+                                    <a target="_blank" :href="station.device_id | deviceLogsUrl">{{ station.device_id | hexToBase64 }}</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div v-else>No stations.</div>
+                </template>
             </div>
         </div>
 
         <div class="alert alert-primary" role="alert">Device / Configuration</div>
         <div class="row">
             <div class="col-md-6 device-json">
+                <div v-if="busy.device">Loading...</div>
                 <json-viewer :value="device" theme="jv-diagnostics" :expand-depth="1" copyable sort v-if="device" />
                 <div v-else>Unavailable</div>
             </div>
             <div class="col-md-6"></div>
         </div>
 
+        <div v-if="busy.launches">Loading Launches...</div>
         <template v-if="launches">
             <div v-for="(launch, index) in launches.launches" v-bind:key="index">
                 <div class="alert alert-primary" role="alert" v-on:click="onToggleLaunch(launch)">
@@ -73,8 +85,9 @@
             </div>
         </template>
 
-        <template>
+        <template v-if="!busy.launches">
             <div class="alert alert-primary" role="alert" v-on:click="onShowLogs">Mobile App Logs</div>
+            <div v-if="busy.logs">Loading...</div>
             <div class="row" v-if="logs">
                 <div class="col-md-12">
                     <LogsViewer :logs="logs" />
@@ -139,6 +152,12 @@ export default Vue.extend({
         device: Device | null
         logs: string | null
         analysis: Analysis | null
+        busy: {
+            launches: boolean
+            logs: boolean
+            analysis: boolean
+            device: boolean
+        }
     } {
         return {
             archive: null,
@@ -146,6 +165,12 @@ export default Vue.extend({
             device: null,
             logs: null,
             analysis: null,
+            busy: {
+                launches: false,
+                logs: false,
+                analysis: false,
+                device: false,
+            },
         }
     },
     created() {
@@ -159,18 +184,27 @@ export default Vue.extend({
                 this.archive = archive
             })
 
+        this.busy.device = true
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/device.json', options)
             .then((response) => response.json())
             .then((device) => {
                 this.device = device
             })
+            .finally(() => {
+                this.busy.device = false
+            })
 
+        this.busy.analysis = true
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/analysis', options)
             .then((response) => response.json())
             .then((analysis) => {
                 this.analysis = analysis
             })
+            .finally(() => {
+                this.busy.analysis = false
+            })
 
+        this.busy.launches = true
         fetch(Config.BaseUrl + 'archives/' + this.query.id + '/launches', options)
             .then((response) => response.json())
             .then((body) => {
@@ -183,15 +217,21 @@ export default Vue.extend({
                 })
 
                 const ordered = _.reverse(_.sortBy(launches, (l) => l.time))
+
+                this.launches = {
+                    launches: ordered,
+                }
+
+                this.busy.launches = false
+
                 if (ordered.length > 0) {
                     ordered[0].opened = true
                 } else {
                     this.onShowLogs()
                 }
-
-                this.launches = {
-                    launches: ordered,
-                }
+            })
+            .finally(() => {
+                this.busy.launches = false
             })
     },
     filters: {
@@ -230,10 +270,14 @@ export default Vue.extend({
                 return
             }
 
+            this.busy.logs = true
             fetch(Config.BaseUrl + 'archives/' + this.query.id + '/logs.txt', this.getFetchOptions())
                 .then((response) => response.text())
                 .then((logs) => {
                     this.logs = logs
+                })
+                .finally(() => {
+                    this.busy.logs = false
                 })
         },
     },
