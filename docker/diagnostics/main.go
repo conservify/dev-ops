@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -11,6 +12,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -222,6 +225,91 @@ func analysis(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 	return nil
 }
 
+type Launch struct {
+	Time int64  `json:"time"`
+	Logs string `json:"logs"`
+}
+
+// 2020-11-14T11:54:59-08:00
+var timeRegex = regexp.MustCompile(`\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d-\d\d:\d\d`)
+
+func getTime(line string) time.Time {
+	values := timeRegex.FindAllString(line, -1)
+	if len(values) > 0 {
+		time, err := time.Parse("2006-01-02T15:04:05-07:00", values[len(values)-1])
+		if err == nil {
+			log.Printf("time-good: %v %v", values[len(values)-1], time)
+			return time
+		}
+		log.Printf("time-bad: %v", values[len(values)-1])
+	}
+	return time.Time{}
+}
+
+func launches(ctx context.Context, s *Services, w http.ResponseWriter, r *http.Request) error {
+	id := mux.Vars(r)["id"]
+
+	archive, err := s.Repository.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	logsPath := filepath.Join(archive.Path, "logs.txt")
+
+	file, err := os.Open(logsPath)
+	if err != nil {
+		return err
+
+	}
+
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+
+	launches := make([]*Launch, 0)
+	var launch *Launch
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if strings.Contains(line, "startup loaded") {
+			launch = &Launch{
+				Time: getTime(line).Unix() * 1000,
+				Logs: "",
+			}
+			launches = append(launches, launch)
+		} else {
+			if launch == nil {
+				launch = &Launch{
+					Time: getTime(line).Unix() * 1000,
+					Logs: "",
+				}
+				launches = append(launches, launch)
+			}
+		}
+
+		launch.Logs += line + "\n"
+	}
+
+	response := struct {
+		Launches []*Launch `json:"launches"`
+	}{
+		launches,
+	}
+
+	bytes, err := json.Marshal(response)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+
+	return nil
+}
+
 func middleware(services *Services, h func(context.Context, *Services, http.ResponseWriter, *http.Request) error) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Printf("[http] %s %s", req.Method, req.URL)
@@ -291,6 +379,7 @@ func main() {
 	router.HandleFunc("/diagnostics/archives/{id}.zip", middleware(services, secure(download))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}", middleware(services, secure(view))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}/analysis", middleware(services, secure(analysis))).Methods("GET")
+	router.HandleFunc("/diagnostics/archives/{id}/launches", middleware(services, secure(launches))).Methods("GET")
 	router.HandleFunc("/diagnostics/archives/{id}/{file}", middleware(services, secure(archiveFile))).Methods("GET")
 	router.HandleFunc("/diagnostics/login", middleware(services, login)).Methods("POST")
 	router.PathPrefix("/diagnostics/").Methods("POST").HandlerFunc(middleware(services, receive))

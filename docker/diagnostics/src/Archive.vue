@@ -60,13 +60,28 @@
             <div class="col-md-6"></div>
         </div>
 
-        <div class="alert alert-primary" role="alert">Mobile App Logs</div>
-        <div class="row">
-            <div class="col-md-12">
-                <LogsViewer :logs="logs" v-if="logs" />
-                <div v-else>No logs</div>
+        <template v-if="launches">
+            <div v-for="(launch, index) in launches.launches" v-bind:key="index">
+                <div class="alert alert-primary" role="alert" v-on:click="onToggleLaunch(launch)">
+                    Launch {{ launch.time | prettyTime }}
+                </div>
+                <div class="row" v-if="launch.opened">
+                    <div class="col-md-12">
+                        <LogsViewer :logs="launch.logs" />
+                    </div>
+                </div>
             </div>
-        </div>
+        </template>
+
+        <template v-else>
+            <div class="alert alert-primary" role="alert">Mobile App Logs</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <LogsViewer :logs="logs" v-if="logs" />
+                    <div v-else>No logs</div>
+                </div>
+            </div>
+        </template>
     </div>
 </template>
 <script lang="ts">
@@ -97,6 +112,12 @@ export interface Analysis {
     stations: StationAnalysis[]
 }
 
+export interface Launch {
+    time: number
+    logs: string
+    opened: boolean
+}
+
 export default Vue.extend({
     name: 'Archive',
     components: {
@@ -115,12 +136,14 @@ export default Vue.extend({
     },
     data(): {
         archive: Archive | null
+        launches: { launches: Launch[] } | null
         device: Device | null
         logs: string | null
         analysis: Analysis | null
     } {
         return {
             archive: null,
+            launches: null,
             device: null,
             logs: null,
             analysis: null,
@@ -158,6 +181,25 @@ export default Vue.extend({
             .then((analysis) => {
                 this.analysis = analysis
             })
+
+        fetch(Config.BaseUrl + 'archives/' + this.query.id + '/launches', options)
+            .then((response) => response.json())
+            .then((body) => {
+                this.launches = {
+                    launches: body.launches.map((l: { time: number; logs: string }) => {
+                        return {
+                            time: l.time,
+                            opened: false,
+                            logs: l.logs,
+                        } as Launch
+                    }),
+                }
+
+                const numberLaunches = this.launches.launches.length
+                if (numberLaunches > 0) {
+                    this.launches.launches[numberLaunches - 1].opened = true
+                }
+            })
     },
     filters: {
         prettyTime(value: string): string {
@@ -177,6 +219,11 @@ export default Vue.extend({
     methods: {
         back(): void {
             this.$emit('navigate', '?')
+        },
+        onToggleLaunch(launch: Launch): void {
+            const before = launch.opened
+            launch.opened = !(launch.opened || false)
+            console.log('toggle-launch', before, launch.opened)
         },
     },
 })

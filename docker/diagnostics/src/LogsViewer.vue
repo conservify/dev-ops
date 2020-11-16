@@ -1,15 +1,13 @@
 <template>
     <div>
-        <pre class="app-logs" @mousedown="down" @mousemove="over">{{ logs }}</pre>
+        <div>
+            <pre class="app-logs" @mousedown="down">{{ logs }}</pre>
+        </div>
     </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
 import FancyLine from './FancyLine.vue'
-
-class Launch {
-    constructor(public readonly logs: string) {}
-}
 
 export default Vue.extend({
     components: {},
@@ -22,6 +20,7 @@ export default Vue.extend({
     data() {
         return {}
     },
+    computed: {},
     methods: {
         getCaret(ev: { clientX: number; clientY: number }) {
             if (document.caretPositionFromPoint) {
@@ -100,9 +99,6 @@ export default Vue.extend({
                 console.log(`down`, cp.offset, range, hasNl, line)
                 const vm = new FancyLine({ propsData: { line: line } }).$mount(fancy)
             }
-        },
-        over(ev: Event): void {
-            // console.log('over', ev)
         },
     },
 })
