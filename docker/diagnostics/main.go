@@ -279,9 +279,9 @@ func launches(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 	var launch *Launch
 
 	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
+		line := scanner.Text()
 
-		if len(line) == 0 {
+		if len(strings.TrimSpace(line)) == 0 {
 			continue
 		}
 
