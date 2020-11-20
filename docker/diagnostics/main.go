@@ -244,6 +244,8 @@ func getTime(line string) time.Time {
 			return time
 		}
 		log.Printf("time-bad: %v", values[len(values)-1])
+	} else {
+		log.Printf("time-bad: '%v'", line)
 	}
 	return time.Time{}
 }
@@ -267,13 +269,21 @@ func launches(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+	// Need large buffer for the JSON lines that are huge.
+	const maxCapacity = 512 * 1024
+	buf := make([]byte, maxCapacity)
+	scanner.Buffer(buf, maxCapacity)
 	scanner.Split(bufio.ScanLines)
 
 	launches := make([]*Launch, 0)
 	var launch *Launch
 
 	for scanner.Scan() {
-		line := scanner.Text()
+		line := strings.TrimSpace(scanner.Text())
+
+		if len(line) == 0 {
+			continue
+		}
 
 		if strings.Contains(line, "startup loaded") {
 			launch = &Launch{
@@ -299,7 +309,7 @@ func launches(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 
 	for _, launch := range launches {
 		launch.Logs = nlRegex.ReplaceAllString(launch.Logs, "\n")
-		log.Printf("launch: %s: %d", launch.Time, launch.Entries)
+		log.Printf("launch: %v: entries=%d", launch.Time, launch.Entries)
 	}
 
 	response := struct {
