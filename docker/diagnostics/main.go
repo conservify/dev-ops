@@ -226,8 +226,9 @@ func analysis(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 }
 
 type Launch struct {
-	Time int64  `json:"time"`
-	Logs string `json:"logs"`
+	Time    int64  `json:"time"`
+	Logs    string `json:"logs"`
+	Entries int32  `json:"entries"`
 }
 
 // 2020-11-14T11:54:59-08:00
@@ -276,25 +277,29 @@ func launches(ctx context.Context, s *Services, w http.ResponseWriter, r *http.R
 
 		if strings.Contains(line, "startup loaded") {
 			launch = &Launch{
-				Time: getTime(line).Unix() * 1000,
-				Logs: "",
+				Time:    getTime(line).Unix() * 1000,
+				Logs:    "",
+				Entries: 0,
 			}
 			launches = append(launches, launch)
 		} else {
 			if launch == nil {
 				launch = &Launch{
-					Time: getTime(line).Unix() * 1000,
-					Logs: "",
+					Time:    getTime(line).Unix() * 1000,
+					Logs:    "",
+					Entries: 0,
 				}
 				launches = append(launches, launch)
 			}
 		}
 
 		launch.Logs += line + "\n"
+		launch.Entries += 1
 	}
 
 	for _, launch := range launches {
 		launch.Logs = nlRegex.ReplaceAllString(launch.Logs, "\n")
+		log.Printf("launch: %s: %d", launch.Time, launch.Entries)
 	}
 
 	response := struct {
