@@ -33,4 +33,7 @@ docker run \
 # change the default certificate. Then you can run the plan again to delete the
 # old certificates.
 
+# 2020/11/24: I ran a terraform plan and apply in ssl and the apply in the main
+# fk terraform and the SSL change took effect.
+
 popd
