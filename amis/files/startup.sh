@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -xe
+
 source /etc/user_data.env
 
 if [ ! -z "$APPLICATION_STACK" ]; then
