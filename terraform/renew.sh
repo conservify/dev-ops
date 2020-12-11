@@ -13,7 +13,7 @@ docker run \
 	   -e AWS_PROFILE \
 	   -e AWS_ACCESS_KEY_ID \
 	   -e AWS_SECRET_ACCESS_KEY \
-	   danihodovic/certbot-route53 -d fkdev.org -d www.fkdev.org -d portal.fkdev.org -d api.fkdev.org -m jacob@conservify.org
+	   danihodovic/certbot-route53 -d fkdev.org -d www.fkdev.org -d portal.fkdev.org -d api.fkdev.org -d auth.fkdev.org -m jacob@conservify.org --expand
 
 docker run \
 	   --rm \
@@ -22,7 +22,7 @@ docker run \
 	   -e AWS_PROFILE \
 	   -e AWS_ACCESS_KEY_ID \
 	   -e AWS_SECRET_ACCESS_KEY \
-	   danihodovic/certbot-route53 -d fieldkit.org -d www.fieldkit.org -d portal.fieldkit.org -d api.fieldkit.org -m jacob@conservify.org
+	   danihodovic/certbot-route53 -d fieldkit.org -d www.fieldkit.org -d portal.fieldkit.org -d api.fieldkit.org -d auth.fieldkit.org -m jacob@conservify.org --expand
 
 
 # Right now this will successfully renew the certificates. Unfortunately the
@@ -35,5 +35,8 @@ docker run \
 
 # 2020/11/24: I ran a terraform plan and apply in ssl and the apply in the main
 # fk terraform and the SSL change took effect.
+
+# 2020/12/11: You need to run the terraform twice, once to create and
+# then allow them to destroy after they've moved over to the LBs
 
 popd

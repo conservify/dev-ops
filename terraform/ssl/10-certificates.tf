@@ -55,7 +55,7 @@ resource "aws_iam_server_certificate" "certificates" {
   # enable the create_before_destroy lifecycle block.
   lifecycle {
 	create_before_destroy = true
-	# prevent_destroy = true
+	prevent_destroy = true
   }
 }
 
