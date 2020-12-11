@@ -6,3 +6,4 @@ terraform.tfstate.backup
 graph.png
 bin
 deploy.env
+certs
