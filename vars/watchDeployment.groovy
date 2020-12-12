@@ -15,7 +15,7 @@ def getStatusHash(String url) {
 
 def call(Map parameters = [:]) {
 	return stage('watch-deploy') {
-		def seconds = parameters.seconds ?: 30
+		def seconds = parameters.seconds ?: 180
 		def counter = 0
 		def previous = getStatusHash(parameters.url)
 		if (!previous) {
