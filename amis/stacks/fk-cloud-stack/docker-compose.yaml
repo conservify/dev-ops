@@ -85,6 +85,8 @@ services:
       - FIELDKIT_KEYCLOAK_API_REALM=${FIELDKIT_KEYCLOAK_API_REALM}
     expose:
       - "8000"
+    volumes:
+      - /etc/fk:/etc/fk
     logging:
       driver: "gelf"
       options:
@@ -106,8 +108,6 @@ services:
       - DB_PASSWORD=${DATABASE_PASSWORD}
       - DB_ADDR=${DATABASE_ADDRESS}
       - DB_VENDOR=postgres
-    volumes:
-      - /etc/fk:/etc/fk
     expose:
       - "8080"
       - "9990"
