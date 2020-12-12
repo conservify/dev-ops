@@ -12,3 +12,6 @@ if [ ! -z "$APPLICATION_STACK" ]; then
 	mv * /tmp/incoming-stacks
 	popd
 fi
+
+systemctl start conservify.service
+systemctl start conservify.timer
