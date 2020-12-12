@@ -35,6 +35,18 @@ resource "aws_route53_record" "portal" {
   }
 }
 
+resource "aws_route53_record" "auth" {
+  zone_id = local.zone.id
+  name    = "auth.${local.zone.name}"
+  type    = "A"
+
+  alias {
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
+	evaluate_target_health = false
+  }
+}
+
 resource "aws_route53_record" "www" {
   zone_id = local.zone.id
   name    = "www.${local.zone.name}"
@@ -51,6 +63,15 @@ resource "aws_route53_record" "www" {
 resource "aws_route53_record" "app-servers" {
   zone_id = local.zone.id
   name    = "app-servers.aws.${local.zone.name}"
+  type    = "A"
+  ttl     = "60"
+  records = [ for key, value in aws_instance.app-servers: value.private_ip ]
+  count   = length(aws_instance.app-servers) > 0 ? 1 : 0
+}
+
+resource "aws_route53_record" "auth-servers" {
+  zone_id = local.zone.id
+  name    = "auth.aws.${local.zone.name}"
   type    = "A"
   ttl     = "60"
   records = [ for key, value in aws_instance.app-servers: value.private_ip ]

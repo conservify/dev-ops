@@ -5,39 +5,64 @@ data "aws_ami" "bare" {
 }
 
 data "template_file" "app_server_user_data" {
-  for_each               = local.servers
-  template               = file("user_data.yaml")
+  for_each                    = local.servers
+  template                    = file("user_data.yaml")
 
   vars = {
-	hostname             = each.value.name
-	zone_name            = local.zone.name
-	env_tag              = local.env
+	hostname                  = each.value.name
+	zone_name                 = local.zone.name
+	env_tag                   = local.env
 
-	aws_access_key       = var.access_key
-	aws_secret_key       = var.secret_key
+	aws_access_key            = var.access_key
+	aws_secret_key            = var.secret_key
 
-	mapbox_token         = local.tokens.mapbox
+	mapbox_token              = local.tokens.mapbox
 
-	gelf_url             = var.gelf_url
-	statsd_address       = var.statsd_address
+	gelf_url                  = var.gelf_url
+	statsd_address            = var.statsd_address
 
-	influx_url           = var.influx_database.url
-	influx_database      = var.influx_database.name
-	influx_user          = var.influx_database.user
-	influx_password      = var.influx_database.password
+	influx_url                = var.influx_database.url
+	influx_database           = var.influx_database.name
+	influx_user               = var.influx_database.user
+	influx_password           = var.influx_database.password
 
-	application_start    = each.value.config.start
-	application_stack    = each.value.config.stack
+	application_start         = each.value.config.start
+	application_stack         = each.value.config.stack
 
-	database_url         = local.database_url
+	database_url              = local.database_url
+	database_address          = local.database_address
+	database_username         = local.database.username
+	database_password         = local.database.password
 
-	streams_bucket_name  = local.buckets.streams
-	media_bucket_name    = local.buckets.media
+	streams_bucket_name       = local.buckets.streams
+	media_bucket_name         = local.buckets.media
 
-	email_override       = local.email_override
-	production           = local.production
+	email_override            = local.email_override
+	production                = local.production
 
-	session_key          = local.session_key
+	session_key               = local.session_key
+
+    # saml_cert               = local.saml.cert
+    # saml_key                = local.saml.key
+    saml_sp_url               = local.saml.sp_url
+    saml_ipd_meta             = local.saml.ipd_url
+	saml_login_url            = local.saml.login_url
+
+    keycloak_url_private      = local.keycloak.urls.private
+    keycloak_url_public       = local.keycloak.urls.public
+    keycloak_realm            = local.keycloak.realm
+    keycloak_admin_user       = local.keycloak.admin_user
+    keycloak_admin_password   = local.keycloak.admin_password
+    keycloak_api_user         = local.keycloak.api_user
+    keycloak_api_password     = local.keycloak.api_password
+	keycloak_api_realm        = local.keycloak.api_realm
+
+	discourse_secret          = local.discourse.secret
+	discourse_admin_key       = local.discourse.admin_key
+	discourse_return_url      = local.discourse.return_url
+
+	saml_cert_data            = filebase64(local.saml.cert)
+	saml_key_data             = filebase64(local.saml.key)
   }
 }
 

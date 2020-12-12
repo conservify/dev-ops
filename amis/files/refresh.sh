@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -e
 
 if [ -z $1 ]; then
 	WATCHING=/tmp/incoming-stacks

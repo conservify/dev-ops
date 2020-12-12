@@ -12,39 +12,78 @@ write_files:
       GELF_TAGS=${env_tag}
       GELF_URL=${gelf_url}
       STATSD_ADDRESS=${statsd_address}
-      DATABASE_URL=${database_url}
+
+      APPLICATION_START=${application_start}
+      APPLICATION_STACK=${application_stack}
+
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}
       INFLUX_USER=${influx_user}
       INFLUX_PASSWORD=${influx_password}
+
+      DATABASE_URL=${database_url}
+      DATABASE_ADDRESS=${database_address}
+      DATABASE_USERNAME=${database_username}
+      DATABASE_PASSWORD=${database_password}
+
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
       MAPBOX_TOKEN=${mapbox_token}
-      APPLICATION_START=${application_start}
-      APPLICATION_STACK=${application_stack}
       STREAMS_BUCKET_NAME=${streams_bucket_name}
       MEDIA_BUCKET_NAME=${media_bucket_name}
       PRODUCTION=${production}
       EMAIL_OVERRIDE=${email_override}
       SESSION_KEY=${session_key}
+
+      FIELDKIT_SAML_CERT=/etc/fk/fk-saml.cert
+      FIELDKIT_SAML_KEY=/etc/fk/fk-saml.key
+      FIELDKIT_SAML_SP_URL=${saml_sp_url}
+      FIELDKIT_SAML_LOGIN_URL=${saml_login_url}
+      FIELDKIT_SAML_IPD_META=${saml_ipd_meta}
+
+      FIELDKIT_KEYCLOAK_URL_PUBLIC=${keycloak_url_public}
+      FIELDKIT_KEYCLOAK_URL_PRIVATE=${keycloak_url_private}
+      FIELDKIT_KEYCLOAK_REALM=${keycloak_realm}
+      FIELDKIT_KEYCLOAK_API_USER=${keycloak_api_user}
+      FIELDKIT_KEYCLOAK_API_PASSWORD=${keycloak_api_password}
+      FIELDKIT_KEYCLOAK_API_REALM=${keycloak_api_realm}
+      FIELDKIT_KEYCLOAK_ADMIN_USER=${keycloak_admin_user}
+      FIELDKIT_KEYCLOAK_ADMIN_PASSWORD=${keycloak_admin_password}
+
+      FIELDKIT_DISCOURSE_SECRET=${discourse_secret}
+      FIELDKIT_DISCOURSE_RETURN_URL=${discourse_return_url}
+      FIELDKIT_DISCOURSE_ADMIN_KEY=${discourse_admin_key}
+
   - path: /etc/default/filebeat
     content: |
       HOSTNAME=${hostname}
       ENV_TAG=${env_tag}
       FIELDKIT_SERVER_NAME=${hostname}
+
   - path: /etc/default/telegraf
     content: |
       HOSTNAME=${hostname}
       SERVER_NAME=${hostname}
       ENV_TAG=${env_tag}
+
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}
       INFLUX_USER=${influx_user}
       INFLUX_PASSWORD=${influx_password}
+
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
       STATSD_ADDRESS=${statsd_address}
       PRODUCTION=${production}
       EMAIL_OVERRIDE=${email_override}
+
+  - path: /etc/fk/fk-saml.cert
+    encoding: b64
+    content: ${saml_cert_data}
+
+  - path: /etc/fk/fk-saml.key
+    encoding: b64
+    content: ${saml_key_data}
+
 runcmd:
   - [ /var/lib/conservify/startup.sh ]

@@ -7,6 +7,19 @@ output database_url {
   sensitive = true
 }
 
+output database_address {
+  value = local.database_address
+}
+
+output database_username {
+  value = local.database.username
+}
+
+output database_password {
+  value = local.database.password
+  sensitive = true
+}
+
 output servers {
   value = [
 	for key, i in aws_instance.app-servers: {

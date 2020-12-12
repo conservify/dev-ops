@@ -55,6 +55,39 @@ variable bastions {
   */
 }
 
+variable workspace_discourse {
+  type = map(object({
+	secret = string,
+	return_url = string,
+	admin_key = string,
+  }))
+}
+
+variable workspace_keycloak {
+  type = map(object({
+	urls = object({
+	  public = string,
+	  private = string
+	}),
+	realm = string,
+	admin_user = string,
+	admin_password = string,
+	api_user = string,
+	api_password = string,
+	api_realm = string
+  }))
+}
+
+variable workspace_saml {
+  type = map(object({
+    cert = string,
+    key = string,
+    sp_url = string,
+    ipd_url = string,
+    login_url = string
+  }))
+}
+
 variable gelf_url {
   type = string
 }
@@ -142,4 +175,7 @@ locals {
   email_override = terraform.workspace == "prod" ? "" : "fkdev@conservify.org"
   session_key = var.workspace_session_keys[terraform.workspace]
   tokens = var.workspace_tokens[terraform.workspace]
+  keycloak = var.workspace_keycloak[terraform.workspace]
+  saml = var.workspace_saml[terraform.workspace]
+  discourse = var.workspace_discourse[terraform.workspace]
 }
