@@ -51,12 +51,12 @@ write_files:
       FIELDKIT_KEYCLOAK_ADMIN_PASSWORD=${keycloak_admin_password}
 
       FIELDKIT_DISCOURSE_SECRET=${discourse_secret}
-      FIELDKIT_DISCOURSE_RETURN_URL=${discourse_return_url}
+      FIELDKIT_DISCOURSE_REDIRECT_URL=${discourse_redirect_url}
       FIELDKIT_DISCOURSE_ADMIN_KEY=${discourse_admin_key}
 
       FIELDKIT_OIDC_CLIENT_ID=${oidc_client_id}
       FIELDKIT_OIDC_CLIENT_SECRET=${oidc_client_secret}
-      FIELDKIT_OIDC_RETURN_URL=${oidc_return_url}
+      FIELDKIT_OIDC_REDIRECT_URL=${oidc_redirect_url}
       FIELDKIT_OIDC_CONFIG_URL=${oidc_config_url}
 
   - path: /etc/default/filebeat
