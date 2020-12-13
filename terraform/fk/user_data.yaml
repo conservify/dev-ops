@@ -54,6 +54,11 @@ write_files:
       FIELDKIT_DISCOURSE_RETURN_URL=${discourse_return_url}
       FIELDKIT_DISCOURSE_ADMIN_KEY=${discourse_admin_key}
 
+      FIELDKIT_OIDC_CLIENT_ID=${oidc_client_id}
+      FIELDKIT_OIDC_CLIENT_SECRET=${oidc_client_secret}
+      FIELDKIT_OIDC_RETURN_URL=${oidc_return_url}
+      FIELDKIT_OIDC_CONFIG_URL=${oidc_config_url}
+
   - path: /etc/default/filebeat
     content: |
       HOSTNAME=${hostname}

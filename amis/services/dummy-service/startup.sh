@@ -1,5 +1,9 @@
 #!/bin/sh
 
-python3 /code/service.py &
+{ python3 /code/service.py; } &
 
-envoy -c /etc/service-envoy.yaml --service-cluster service${SERVICE_NAME}
+{ envoy -c /etc/service-envoy.yaml --service-cluster service${SERVICE_NAME}; } &
+
+wait -n
+
+pkill -P $$

@@ -61,6 +61,11 @@ data "template_file" "app_server_user_data" {
 	discourse_admin_key       = local.discourse.admin_key
 	discourse_return_url      = local.discourse.return_url
 
+	oidc_client_id            = local.oidc.client_id
+	oidc_client_secret        = local.oidc.client_secret
+	oidc_return_url           = local.oidc.return_url
+	oidc_config_url           = local.oidc.config_url
+
 	saml_cert_data            = filebase64(local.saml.cert)
 	saml_key_data             = filebase64(local.saml.key)
   }

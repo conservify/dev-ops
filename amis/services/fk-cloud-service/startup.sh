@@ -9,8 +9,10 @@ if [ -f /etc/static.env ]; then
 	source /etc/static.env
 fi
 
-if [ -f $EXEC ]; then
-	$EXEC &
-fi
+{ $EXEC; } &
 
-envoy -c /etc/service-envoy.yaml --service-cluster fk-cloud
+{ envoy -c /etc/service-envoy.yaml --service-cluster fk-cloud; } &
+
+wait -n
+
+pkill -P $$

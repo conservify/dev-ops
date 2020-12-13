@@ -63,6 +63,15 @@ variable workspace_discourse {
   }))
 }
 
+variable workspace_oidc {
+  type = map(object({
+	client_id = string,
+	client_secret = string,
+	config_url = string,
+	return_url = string,
+  }))
+}
+
 variable workspace_keycloak {
   type = map(object({
 	urls = object({
@@ -178,4 +187,5 @@ locals {
   keycloak = var.workspace_keycloak[terraform.workspace]
   saml = var.workspace_saml[terraform.workspace]
   discourse = var.workspace_discourse[terraform.workspace]
+  oidc = var.workspace_oidc[terraform.workspace]
 }
