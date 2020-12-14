@@ -57,42 +57,42 @@ variable bastions {
 
 variable workspace_discourse {
   type = map(object({
-	secret = string,
-	redirect_url = string,
-	admin_key = string,
+	secret = string
+	redirect_url = string
+	admin_key = string
   }))
 }
 
 variable workspace_oidc {
   type = map(object({
-	client_id = string,
-	client_secret = string,
-	config_url = string,
-	redirect_url = string,
+	client_id = string
+	client_secret = string
+	config_url = string
+	redirect_url = string
   }))
 }
 
 variable workspace_keycloak {
   type = map(object({
 	urls = object({
-	  public = string,
+	  public = string
 	  private = string
-	}),
-	realm = string,
-	admin_user = string,
-	admin_password = string,
-	api_user = string,
-	api_password = string,
+	})
+	realm = string
+	admin_user = string
+	admin_password = string
+	api_user = string
+	api_password = string
 	api_realm = string
   }))
 }
 
 variable workspace_saml {
   type = map(object({
-    cert = string,
-    key = string,
-    sp_url = string,
-    ipd_url = string,
+    cert = string
+    key = string
+    sp_url = string
+    ipd_url = string
     login_url = string
   }))
 }
@@ -108,9 +108,9 @@ variable statsd_address {
 
 variable influx_database {
   type = object({
-	url = string,
-	name = string,
-	user = string,
+	url = string
+	name = string
+	user = string
 	password = string
   })
 }
@@ -129,8 +129,7 @@ variable workspace_servers {
 	name = string
 	number = number
 	instance = string
-	start = string
-	stack = string
+	stacks = list(string)
   })))
 }
 

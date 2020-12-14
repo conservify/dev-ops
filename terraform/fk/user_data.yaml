@@ -13,8 +13,7 @@ write_files:
       GELF_URL=${gelf_url}
       STATSD_ADDRESS=${statsd_address}
 
-      APPLICATION_START=${application_start}
-      APPLICATION_STACK=${application_stack}
+      APPLICATION_STACKS=${application_stacks}
 
       INFLUX_URL=${influx_url}
       INFLUX_DATABASE=${influx_database}

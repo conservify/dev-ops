@@ -26,8 +26,7 @@ data "template_file" "app_server_user_data" {
 	influx_user               = var.influx_database.user
 	influx_password           = var.influx_database.password
 
-	application_start         = each.value.config.start
-	application_stack         = each.value.config.stack
+	application_stacks        = join(",", each.value.config.stacks)
 
 	database_url              = local.database_url
 	database_address          = local.database_address

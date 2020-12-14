@@ -111,13 +111,19 @@
       "destination": "/tmp/startup.sh"
     },
     {
+      "type": "file",
+      "source": "files/startup.py",
+      "destination": "/tmp/startup.py"
+    },
+    {
       "type": "shell",
       "inline": [
         "sudo mkdir /var/lib/conservify",
         "sudo mv /tmp/refresh.sh /var/lib/conservify",
         "sudo mv /tmp/startup.sh /var/lib/conservify",
+        "sudo mv /tmp/startup.py /var/lib/conservify",
         "sudo chown root. /var/lib/conservify/*.sh",
-        "sudo chmod 755 /var/lib/conservify/*.sh"
+        "sudo chmod 755 /var/lib/conservify/*.sh /var/lib/conservify/*.py"
       ]
     },
     {
