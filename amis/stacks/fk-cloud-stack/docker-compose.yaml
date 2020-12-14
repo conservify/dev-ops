@@ -101,29 +101,6 @@ services:
         gelf-address: "${GELF_URL}"
         tag: "${GELF_TAGS}"
 
-  keycloak:
-    image: "conservify/fk-cloud-keycloak:active"
-    networks:
-      - envoy-mesh
-    environment:
-      - TAG=${TAG}
-      - HOSTNAME=${HOSTNAME}
-      - KEYCLOAK_FRONTEND_URL=${FIELDKIT_KEYCLOAK_URL_PUBLIC}
-      - KEYCLOAK_USER=${FIELDKIT_KEYCLOAK_ADMIN_USER}
-      - KEYCLOAK_PASSWORD=${FIELDKIT_KEYCLOAK_ADMIN_PASSWORD}
-      - PROXY_ADDRESS_FORWARDING=true
-      - DB_USER=${DATABASE_USERNAME}
-      - DB_PASSWORD=${DATABASE_PASSWORD}
-      - DB_ADDR=${DATABASE_ADDRESS}
-      - DB_VENDOR=postgres
-    expose:
-      - "8080"
-      - "9990"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
-
 networks:
-  envoy-mesh: {}
+  envoy-mesh:
+    name: envoy-mesh

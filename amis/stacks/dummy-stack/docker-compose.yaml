@@ -49,4 +49,5 @@ services:
         tag: "${GELF_TAGS}"
 
 networks:
-  envoy-mesh: {}
+  envoy-mesh:
+    name: envoy-mesh
