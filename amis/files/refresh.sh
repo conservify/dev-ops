@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z $HOME ]; then
+	echo "refresh.sh: setting home to /tmp"
+	HOME="/tmp"
+fi
+
 set -e
 
 if [ -z $1 ]; then
