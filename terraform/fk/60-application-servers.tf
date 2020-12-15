@@ -41,8 +41,6 @@ data "template_file" "app_server_user_data" {
 
 	session_key               = local.session_key
 
-    # saml_cert               = local.saml.cert
-    # saml_key                = local.saml.key
     saml_sp_url               = local.saml.sp_url
     saml_ipd_meta             = local.saml.ipd_url
 	saml_login_url            = local.saml.login_url

@@ -129,6 +129,7 @@ variable workspace_servers {
 	name = string
 	number = number
 	instance = string
+	live = bool
 	stacks = list(string)
   })))
 }

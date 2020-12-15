@@ -64,7 +64,11 @@ resource "aws_alb_target_group" "app-servers" {
 }
 
 resource "aws_alb_target_group_attachment" "app-servers" {
-  for_each         = aws_instance.app-servers
+  for_each         = {
+	for key, value in aws_instance.app-servers:
+		key => value
+	if local.servers[key].config.live
+  }
   target_group_arn = aws_alb_target_group.app-servers.arn
   target_id        = each.value.id
   port             = 8000
