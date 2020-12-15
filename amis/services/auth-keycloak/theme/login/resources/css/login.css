@@ -1,10 +1,20 @@
 .login-pf body {
 	background-image: linear-gradient(#52b5e4, #1b80c9);
-    background-size: cover;
     height: 100%;
+	display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .btn-primary {
+	background-image: none;
+	background-color: #ce596b;
+	border: none;
+	color: white;
+	height: 45px;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:focus:active , .btn-primary.active {
 	background-image: none;
 	background-color: #ce596b;
 	border: none;
@@ -77,7 +87,7 @@ a#kc-current-locale-link::after {
 }
 
 .login-pf a:hover {
-    /* color: #0099d3; */
+    color: #0099d3;
 }
 
 #kc-logo {
@@ -111,12 +121,13 @@ div.kc-logo-text span {
 }
 
 #kc-header-wrapper {
-    font-size: 29px;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    line-height: 1.2em;
-    padding: 62px 10px 20px;
-    white-space: normal;
+    background-image: url(../img/fk-logo-white.png);
+	background-size: cover;
+	color: transparent;
+	width: 211px;
+	height: 45px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #kc-content {
@@ -439,6 +450,14 @@ a.zocial  {
   margin-top: 40px;
 }
 
+.login-pf-page {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 .login-pf-page .login-pf-brand {
   margin-top: 20px;
   max-width: 360px;
@@ -449,7 +468,7 @@ a.zocial  {
   background: #fff;
   margin: 0 auto;
   padding: 0 20px;
-  max-width: 500px;
+  max-width: 460px;
   border-top: 0;
   box-shadow: 0 0 0;
 }
@@ -457,7 +476,7 @@ a.zocial  {
 /*tablet*/
 @media (max-width: 840px) {
     .login-pf-page .card-pf{
-      max-width: none;
+      max-width: 460px;
       margin-left: 20px;
       margin-right: 20px;
       padding: 20px 20px 30px 20px;
@@ -465,7 +484,7 @@ a.zocial  {
 }
 @media (max-width: 767px) {
     .login-pf-page .card-pf{
-      max-width: none;
+      max-width: 460px;
       margin-left: 0;
       margin-right: 0;
       padding-top: 0;
@@ -482,6 +501,10 @@ a.zocial  {
 #kc-content-wrapper .row {
   margin-left: 0;
   margin-right: 0;
+}
+
+.login-pf-page .card-pf {
+	width: 460px;
 }
 
 @media (min-width: 768px) {
