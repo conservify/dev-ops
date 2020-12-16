@@ -1,3 +1,6 @@
 FROM jboss/keycloak
 
 ADD theme /opt/jboss/keycloak/themes/fk
+RUN mkdir /opt/jboss/startup-scripts
+ADD logging.properties /opt/jboss/keycloak/domain/configuration/logging.properties
+ADD standalone-ha.xml /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
