@@ -1,5 +1,5 @@
 
-STACKS ?= dummy-stack fk-cloud-stack auth-stack
+STACKS ?= dummy-stack proxy-stack auth-stack fk-cloud-stack
 IMAGES ?= dummy-proxy dummy-service fk-cloud-proxy fk-cloud-service auth-keycloak
 
 # NOTE: This fails miserably with spaces.
