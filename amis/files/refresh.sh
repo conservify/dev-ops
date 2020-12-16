@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [ -z $HOME ]; then
-	echo "refresh.sh: setting home to /tmp"
 	HOME="/tmp"
 fi
 
