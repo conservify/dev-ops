@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   proxy:
-    image: "conservify/fk-cloud-proxy:active"
+    image: "conservify/proxy-service:active"
     networks:
       - envoy-mesh
     expose:

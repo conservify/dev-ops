@@ -1,6 +1,6 @@
 
-STACKS ?= dummy-stack proxy-stack auth-stack fk-cloud-stack
-IMAGES ?= dummy-proxy dummy-service fk-cloud-proxy fk-cloud-service auth-keycloak
+STACKS ?= dummy-stack proxy-stack auth-stack portal-stack
+IMAGES ?= dummy-proxy dummy-service proxy-service auth-keycloak portal-service
 
 # NOTE: This fails miserably with spaces.
 BUILD := $(abspath build)

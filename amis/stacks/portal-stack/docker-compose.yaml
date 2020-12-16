@@ -1,25 +1,7 @@
 version: "3.7"
 services:
-  proxy:
-    image: "conservify/fk-cloud-proxy:active"
-    networks:
-      - envoy-mesh
-    expose:
-      - "7000"
-      - "8000"
-      - "9000"
-    ports:
-      - "7000:7000"
-      - "8000:8000"
-      - "9000:9000"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
-
   fk-ingester:
-    image: "conservify/fk-cloud-service:active"
+    image: "conservify/portal-service:active"
     command: [ "/app/ingester" ]
     networks:
       - envoy-mesh
@@ -50,7 +32,7 @@ services:
         tag: "${GELF_TAGS}"
 
   fk-service:
-    image: "conservify/fk-cloud-service:active"
+    image: "conservify/portal-service:active"
     command: [ "/app/server" ]
     networks:
       - envoy-mesh
@@ -90,7 +72,6 @@ services:
       - FIELDKIT_OIDC_CLIENT_SECRET=${FIELDKIT_OIDC_CLIENT_SECRET}
       - FIELDKIT_OIDC_REDIRECT_URL=${FIELDKIT_OIDC_REDIRECT_URL}
       - FIELDKIT_OIDC_CONFIG_URL=${FIELDKIT_OIDC_CONFIG_URL}
-
     expose:
       - "8000"
     volumes:
