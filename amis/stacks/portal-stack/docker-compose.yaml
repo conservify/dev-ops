@@ -25,11 +25,6 @@ services:
       - FIELDKIT_SESSION_KEY=${SESSION_KEY}
     expose:
       - "8000"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
 
   fk-service:
     image: "conservify/portal-service:active"
@@ -76,11 +71,6 @@ services:
       - "8000"
     volumes:
       - /etc/fk:/etc/fk
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
 
 networks:
   envoy-mesh:

@@ -10,11 +10,6 @@ services:
     ports:
       - "8000:80"
       - "8001:8001"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
 
   service1:
     image: "conservify/dummy-service:active"
@@ -26,11 +21,6 @@ services:
       - SERVICE_NAME=1
     expose:
       - "80"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
 
   service2:
     image: "conservify/dummy-service:active"
@@ -42,11 +32,6 @@ services:
       - SERVICE_NAME=2
     expose:
       - "80"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
 
 networks:
   envoy-mesh:

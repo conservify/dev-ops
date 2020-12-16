@@ -19,11 +19,6 @@ services:
     expose:
       - "8080"
       - "9990"
-    logging:
-      driver: "gelf"
-      options:
-        gelf-address: "${GELF_URL}"
-        tag: "${GELF_TAGS}"
 
 networks:
   envoy-mesh:

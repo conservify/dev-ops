@@ -81,6 +81,16 @@ write_files:
       PRODUCTION=${production}
       EMAIL_OVERRIDE=${email_override}
 
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "log-driver": "gelf",
+        "log-opts":  {
+          "gelf-address": "${gelf_url}",
+          "tag": "${env_tag}"
+        }
+      }
+
   - path: /etc/fk/fk-saml.cert
     encoding: b64
     content: ${saml_cert_data}
