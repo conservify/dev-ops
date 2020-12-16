@@ -54,6 +54,7 @@ $(IMAGES):
 	mkdir -p $(BUILD)
 	false && docker rmi -f `docker images --filter=reference='conservify/$@' -q` || true
 	cd services/$@ && docker build --rm -t conservify/$@:${TAG} .
+	docker tag conservify/$@:$(TAG) conservify/$@:active
 
 $(BUILD)/%.di: NAME = ${@:${BUILD}/%.di=%}
 
