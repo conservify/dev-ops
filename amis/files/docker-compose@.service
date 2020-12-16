@@ -5,15 +5,11 @@ After=docker.service
 
 [Service]
 Restart=always
-
 WorkingDirectory=/etc/docker/compose/%i
-
-
 ExecStartPre=-/bin/bash -c "cp /etc/user_data.env 99_user_data.env"
 ExecStartPre=-/bin/bash -c "cat *_*.env > .env"
-ExecStart=/usr/bin/docker-compose up
-
-ExecStop=/usr/bin/docker-compose down
+ExecStart=/usr/bin/docker-compose --no-ansi up
+ExecStop=/usr/bin/docker-compose --no-ansi down
 
 [Install]
 WantedBy=multi-user.target
