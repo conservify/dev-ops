@@ -43,6 +43,7 @@ static_resources:
                 user_agent: "%REQ(USER-AGENT)%"
                 req_id: "%REQ(X-REQUEST-ID)%"
                 authority: "%REQ(:AUTHORITY)%"
+                response_content_type: "%REQ(CONTENT-TYPE)%"
           stat_prefix: ingress_http
           request_timeout: 3000s
           route_config:
@@ -103,6 +104,7 @@ static_resources:
                 user_agent: "%REQ(USER-AGENT)%"
                 req_id: "%REQ(X-REQUEST-ID)%"
                 authority: "%REQ(:AUTHORITY)%"
+                response_content_type: "%REQ(CONTENT-TYPE)%"
           stat_prefix: ingress_http
           request_timeout: 3000s
           route_config:
