@@ -87,7 +87,7 @@ services:
       - /svr0/graylog/data/elasticsearch:/usr/share/elasticsearch/data
 
   logs:
-    image: graylog/graylog:3.2.2-1
+    image: graylog/graylog:4.0.1
     restart: always
     volumes:
       - /svr0/graylog/journal:/usr/share/graylog/data/journal
@@ -103,6 +103,7 @@ services:
     ports:
       - "5044:5044"
       - "9000:9000"
+      - "12201:12201"
       - "12201:12201/udp"
 
   glacier-status:
