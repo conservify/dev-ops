@@ -1,7 +1,7 @@
 stats_sinks:
   - name: envoy.stat_sinks.statsd
     typed_config:
-        "@type": type.googleapis.com/envoy.config.metrics.v2.StatsdSink
+        "@type": type.googleapis.com/envoy.config.metrics.v3.StatsdSink
         address:
             socket_address:
                 address: 172.17.0.1
@@ -18,8 +18,7 @@ static_resources:
     - filters:
       - name: envoy.http_connection_manager
         typed_config:
-          "@type": type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
-          codec_type: auto
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
           stat_prefix: ingress_http
           request_timeout: 3000s
           route_config:
@@ -44,7 +43,7 @@ static_resources:
                   cluster: fk-service
                   timeout: 3000s
           http_filters:
-          - name: envoy.router
+          - name: envoy.filters.http.router
             typed_config: {}
 
   - address:
@@ -55,8 +54,7 @@ static_resources:
     - filters:
       - name: envoy.http_connection_manager
         typed_config:
-          "@type": type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
-          codec_type: auto
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
           stat_prefix: ingress_http
           request_timeout: 3000s
           route_config:
@@ -83,7 +81,7 @@ static_resources:
                   cluster: fk-service
                   timeout: 3000s
           http_filters:
-          - name: envoy.router
+          - name: envoy.filters.http.router
             typed_config: {}
 
   clusters:
@@ -138,3 +136,15 @@ admin:
     socket_address:
       address: 0.0.0.0
       port_value: 9000
+
+layered_runtime:
+  layers:
+    - name: static_layer_0
+      static_layer:
+        envoy:
+          resource_limits:
+            listener:
+              example_listener_name:
+                connection_limit: 10000
+        overload:
+          global_downstream_max_connections: 50000
