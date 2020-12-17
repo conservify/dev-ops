@@ -19,6 +19,30 @@ static_resources:
       - name: envoy.http_connection_manager
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          access_log:
+          - name: envoy.access_loggers.file
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+              path: /dev/stdout
+              typed_json_format:
+                protocol: "%PROTOCOL%"
+                duration: "%DURATION%"
+                request_duration: "%REQUEST_DURATION%"
+                response_duration: "%RESPONSE_DURATION%"
+                bytes_tx: "%BYTES_SENT%"
+                bytes_rx: "%BYTES_RECEIVED%"
+                http_status: "%RESPONSE_CODE%"
+                flags: "%RESPONSE_FLAGS%"
+                upstream_host: "%UPSTREAM_HOST%"
+                upstream_cluster: "%UPSTREAM_CLUSTER%"
+                method: "%REQ(:METHOD)%"
+                route_name: "%ROUTE_NAME%"
+                path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+                upstream_time: "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%"
+                forwarded_for: "%REQ(X-FORWARDED-FOR)%"
+                user_agent: "%REQ(USER-AGENT)%"
+                req_id: "%REQ(X-REQUEST-ID)%"
+                authority: "%REQ(:AUTHORITY)%"
           stat_prefix: ingress_http
           request_timeout: 3000s
           route_config:
@@ -55,6 +79,30 @@ static_resources:
       - name: envoy.http_connection_manager
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          access_log:
+          - name: envoy.access_loggers.file
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+              path: /dev/stdout
+              typed_json_format:
+                protocol: "%PROTOCOL%"
+                duration: "%DURATION%"
+                request_duration: "%REQUEST_DURATION%"
+                response_duration: "%RESPONSE_DURATION%"
+                bytes_tx: "%BYTES_SENT%"
+                bytes_rx: "%BYTES_RECEIVED%"
+                http_status: "%RESPONSE_CODE%"
+                flags: "%RESPONSE_FLAGS%"
+                upstream_host: "%UPSTREAM_HOST%"
+                upstream_cluster: "%UPSTREAM_CLUSTER%"
+                method: "%REQ(:METHOD)%"
+                route_name: "%ROUTE_NAME%"
+                path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+                upstream_time: "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%"
+                forwarded_for: "%REQ(X-FORWARDED-FOR)%"
+                user_agent: "%REQ(USER-AGENT)%"
+                req_id: "%REQ(X-REQUEST-ID)%"
+                authority: "%REQ(:AUTHORITY)%"
           stat_prefix: ingress_http
           request_timeout: 3000s
           route_config:
@@ -131,7 +179,7 @@ static_resources:
                 port_value: 8080
 
 admin:
-  access_log_path: "/dev/null"
+  access_log_path: "/dev/stdout"
   address:
     socket_address:
       address: 0.0.0.0
