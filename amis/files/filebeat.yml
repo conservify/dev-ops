@@ -2,6 +2,8 @@ fields_under_root: true
 
 logging.metrics.enabled: false
 
+logging.json: true
+
 filebeat.inputs:
 - type: log
   enabled: false
