@@ -24,13 +24,16 @@ echo '{"graph": "/svr0/docker"}' > /etc/docker/daemon.json
 # Start installing packages
 sudo apt-get update
 sudo apt-get install -qy \
-	 apt-transport-https ca-certificates software-properties-common build-essential python-pip \
+	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip \
 	 openjdk-8-jdk-headless \
 	 wget unzip jq curl htop tig
 
 # Python stuffs.
-sudo pip install --upgrade pip
-sudo pip install virtualenv
+sudo which pip3
+sudo which python3
+
+sudo pip3 install --upgrade pip
+sudo pip3 install virtualenv
 
 # This is necessary to run android-sdk's aapt.
 sudo apt-get install -qy lib32stdc++6 lib32z1
