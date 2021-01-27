@@ -20,6 +20,7 @@ header .navbar {
 
 .navbar-title {
     background-image: url('../img/logo.png');
+    background-size: contain;
     height: 25px;
     background-repeat: no-repeat;
     width: 123px;
@@ -29,7 +30,7 @@ header .navbar {
 
 .navbar-pf .navbar-utility {
 	right: 20px;
-    top: -34px;
+    top: -44px;
     font-size: 12px;
 }
 
@@ -38,6 +39,17 @@ header .navbar {
     padding-bottom: 12px;
     padding-top: 11px;
     border-left: medium none;
+}
+
+.navbar {
+	border: none;
+}
+
+.navbar-pf .navbar-header {
+	background-color: #1b80c9;
+	border: none;
+	padding-top: 1em;
+	padding-bottom: 1em;
 }
 
 .container {
@@ -104,6 +116,9 @@ header .navbar {
 	border-right: none;
 }
 
+.bs-sidebar ul li:nth-child(3), .bs-sidebar ul li:nth-child(4), .bs-sidebar ul li:nth-child(5)  {
+	display: none;
+}
 
 .content-area h2 {
     font-family: "Open Sans", sans-serif;
