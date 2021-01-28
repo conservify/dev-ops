@@ -1,3 +1,7 @@
+html.login-pf {
+	background-image: linear-gradient(#52b5e4, #1b80c9);
+}
+
 .login-pf body {
 	background-image: linear-gradient(#52b5e4, #1b80c9);
     height: 100%;
@@ -124,7 +128,7 @@ div.kc-logo-text span {
     background-image: url(../img/fk-logo-white.png);
 	background-size: cover;
 	color: transparent;
-	width: 211px;
+    width: 211px;
 	height: 45px;
 	margin-left: auto;
 	margin-right: auto;
@@ -201,8 +205,8 @@ ul#kc-totp-supported-apps {
 }
 
 #kc-totp-secret-qr-code {
-    max-width:150px;
-    max-height:150px;
+    max-width: 150px;
+    max-height: 150px;
 }
 
 #kc-totp-secret-key {
@@ -361,10 +365,12 @@ a.zocial  {
 }
 
 @media (max-width: 767px) {
-
     .login-pf body {
-      background: white;
+      /* background: white; */
     }
+
+	.card-pf {
+	}
 
     #kc-header {
         padding-left: 15px;
@@ -376,8 +382,8 @@ a.zocial  {
     #kc-header-wrapper {
       font-size: 16px;
       font-weight: bold;
-      padding: 20px 60px 0 0;
-      color: #72767b;
+      /* padding: 20px 60px 0 0; */
+	  color: transparent;
       letter-spacing: 0;
     }
 
@@ -428,6 +434,15 @@ a.zocial  {
 
 }
 
+@media (max-width: 320px) {
+    #kc-header-wrapper {
+		background-image: none;
+		color: white;
+		text-align: center;
+		width: 100%;
+    }
+}
+
 @media (min-height: 646px) {
     #kc-container-wrapper {
         bottom: 12%;
@@ -458,33 +473,42 @@ a.zocial  {
   height: 100vh;
 }
 
+/*
 .login-pf-page .login-pf-brand {
   margin-top: 20px;
   max-width: 360px;
   width: 40%;
 }
+*/
 
 .card-pf {
   background: #fff;
   margin: 0 auto;
   padding: 0 20px;
-  max-width: 460px;
   border-top: 0;
   box-shadow: 0 0 0;
 }
 
-/*tablet*/
+@media (min-width: 840px) {
+	.login-pf-page .card-pf{
+		max-width: 300px;
+		margin-left: 20px;
+		margin-right: 20px;
+		padding: 20px 20px 30px 20px;
+	}
+}
+
 @media (max-width: 840px) {
-    .login-pf-page .card-pf{
-      max-width: 460px;
-      margin-left: 20px;
-      margin-right: 20px;
-      padding: 20px 20px 30px 20px;
-    }
+	.login-pf-page .card-pf{
+		max-width: 300px;
+		margin-left: 20px;
+		margin-right: 20px;
+		padding: 20px 20px 30px 20px;
+	}
 }
 @media (max-width: 767px) {
     .login-pf-page .card-pf{
-      max-width: 460px;
+      max-width: 300px;
       margin-left: 0;
       margin-right: 0;
       padding-top: 0;
@@ -501,10 +525,6 @@ a.zocial  {
 #kc-content-wrapper .row {
   margin-left: 0;
   margin-right: 0;
-}
-
-.login-pf-page .card-pf {
-	width: 460px;
 }
 
 @media (min-width: 768px) {
@@ -562,4 +582,8 @@ a.zocial  {
 form#kc-select-back-form div.login-pf-social-section {
     padding-left: 0px;
     border-left: 0px;
+}
+
+.card-pf {
+	width: 100%;
 }
