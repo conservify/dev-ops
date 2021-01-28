@@ -2,6 +2,8 @@
 
 set -xe
 
+whoami
+
 # See if we have been created with a mapped block device for extra space.
 sudo mkdir -p /svr0
 if [ -e /dev/xvdd ]; then
@@ -16,13 +18,14 @@ sudo mkdir -p /svr0/workspace
 sudo mkdir -p /svr0/docker
 
 # When docker installs, it'll find this and end up on extra space.
-mkdir -p /var/jenkins_home
+sudo mkdir -p /var/jenkins_home
 sudo ln -sf /svr0/workspace /var/jenkins_home/workspace
-mkdir -p /etc/docker
+sudo mkdir -p /etc/docker
 echo '{"graph": "/svr0/docker"}' > /etc/docker/daemon.json
 
 # Start installing packages
-sudo apt-get update
+sudo apt-get update -y
+sudo apt-get update -y
 sudo apt-get install -qy \
 	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip \
 	 openjdk-8-jdk-headless \
