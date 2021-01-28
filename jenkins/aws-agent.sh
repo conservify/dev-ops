@@ -101,6 +101,7 @@ sudo rm -rf ~/.npm
 sudo whoami
 sudo id
 id
+env
 
 # HUP java agent if it's running to get new permissions.
 # sudo pkill java
