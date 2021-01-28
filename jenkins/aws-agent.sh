@@ -102,4 +102,7 @@ sudo whoami
 sudo id
 id
 
+# HUP java agent if it's running to get new permissions.
+# sudo pkill java
+
 echo done!
