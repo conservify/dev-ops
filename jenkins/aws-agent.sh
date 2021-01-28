@@ -96,6 +96,11 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 
 cat /etc/docker/daemon.json
 
+# Ideally the group would handle this for us but I can't seem to get
+# the ssh process that Jenkins starts to inherit the permissions
+# because of various races with the startup scripts.
+sudo chmod 777 /var/run/docker.sock
+
 sudo rm -rf ~/.npm
 
 sudo whoami
