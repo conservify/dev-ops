@@ -75,9 +75,9 @@ data "terraform_remote_state" "fk" {
 output certificates {
   value = {
 	for key, i in aws_iam_server_certificate.certificates:
-	  key => {
-		id = i.id,
-		arn = i.arn
-	  }
+	key => {
+	  id = i.id,
+	  arn = i.arn
+	}
   }
 }

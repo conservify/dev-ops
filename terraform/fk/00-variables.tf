@@ -89,11 +89,11 @@ variable workspace_keycloak {
 
 variable workspace_saml {
   type = map(object({
-    cert = string
-    key = string
-    sp_url = string
-    ipd_url = string
-    login_url = string
+	cert = string
+	key = string
+	sp_url = string
+	ipd_url = string
+	login_url = string
   }))
 }
 

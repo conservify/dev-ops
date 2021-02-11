@@ -27,7 +27,7 @@ resource "aws_db_instance" "fk-database" {
   publicly_accessible    = false
 
   tags = {
-    Name = local.env
+	Name = local.env
   }
 
   lifecycle {

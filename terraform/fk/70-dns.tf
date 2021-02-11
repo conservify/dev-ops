@@ -82,7 +82,7 @@ resource "aws_route53_zone" "private" {
   name = "fk.private"
 
   vpc {
-    vpc_id = aws_vpc.fk.id
+	vpc_id = aws_vpc.fk.id
   }
 }
 

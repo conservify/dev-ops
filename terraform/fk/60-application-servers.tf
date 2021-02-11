@@ -41,17 +41,17 @@ data "template_file" "app_server_user_data" {
 
 	session_key               = local.session_key
 
-    saml_sp_url               = local.saml.sp_url
-    saml_ipd_meta             = local.saml.ipd_url
+	saml_sp_url               = local.saml.sp_url
+	saml_ipd_meta             = local.saml.ipd_url
 	saml_login_url            = local.saml.login_url
 
-    keycloak_url_private      = local.keycloak.urls.private
-    keycloak_url_public       = local.keycloak.urls.public
-    keycloak_realm            = local.keycloak.realm
-    keycloak_admin_user       = local.keycloak.admin_user
-    keycloak_admin_password   = local.keycloak.admin_password
-    keycloak_api_user         = local.keycloak.api_user
-    keycloak_api_password     = local.keycloak.api_password
+	keycloak_url_private      = local.keycloak.urls.private
+	keycloak_url_public       = local.keycloak.urls.public
+	keycloak_realm            = local.keycloak.realm
+	keycloak_admin_user       = local.keycloak.admin_user
+	keycloak_admin_password   = local.keycloak.admin_password
+	keycloak_api_user         = local.keycloak.api_user
+	keycloak_api_password     = local.keycloak.api_password
 	keycloak_api_realm        = local.keycloak.api_realm
 
 	discourse_secret          = local.discourse.secret

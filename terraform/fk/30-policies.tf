@@ -60,59 +60,59 @@ resource "aws_iam_role_policy" "fk-server" {
   role   = aws_iam_role.fk-server.id
   policy = <<POLICY
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "ses:SendEmail",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "ses:FromAddress": [
-                        "admin@fkdev.org",
-                        "admin@fkstg.org",
-                        "admin@fieldkit.org"
-                    ]
-                }
-            }
-        },
-        {
-            "Sid": "VisualEditor2",
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::conservify-firmware/*"
-            ]
-        },
-        {
-            "Sid": "VisualEditor3",
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:PutObjectAcl",
-                "s3:ListBucket"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${local.buckets.streams}/*",
-                "arn:aws:s3:::${local.buckets.media}/*"
-            ]
-        },
-        {
-            "Sid": "VisualEditor4",
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucket"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${local.buckets.streams}",
-                "arn:aws:s3:::${local.buckets.media}"
-            ]
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "VisualEditor0",
+			"Effect": "Allow",
+			"Action": "ses:SendEmail",
+			"Resource": "*",
+			"Condition": {
+				"StringEquals": {
+					"ses:FromAddress": [
+						"admin@fkdev.org",
+						"admin@fkstg.org",
+						"admin@fieldkit.org"
+					]
+				}
+			}
+		},
+		{
+			"Sid": "VisualEditor2",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::conservify-firmware/*"
+			]
+		},
+		{
+			"Sid": "VisualEditor3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject",
+				"s3:PutObject",
+				"s3:PutObjectAcl",
+				"s3:ListBucket"
+			],
+			"Resource": [
+				"arn:aws:s3:::${local.buckets.streams}/*",
+				"arn:aws:s3:::${local.buckets.media}/*"
+			]
+		},
+		{
+			"Sid": "VisualEditor4",
+			"Effect": "Allow",
+			"Action": [
+				"s3:ListBucket"
+			],
+			"Resource": [
+				"arn:aws:s3:::${local.buckets.streams}",
+				"arn:aws:s3:::${local.buckets.media}"
+			]
+		}
+	]
 }
 POLICY
 }

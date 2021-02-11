@@ -53,17 +53,17 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.fk.id
 
   route {
-    cidr_block = var.infrastructure.cidr
+	cidr_block = var.infrastructure.cidr
 	vpc_peering_connection_id = local.network.peering
   }
 
   route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.fk-gw-a.id
+	cidr_block = "0.0.0.0/0"
+	nat_gateway_id = aws_nat_gateway.fk-gw-a.id
   }
 
   tags = {
-    Name = "${local.env} private"
+	Name = "${local.env} private"
   }
 }
 
@@ -77,7 +77,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.fk.id
 
   route {
-    cidr_block = var.infrastructure.cidr
+	cidr_block = var.infrastructure.cidr
 	vpc_peering_connection_id = local.network.peering
   }
 
@@ -87,7 +87,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${local.env} public"
+	Name = "${local.env} public"
   }
 }
 
