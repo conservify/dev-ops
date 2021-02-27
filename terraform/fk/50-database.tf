@@ -17,7 +17,7 @@ resource "aws_db_instance" "fk-database" {
   identifier             = local.database.id
   allocated_storage      = 20
   engine                 = "postgres"
-  engine_version         = "9.6.18"
+  engine_version         = "9.6.20"
   instance_class         = local.database.instance
   name                   = local.database.name
   username               = local.database.username
@@ -25,6 +25,7 @@ resource "aws_db_instance" "fk-database" {
   db_subnet_group_name   = aws_db_subnet_group.fk.name
   vpc_security_group_ids = [ aws_security_group.db-server.id ]
   publicly_accessible    = false
+  skip_final_snapshot    = false
 
   tags = {
 	Name = local.env
