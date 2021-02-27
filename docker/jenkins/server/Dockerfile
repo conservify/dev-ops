@@ -1,8 +1,6 @@
 FROM jenkins/jenkins:lts
 USER root
-RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential zlib1g zlib1g:i386 python3-pip python-pip zip doxygen binutils-arm-none-eabi rsync jq vim valgrind gdb
-RUN pip install virtualenv
-RUN pip3 install virtualenv
+RUN dpkg --add-architecture i386 && apt-get update && apt-get install -yy libc6:i386 build-essential zlib1g zlib1g:i386 python3-pip python-pip zip doxygen binutils-arm-none-eabi rsync jq vim valgrind gdb python3-venv
 WORKDIR /tmp
 ADD lief-0.10.0.dev0-py3.6-linux-x86_64.egg /tmp
 RUN python3 -m easy_install --no-deps lief-0.10.0.dev0-py3.6-linux-x86_64.egg
