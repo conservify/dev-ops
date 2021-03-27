@@ -65,8 +65,8 @@ sudo mv /usr/local/node-* /usr/local/node
 wget https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz
 sudo tar -C /usr/local -xf docker-17.09.0-ce.tgz
 
-wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.tar.gz
-sudo tar -C /usr/local -xf cmake-3.12.0-Linux-x86_64.tar.gz
+wget https://github.com/Kitware/CMake/releases/download/v3.19.7/cmake-3.19.7.tar.gz
+sudo tar -C /usr/local -xf cmake-3.19.7.tar.gz
 sudo mv /usr/local/cmake-* /usr/local/cmake
 
 sudo ln -sf /usr/local/cmake/bin/cmake /usr/local/bin/cmake
