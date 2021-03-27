@@ -29,7 +29,7 @@ sudo apt-get update -y
 sudo apt-get install -qy \
 	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip \
 	 openjdk-8-jdk-headless \
-	 wget unzip jq curl htop tig
+	 wget unzip jq curl htop tig valgrind
 
 # Python stuffs.
 sudo which pip3
