@@ -16,6 +16,10 @@ server {
 
 	include server-common.conf;
 
+	location ^~ /.well-known/acme-challenge/ {
+		alias /var/www/conservify.org/.well-known/acme-challenge/;
+	}
+
 	location / {
 		rewrite ^ https://code.conservify.org$request_uri? permanent;
 	}
@@ -32,15 +36,19 @@ server {
 		# chunkin_resume;
 	}
 
-	server_name	jitsi.conservify.org;
+	server_name	pga.conservify.org;
 
-	access_log  /var/log/nginx/jitsi.conservify.access.log;
-	error_log  /var/log/nginx/jitsi.conservify.error.log debug;
+	access_log  /var/log/nginx/pga.conservify.access.log;
+	error_log  /var/log/nginx/pga.conservify.error.log debug;
 
 	include server-common.conf;
 
+	location ^~ /.well-known/acme-challenge/ {
+		alias /var/www/conservify.org/.well-known/acme-challenge/;
+	}
+
 	location / {
-		rewrite ^ https://jitsi.conservify.org$request_uri? permanent;
+		rewrite ^ https://pga.conservify.org$request_uri? permanent;
 	}
 }
 
@@ -279,14 +287,14 @@ server {
 
 server {
 	listen   443;
-	server_name	jitsi.conservify.org;
+	server_name	pga.conservify.org;
 
 	ssl                  on;
 	ssl_certificate      /etc/letsencrypt/live/code.conservify.org/fullchain.pem;
 	ssl_certificate_key  /etc/letsencrypt/live/code.conservify.org/privkey.pem;
 
-	access_log  /var/log/nginx/jitsi.conservify.access.log;
-	error_log  /var/log/nginx/jitsi.conservify.error.log debug;
+	access_log  /var/log/nginx/pga.conservify.access.log;
+	error_log  /var/log/nginx/pga.conservify.error.log debug;
 
 	include server-common.conf;
 
@@ -295,7 +303,7 @@ server {
 	}
 
 	location / {
-		proxy_pass         http://172.17.0.1:8081/;
+		proxy_pass         http://172.17.0.1:8070/;
 		proxy_redirect     off;
 
 		proxy_set_header   Host             $host;
