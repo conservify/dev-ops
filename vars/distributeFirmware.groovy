@@ -27,6 +27,10 @@ def call(Map parameters = [:]) {
 		command += " --password " + parameters.password
 	}
 
+	if (parameters.version) {
+		command += " --version " + parameters.version
+	}
+
 	echo command + " --host api.fkdev.org"
 	sh command + " --host api.fkdev.org"
 
