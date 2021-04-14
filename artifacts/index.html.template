@@ -19,6 +19,7 @@
 			<div class="card-body">
 				<h4 class="card-title">{{.Title}}</h4>
 				<div class="card-text">
+				<div>{{.Description}}</div>
 				<div>{{.Details}}</div>
 				{{- range .Links }}
 					<div><a href="{{.Url}}">{{.Title}}</a></div>

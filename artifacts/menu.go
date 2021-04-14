@@ -21,11 +21,12 @@ type Link struct {
 }
 
 type MenuOption struct {
-	Key     string
-	Sort    int64
-	Title   string
-	Details string
-	Links   []Link
+	Key         string
+	Sort        int64
+	Title       string
+	Description string
+	Details     string
+	Links       []Link
 }
 
 type MenuData struct {
@@ -106,13 +107,19 @@ func (h *IpaHandler) Handle(path string, relative string, jobName string, build 
 	timestamp := buildTime.UTC().In(location).Format("2006/01/02 15:04:05")
 	manifestUrl := fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/manifest.plist", relative)
 	installUrl := htmltemplate.URL(fmt.Sprintf("itms-services://?action=download-manifest&url=%s", url.QueryEscape(manifestUrl)))
+	description := ""
+
+	if build.Description != nil {
+		description = *build.Description
+	}
 
 	options = []MenuOption{
 		MenuOption{
-			Key:     jobName,
-			Sort:    build.Timestamp,
-			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber()),
-			Details: timestamp,
+			Key:         jobName,
+			Sort:        build.Timestamp,
+			Title:       fmt.Sprintf("%s #%d", jobName, build.BuildNumber()),
+			Description: description,
+			Details:     timestamp,
 			Links: []Link{
 				Link{
 					Title: "Install",

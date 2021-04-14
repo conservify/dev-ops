@@ -69,11 +69,12 @@ type BuildData struct {
 }
 
 type BuildInfo struct {
-	Duration  int64        `xml:"duration"`
-	Timestamp int64        `xml:"timestamp"`
-	StartTime int64        `xml:"startTime"`
-	Status    string       `xml:"result"`
-	BuildData []*BuildData `xml:"actions>hudson.plugins.git.util.BuildData"`
+	Duration    int64        `xml:"duration"`
+	Timestamp   int64        `xml:"timestamp"`
+	StartTime   int64        `xml:"startTime"`
+	Status      string       `xml:"result"`
+	Description *string      `xml:"description"`
+	BuildData   []*BuildData `xml:"actions>hudson.plugins.git.util.BuildData"`
 }
 
 func (i *BuildInfo) BuildNumber() int32 {
