@@ -30,6 +30,11 @@ timestamps {
     }
 
     // This will fail the first time this is run, because there's no dev-ops
-    // build to pull artifacts from. We should make this optional.
-    refreshDistribution()
+    // build to pull artifacts from.
+	try {
+		refreshDistribution()
+	}
+	catch (Exception e) {
+		slackSend channel: '#automation', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Distribution Error (may be ok) (<${env.BUILD_URL}|Open>)"
+	}
 }
