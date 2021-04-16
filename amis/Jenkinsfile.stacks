@@ -7,15 +7,15 @@ properties([
 
 timestamps {
     node ("jenkins-aws-ubuntu") {
+		def branch = "main"
+
 		stage ('deps - cloud') {
 			dir ('cloud') {
-				withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
-					git branch: 'main', url: 'https://github.com/fieldkit/cloud.git'
-					// sh "WORKING_DIRECTORY=/svr0/jenkins/workspace/fk/aws-build-stacks/cloud DOCKER_TAG=main make aws-image"
-					sh "whoami"
-					sh "which docker"
-					sh "id"
-					sh "DOCKER_TAG=main make aws-image"
+				withEnv(["GIT_LOCAL_BRANCH=${branch}", "DOCKER_TAG=${branch}"]) {
+					withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
+						git branch: branch, url: 'https://github.com/fieldkit/cloud.git'
+						sh "make aws-image"
+					}
 				}
 			}
 		}
