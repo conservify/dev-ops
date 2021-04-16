@@ -154,13 +154,19 @@ func (h *ApkHandler) Handle(path string, relative string, jobName string, build 
 	buildTime := time.Unix(build.Timestamp/1000, 0)
 	timestamp := buildTime.In(location).Format("2006/01/02 15:04:05")
 	downloadUrl := htmltemplate.URL(fmt.Sprintf("https://code.conservify.org/distribution/archive/%s/artifacts/%s", relative, filepath.Base(artifact)))
+	description := ""
+
+	if build.Description != nil {
+		description = *build.Description
+	}
 
 	options = []MenuOption{
 		MenuOption{
-			Key:     jobName,
-			Sort:    build.Timestamp,
-			Title:   fmt.Sprintf("%s #%d", jobName, build.BuildNumber()),
-			Details: fmt.Sprintf("%s", timestamp),
+			Key:         jobName,
+			Sort:        build.Timestamp,
+			Title:       fmt.Sprintf("%s #%d", jobName, build.BuildNumber()),
+			Description: description,
+			Details:     fmt.Sprintf("%s", timestamp),
 			Links: []Link{
 				Link{
 					Title: "Download",
