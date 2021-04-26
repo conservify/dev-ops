@@ -39,4 +39,7 @@ docker run \
 # 2020/12/11: You need to run the terraform twice, once to create and
 # then allow them to destroy after they've moved over to the LBs
 
+# 2021/04/26: Ran w/o the prevent_destroy and just manually made the changes to
+# the ELBs while terraform was trying to destroy them.
+
 popd
