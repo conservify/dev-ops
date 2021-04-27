@@ -95,6 +95,27 @@ func fixXmlVersion(bytes []byte) []byte {
 	return []byte(strings.Replace(strings.Replace(string(bytes), "version=\"1.1\"", "version=\"1.0\"", 1), "version='1.1'", "version='1.0'", 1))
 }
 
+func getPartBefore(parts []string, literal string) string {
+	previous := ""
+	for _, value := range parts {
+		if value == literal {
+			return previous
+		}
+		previous = value
+	}
+	return ""
+}
+
+func getJobName(path string) string {
+	pathParts := strings.Split(path, "/")
+	branchPart := getPartBefore(pathParts, "branches")
+	buildPart := getPartBefore(pathParts, "builds")
+	if branchPart == "" {
+		return buildPart
+	}
+	return branchPart + " " + buildPart
+}
+
 func walkBuilds(base string, walkFunc BuildWalkFunc) error {
 	return filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -115,10 +136,7 @@ func walkBuilds(base string, walkFunc BuildWalkFunc) error {
 			return nil
 		}
 
-		jobName := filepath.Base(filepath.Dir(path))
-		if jobName == "builds" {
-			jobName = filepath.Base(filepath.Dir(filepath.Dir(path)))
-		}
+		jobName := getJobName(buildXmlPath)
 
 		data, err := ioutil.ReadFile(buildXmlPath)
 		if err != nil {
