@@ -87,6 +87,9 @@ rm -f *.tar.* *.tgz
 # run from jenkins this never gets inherited.
 sudo usermod -aG docker ubuntu
 
+sudo mkdir /svr0/home
+sudo mv /home/ubuntu /svr0/home
+sudo ln -sf /svr0/home/ubuntu /home/ubuntu
 sudo chown -R ubuntu. /var/jenkins_home
 sudo chown -R ubuntu. /svr0/workspace
 
