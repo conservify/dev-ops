@@ -6,7 +6,9 @@ IMAGES ?= dummy-proxy dummy-service proxy-service auth-keycloak portal-service
 BUILD := $(abspath build)
 DEPDIR := $(abspath .deps)
 
-default: stacks
+default: repository-stacks
+
+repository-stacfks: dummy-stack proxy-stack auth-stack
 
 $(DEPDIR)/rules.mk: Makefile
 	@rm -rf $(DEPDIR)

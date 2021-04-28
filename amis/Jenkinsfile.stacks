@@ -7,25 +7,12 @@ properties([
 
 timestamps {
     node ("jenkins-aws-ubuntu") {
-		def branch = "main"
-
-		stage ('deps - cloud') {
-			dir ('cloud') {
-				withEnv(["GIT_LOCAL_BRANCH=${branch}", "DOCKER_TAG=${branch}"]) {
-					withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
-						git branch: branch, url: 'https://github.com/fieldkit/cloud.git'
-						sh "make aws-image"
-					}
-				}
-			}
-		}
-
 		stage ('build') {
 			dir ('dev-ops') {
 				git branch: 'main', url: "https://github.com/conservify/dev-ops.git"
 
 				withAWS(credentials: 'AWS Default', region: 'us-east-1') {
-					sh "cd amis && make clean && make stacks -j3"
+					sh "cd amis && make clean && make repository-stacks -j3"
 				}
 			}
 		}
