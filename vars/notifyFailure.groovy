@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 
 def call() {
-    slackSend channel: '#automation', color: 'danger', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} <${env.BUILD_URL}|Failed>"
+	def jobName = URLDecoder.decode(env.JOB_NAME)
+    slackSend channel: '#automation', color: 'danger', message: "${jobName} - #${env.BUILD_NUMBER} <${env.BUILD_URL}|Failed>"
 }
