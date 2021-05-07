@@ -9,7 +9,7 @@ timestamps {
         }
 
         stage ('build') {
-            withAWS(credentials: 'AWS Default', region: 'us-east-1') {
+            withAWS(credentials: 'aws-default', region: 'us-east-1') {
                 sh "cd amis && make clean && make bare-ami"
             }
         }

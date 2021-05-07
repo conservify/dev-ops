@@ -3,7 +3,7 @@ def call(Map parameters) {
 		stage ('terraform env') {
 			if (!fileExists('deploy-${parameters.env}.json')) {
 				withCredentials([file(credentialsId: "terraform.tfvars.json", variable: 'TERRAFORM_VARS_JSON')]) {
-					withAWS(credentials: 'AWS Default', region: 'us-east-1') {
+					withAWS(credentials: 'aws-default', region: 'us-east-1') {
 						dir ('dev-ops') {
 							git url: 'https://github.com/conservify/dev-ops.git'
 							sh "mv -f $TERRAFORM_VARS_JSON terraform"
