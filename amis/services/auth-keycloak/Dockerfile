@@ -1,4 +1,4 @@
-FROM jboss/keycloak
+FROM jboss/keycloak:12.0.2
 
 ADD theme /opt/jboss/keycloak/themes/fk
 RUN mkdir /opt/jboss/startup-scripts
