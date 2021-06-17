@@ -28,8 +28,10 @@ write_files:
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
       MAPBOX_TOKEN=${mapbox_token}
-      STREAMS_BUCKET_NAME=${streams_bucket_name}
-      MEDIA_BUCKET_NAME=${media_bucket_name}
+      STREAMS_BUCKET_NAME=${streams_buckets}
+      MEDIA_BUCKET_NAME=${media_buckets}
+      STREAMS_BUCKETS=${streams_buckets}
+      MEDIA_BUCKETS=${media_buckets}
       PRODUCTION=${production}
       EMAIL_OVERRIDE=${email_override}
       SESSION_KEY=${session_key}
