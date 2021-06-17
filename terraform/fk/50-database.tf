@@ -14,10 +14,10 @@ resource "aws_db_subnet_group" "fk" {
 }
 
 resource "aws_db_instance" "fk-database" {
-  identifier             = local.database.id
-  allocated_storage      = 100
   engine                 = "postgres"
-  engine_version         = "9.6.21"
+  identifier             = local.database.id
+  allocated_storage      = local.database.allocated_storage
+  engine_version         = local.database.engine_version
   instance_class         = local.database.instance
   name                   = local.database.name
   username               = local.database.username

@@ -30,8 +30,14 @@ variable workspace_zones {
 
 variable workspace_buckets {
   type = map(object({
-	streams = string
-	media = string
+	create = object({
+	  streams = string
+	  media = string
+	})
+	config = object({
+	  streams = string
+	  media = string
+	})
   }))
 }
 
@@ -42,6 +48,8 @@ variable workspace_databases {
 	username = string
 	password = string
 	instance = string
+	engine_version = string
+	allocated_storage = number
   }))
 }
 

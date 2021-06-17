@@ -33,8 +33,8 @@ data "template_file" "app_server_user_data" {
 	database_username         = local.database.username
 	database_password         = local.database.password
 
-	streams_buckets           = local.buckets.streams
-	media_buckets             = local.buckets.media
+	streams_buckets           = local.buckets.config.streams
+	media_buckets             = local.buckets.config.media
 
 	email_override            = local.email_override
 	production                = local.production

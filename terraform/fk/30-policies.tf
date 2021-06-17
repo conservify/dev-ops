@@ -1,10 +1,10 @@
 resource "aws_s3_bucket" "fk-streams" {
-  bucket = local.buckets.streams
+  bucket = local.buckets.create.streams
   acl = "private"
 }
 
 resource "aws_s3_bucket" "fk-media" {
-  bucket = local.buckets.media
+  bucket = local.buckets.create.media
   acl = "private"
 }
 
@@ -20,7 +20,7 @@ resource "aws_s3_bucket_policy" "fk-streams" {
 		"Effect": "Allow",
 		"Principal": "*",
 		"Action": "s3:*",
-		"Resource": "arn:aws:s3:::${local.buckets.streams}/*",
+		"Resource": "arn:aws:s3:::${local.buckets.create.streams}/*",
 		"Condition": {
 			"StringEquals": {
 				"aws:sourceVpc": "${aws_vpc.fk.id}"
@@ -97,8 +97,8 @@ resource "aws_iam_role_policy" "fk-server" {
 				"s3:ListBucket"
 			],
 			"Resource": [
-				"arn:aws:s3:::${local.buckets.streams}/*",
-				"arn:aws:s3:::${local.buckets.media}/*"
+				"arn:aws:s3:::${local.buckets.create.streams}/*",
+				"arn:aws:s3:::${local.buckets.create.media}/*"
 			]
 		},
 		{
@@ -108,8 +108,8 @@ resource "aws_iam_role_policy" "fk-server" {
 				"s3:ListBucket"
 			],
 			"Resource": [
-				"arn:aws:s3:::${local.buckets.streams}",
-				"arn:aws:s3:::${local.buckets.media}"
+				"arn:aws:s3:::${local.buckets.create.streams}",
+				"arn:aws:s3:::${local.buckets.create.media}"
 			]
 		}
 	]
