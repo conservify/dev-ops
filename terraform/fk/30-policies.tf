@@ -91,14 +91,10 @@ resource "aws_iam_role_policy" "fk-server" {
 			"Sid": "VisualEditor3",
 			"Effect": "Allow",
 			"Action": [
-				"s3:GetObject",
-				"s3:PutObject",
-				"s3:PutObjectAcl",
 				"s3:ListBucket"
 			],
 			"Resource": [
-				"arn:aws:s3:::${local.buckets.create.streams}/*",
-				"arn:aws:s3:::${local.buckets.create.media}/*"
+				${join(", ", formatlist("\"arn:aws:s3:::%s\"", split(",", local.buckets.config.streams)))}
 			]
 		},
 		{
@@ -108,8 +104,39 @@ resource "aws_iam_role_policy" "fk-server" {
 				"s3:ListBucket"
 			],
 			"Resource": [
-				"arn:aws:s3:::${local.buckets.create.streams}",
-				"arn:aws:s3:::${local.buckets.create.media}"
+				${join(", ", formatlist("\"arn:aws:s3:::%s\"", split(",", local.buckets.config.media)))}
+			]
+		},
+		{
+			"Sid": "VisualEditor5",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject"
+			],
+			"Resource": [
+				${join(", ", formatlist("\"arn:aws:s3:::%s/*\"", split(",", local.buckets.config.streams)))}
+			]
+		},
+		{
+			"Sid": "VisualEditor6",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject"
+			],
+			"Resource": [
+				${join(", ", formatlist("\"arn:aws:s3:::%s/*\"", split(",", local.buckets.config.media)))}
+			]
+		},
+		{
+			"Sid": "VisualEditor7",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:PutObjectAcl"
+			],
+			"Resource": [
+				"arn:aws:s3:::${local.buckets.create.streams}/*",
+				"arn:aws:s3:::${local.buckets.create.media}/*"
 			]
 		}
 	]
