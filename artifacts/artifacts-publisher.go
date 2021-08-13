@@ -37,7 +37,7 @@ func main() {
 
 	if o.Destination != "" {
 		indexer := NewIndexer()
-		maximumAge := (time.Hour * 24) * 30
+		maximumAge := (time.Hour * 24) * 90
 		err := indexer.DeleteOldBuilds(o.Destination, maximumAge)
 		if err != nil {
 			log.Fatalf("error: %v", err)
