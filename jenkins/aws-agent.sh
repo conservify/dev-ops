@@ -73,6 +73,11 @@ sudo ln -sf /usr/local/cmake/bin/cmake /usr/local/bin/cmake
 sudo ln -sf /usr/local/go/bin/go /usr/local/bin/go
 sudo ln -sf /usr/local/node/bin/node /usr/local/bin/node
 sudo ln -sf /usr/local/node/bin/npm /usr/local/bin/npm
+
+sudo npm install -g yarn
+
+sudo ln -sf /usr/local/node/bin/yarn /usr/local/bin/yarn
+
 for a in /usr/local/docker/*; do
     echo $a
     n=`basename $a`
