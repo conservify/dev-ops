@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type ArtifactsCopier struct {
@@ -61,6 +62,8 @@ func (am *ArtifactsCopier) Copy(source string) error {
 			return err
 		}
 
+		copyStart := time.Now()
+
 		for _, artifactPath := range artifactPaths {
 			newArtifactsPath := filepath.Join(destinationArtifacts, filepath.Base(artifactPath))
 			err = copyFileIfMissing(artifactPath, newArtifactsPath)
@@ -68,6 +71,10 @@ func (am *ArtifactsCopier) Copy(source string) error {
 				return err
 			}
 		}
+
+		copyEnd := time.Now()
+
+		log.Printf("checking %s: artifacts: %v", relative, copyEnd.Sub(copyStart))
 
 		return nil
 	})
