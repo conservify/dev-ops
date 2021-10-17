@@ -31,6 +31,8 @@ func (am *ArtifactsCopier) Copy(source string) error {
 			return nil
 		}
 
+		log.Printf("checking %s", relative)
+
 		r := cleanupRelativePath(relative)
 		copyingTo := filepath.Join(archive, r)
 
