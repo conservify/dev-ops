@@ -109,7 +109,7 @@ func (i *Indexer) GenerateFileIndex(directory string) error {
 	return nil
 }
 
-func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) error {
+func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration, preserve []string) error {
 	archive := filepath.Join(directory, "archive")
 
 	log.Printf("deleting old builds %s", archive)
@@ -118,12 +118,19 @@ func (i *Indexer) DeleteOldBuilds(directory string, maximumAge time.Duration) er
 
 	deleting := make([]string, 0)
 
+	keeping := make(map[string]bool)
+	for _, value := range preserve {
+		keeping[value] = true
+	}
+
 	err := walkBuilds(archive, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		age := now.Sub(time.Unix(info.StartTime/1000, 0))
 
 		if age.Hours() > maximumAge.Hours() {
-			log.Printf("deleting %s %s (%s) (%s)", path, jobName, relative, age)
-			deleting = append(deleting, path)
+			if _, ok := keeping[relative]; !ok {
+				log.Printf("deleting %s %s (%s) (%s)", relative, jobName, relative, age)
+				deleting = append(deleting, path)
+			}
 			return nil
 		}
 

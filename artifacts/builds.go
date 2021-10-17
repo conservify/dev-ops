@@ -90,6 +90,8 @@ func (i *BuildInfo) BuildNumber() int32 {
 
 type BuildWalkFunc func(path string, relative string, jobName string, buildXmlPath string, build *BuildInfo, artifactPaths []string) error
 
+type GuardFunc func(path string) bool
+
 // Sorry.
 func fixXmlVersion(bytes []byte) []byte {
 	return []byte(strings.Replace(strings.Replace(string(bytes), "version=\"1.1\"", "version=\"1.0\"", 1), "version='1.1'", "version='1.0'", 1))
@@ -117,6 +119,12 @@ func getJobName(path string) string {
 }
 
 func walkBuilds(base string, walkFunc BuildWalkFunc) error {
+	return walkBuildsWithGuard(base, func(path string) bool {
+		return true
+	}, walkFunc)
+}
+
+func walkBuildsWithGuard(base string, guardPath GuardFunc, walkFunc BuildWalkFunc) error {
 	return filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Printf("error: %v %v", path, err)

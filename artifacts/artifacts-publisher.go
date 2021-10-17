@@ -27,18 +27,22 @@ func main() {
 		os.Exit(2)
 	}
 
+	forcePreserve := make([]string, 0)
+
 	if o.Source != "" && o.Destination != "" {
 		ac := NewArtifactsCopier(o.Destination)
 		err := ac.Copy(o.Source)
 		if err != nil {
 			log.Fatalf("error: %v", err)
 		}
+
+		forcePreserve = ac.Copied
 	}
 
 	if o.Destination != "" {
 		indexer := NewIndexer()
 		maximumAge := (time.Hour * 24) * 90
-		err := indexer.DeleteOldBuilds(o.Destination, maximumAge)
+		err := indexer.DeleteOldBuilds(o.Destination, maximumAge, forcePreserve)
 		if err != nil {
 			log.Fatalf("error: %v", err)
 		}

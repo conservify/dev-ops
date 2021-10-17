@@ -12,11 +12,13 @@ import (
 
 type ArtifactsCopier struct {
 	Directory string
+	Copied    []string
 }
 
 func NewArtifactsCopier(directory string) (am *ArtifactsCopier) {
 	return &ArtifactsCopier{
 		Directory: directory,
+		Copied:    make([]string, 0),
 	}
 }
 
@@ -32,9 +34,9 @@ func (am *ArtifactsCopier) Copy(source string) error {
 			return nil
 		}
 
-		log.Printf("checking %s", relative)
-
 		r := cleanupRelativePath(relative)
+		log.Printf("checking to=%s", r)
+		am.Copied = append(am.Copied, r)
 		copyingTo := filepath.Join(archive, r)
 
 		maybeBuildNumber := filepath.Base(copyingTo)
