@@ -137,7 +137,7 @@ type ApkHandler struct {
 }
 
 func (h *ApkHandler) CanHandle(path string) bool {
-	return filepath.Ext(path) == ".apk"
+	return filepath.Ext(path) == ".aab" || filepath.Ext(path) == ".apk"
 }
 
 func (h *ApkHandler) Handle(path string, relative string, jobName string, build *BuildInfo, archived []string, artifact string) (options []MenuOption, err error) {
