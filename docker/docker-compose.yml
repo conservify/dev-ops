@@ -16,7 +16,7 @@ services:
     depends_on:
       - logs
     environment:
-      JAVA_OPTS: -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Los_Angeles -Dhudson.model.WorkspaceCleanupThread.disabled=true
+      JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=True -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Los_Angeles -Dhudson.model.WorkspaceCleanupThread.disabled=true
       JENKINS_OPTS: --prefix=/jenkins
     volumes:
       - /svr0/jenkins:/var/jenkins_home
@@ -32,6 +32,8 @@ services:
     restart: always
     depends_on:
       - logs
+    environment:
+      JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=True
     ports:
       - "8080:8080"
     volumes:
