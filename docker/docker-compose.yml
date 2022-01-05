@@ -52,8 +52,6 @@ services:
       - strapi
       - jenkins
       - logs
-      - glacier-status
-      - glacier-renderer
       - logs-viewer
       - jira
       - diagnostics
@@ -109,26 +107,6 @@ services:
       - "12201:12201"
       - "12201:12201/udp"
 
-  glacier-status:
-    image: conservify/glacier-status
-    restart: always
-    depends_on:
-      - logs
-    volumes:
-      - /var/log:/var/log
-    ports:
-      - "8000:8000"
-
-  glacier-renderer:
-    image: conservify/glacier-renderer
-    restart: always
-    depends_on:
-      - logs
-    volumes:
-      - /svr0/glacier/archive:/svr0/glacier/archive
-    ports:
-      - "9090:9090"
-
   logs-viewer:
     build: ./logs-viewer
     restart: always
@@ -155,16 +133,6 @@ services:
       - 8086:8086
     volumes:
       - /svr0/influxdb:/var/lib/influxdb
-
-  squid:
-    image: sameersbn/squid:3.5.27-2
-    restart: always
-    ports:
-      - 3128:3128
-    volumes:
-      - ./squid.conf:/etc/squid/squid.conf
-      - /svr0/squid/cache:/var/spool/squid 
-      - /svr0/squid/logs:/var/log/squid 
 
 volumes:
   jenkins_home:
