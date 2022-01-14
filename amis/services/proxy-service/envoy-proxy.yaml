@@ -47,6 +47,8 @@ static_resources:
                 response_content_type: "%REQ(CONTENT-TYPE)%"
           stat_prefix: ingress_http
           request_timeout: 3000s
+          upgrade_configs:
+          - upgrade_type: websocket
           route_config:
             name: local_route
             virtual_hosts:
@@ -109,6 +111,8 @@ static_resources:
                 response_content_type: "%REQ(CONTENT-TYPE)%"
           stat_prefix: ingress_http
           request_timeout: 3000s
+          upgrade_configs:
+          - upgrade_type: websocket
           route_config:
             name: local_route
             virtual_hosts:
