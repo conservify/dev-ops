@@ -35,6 +35,18 @@ resource "aws_route53_record" "portal" {
   }
 }
 
+resource "aws_route53_record" "floodnet" {
+  zone_id = local.zone.id
+  name    = "floodnet.${local.zone.name}"
+  type    = "A"
+
+  alias {
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
+	evaluate_target_health = false
+  }
+}
+
 resource "aws_route53_record" "auth" {
   zone_id = local.zone.id
   name    = "auth.${local.zone.name}"
