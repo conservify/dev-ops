@@ -186,7 +186,7 @@ static_resources:
       lb_policy: round_robin
       http2_protocol_options: {}
       load_assignment:
-        cluster_name: fk-auth
+        cluster_name: fk-charting
         endpoints:
           - lb_endpoints:
               - endpoint:
