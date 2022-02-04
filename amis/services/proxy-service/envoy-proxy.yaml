@@ -61,7 +61,7 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
-                    - name: fk-charting-vh
+                    - name: fk-service-vh
                       domains:
                         - "*"
                       routes:
@@ -70,10 +70,6 @@ static_resources:
                           route:
                             cluster: fk-charting
                             timeout: 3000s
-                    - name: fk-service-vh
-                      domains:
-                        - "*"
-                      routes:
                         - match:
                             prefix: "/"
                           route:
@@ -135,7 +131,7 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
-                    - name: fk-charting-vh
+                    - name: fk-service-vh
                       require_tls: EXTERNAL_ONLY
                       domains:
                         - "*"
@@ -145,11 +141,6 @@ static_resources:
                           route:
                             cluster: fk-charting
                             timeout: 3000s
-                    - name: fk-service-vh
-                      require_tls: EXTERNAL_ONLY
-                      domains:
-                        - "*"
-                      routes:
                         - match:
                             prefix: "/"
                           route:
