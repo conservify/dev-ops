@@ -52,7 +52,7 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: auth
+                    - name: auth-vh
                       domains:
                         - "auth.*"
                       routes:
@@ -61,7 +61,16 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
-                    - name: backend
+                    - name: fk-charting-vh
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/charting"
+                          route:
+                            cluster: fk-charting
+                            timeout: 3000s
+                    - name: fk-service-vh
                       domains:
                         - "*"
                       routes:
@@ -116,7 +125,7 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: auth
+                    - name: auth-vh
                       require_tls: EXTERNAL_ONLY
                       domains:
                         - "auth.*"
@@ -126,7 +135,17 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
-                    - name: backend
+                    - name: fk-charting-vh
+                      require_tls: EXTERNAL_ONLY
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/charting"
+                          route:
+                            cluster: fk-charting
+                            timeout: 3000s
+                    - name: fk-service-vh
                       require_tls: EXTERNAL_ONLY
                       domains:
                         - "*"
@@ -168,6 +187,21 @@ static_resources:
                   address:
                     socket_address:
                       address: fk-ingester
+                      port_value: 8000
+
+    - name: fk-charting
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: fk-auth
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: fk-charting
                       port_value: 8000
 
     - name: fk-auth
