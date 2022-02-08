@@ -14,7 +14,7 @@ services:
       - FIELDKIT_LOGGING_FULL=true
       - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
       - FIELDKIT_PORT=8000
-      - FIELDKIT_BASE_URL=http://127.0.0.1:7000
+      - FIELDKIT_BASE_URL=http://fk-service:8000
     expose:
       - "8000"
 
