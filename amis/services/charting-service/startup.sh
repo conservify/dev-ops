@@ -13,4 +13,6 @@ pwd
 ls -alh
 env
 
-ts-node server.ts
+pushd /usr/app
+/usr/app/node_modules/.bin/ts-node server.ts
+popd
