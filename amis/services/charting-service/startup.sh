@@ -13,4 +13,4 @@ pwd
 ls -alh
 env
 
-node server.js
+ts-node server.ts
