@@ -28,7 +28,7 @@ sudo apt-get update -y
 sudo apt-get update -y
 sudo apt-get install -qy \
 	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip python3-venv python-is-python3 zip \
-	 openjdk-8-jdk-headless \
+	 openjdk-11-jdk-headless \
 	 wget unzip jq curl htop tig valgrind
 
 # Python stuffs.
