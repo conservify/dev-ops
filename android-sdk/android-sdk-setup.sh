@@ -2,33 +2,37 @@
 
 env
 
-ANDROID_SDK_VERSION=3859397
-GRADLE_VERSION=4.6
+ANDROID_SDK_VERSION=8092744
+GRADLE_VERSION=7.4.1
 GRADLE_HOME=./gradle-${GRADLE_VERSION}
 ANDROID_HOME=./android-sdk
-PATH=${PATH}:${GRADLE_HOME}/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin
+PATH=${GRADLE_HOME}/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
 set -xe
 
-if [ ! -f sdk-tools-linux-${ANDROID_SDK_VERSION}.zip ]; then
-  wget -q https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_VERSION}.zip
+if [ ! -f commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip ]; then
+	wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip
 fi
 
 # We actually have just used the wrapper, but this is installed anyway.
 if [ ! -f gradle-${GRADLE_VERSION}-bin.zip ]; then
-    wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
-    unzip gradle*.zip
+	wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
+	unzip gradle*.zip
 fi
 
 ls -alh
 
-if [ ! -d android-sdk/tools/bin ]; then
-	mkdir -p android-sdk
-	ls -alh android-sdk
-    cd android-sdk
-    unzip -o ../*tools*linux*.zip
-    cd ..
+if [ ! -d android-sdk/cmdline-tools/tools/bin ]; then
+	mkdir -p android-sdk/cmdline-tools
+	cd android-sdk/cmdline-tools
+	unzip -o ../../commandlinetools-linux*.zip
+	mv * tools
+	cd ../../
 fi
+
+echo $ANDROID_HOME
+
+which sdkmanager
 
 sdkmanager --list
 
