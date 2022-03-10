@@ -27,7 +27,7 @@ echo '{"graph": "/svr0/docker"}' > /etc/docker/daemon.json
 sudo apt-get update -y
 sudo apt-get update -y
 sudo apt-get install -qy \
-	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip python3-venv python-is-python3 zip \
+	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip python3-venv python-is-python3 zip ripgrep \
 	 openjdk-11-jdk-headless \
 	 wget unzip jq curl htop tig valgrind
 
