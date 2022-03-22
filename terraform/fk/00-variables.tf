@@ -185,6 +185,11 @@ locals {
   }
 
   zone = var.workspace_zones[terraform.workspace]
+  partners = {
+    floodnet = {
+      zone = var.workspace_zones["floodnet.nyc"]
+    }
+  }
   env = var.workspace_tags[terraform.workspace]
   buckets = var.workspace_buckets[terraform.workspace]
   database = var.workspace_databases[terraform.workspace]

@@ -35,6 +35,19 @@ resource "aws_route53_record" "portal" {
   }
 }
 
+resource "aws_route53_record" "floodnet-partner-domain" {
+  zone_id = local.partners.floodnet.zone.id
+  name    = "dataviz.floodnet.nyc"
+  type    = "A"
+  count   = terraform.workspace == "prod" ? 1 : 0
+
+  alias {
+	name                   = aws_alb.app-servers.dns_name
+	zone_id                = aws_alb.app-servers.zone_id
+	evaluate_target_health = false
+  }
+}
+
 resource "aws_route53_record" "floodnet" {
   zone_id = local.zone.id
   name    = "floodnet.${local.zone.name}"
