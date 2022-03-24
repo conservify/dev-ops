@@ -1,0 +1,18 @@
+#!/bin/bash
+
+pushd ssl
+
+dir=`pwd`/letsencrypt
+
+mkdir -p $dir
+
+docker run \
+	   --rm \
+	   -v "$dir:/etc/letsencrypt/" \
+	   -v "$HOME/.aws/:/root/.aws:ro" \
+	   -e AWS_PROFILE \
+	   -e AWS_ACCESS_KEY_ID \
+	   -e AWS_SECRET_ACCESS_KEY \
+	   danihodovic/certbot-route53 -d fieldkit.org -d www.fieldkit.org -d portal.fieldkit.org -d api.fieldkit.org -d auth.fieldkit.org -d dataviz.floodnet.nyc -m jacob@conservify.org --expand
+
+popd
