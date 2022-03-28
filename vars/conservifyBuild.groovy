@@ -69,7 +69,7 @@ def call(Map parameters = [:]) {
         notifySuccess()
     }
     catch (Exception e) {
-        notifyFailure()
+        notifyFailure(e)
         throw e;
     }
 
