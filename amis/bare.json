@@ -12,7 +12,9 @@
           "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
           "root-device-type": "ebs"
         },
-        "owners": ["099720109477"],
+        "owners": [
+          "099720109477"
+        ],
         "most_recent": true
       },
       "spot_price": "auto",
@@ -70,6 +72,12 @@
         "sudo systemctl enable conservify.service",
         "sudo systemctl enable conservify.timer",
         "sudo mkdir -p /etc/docker/compose"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p /app/.well-known"
       ]
     },
     {
