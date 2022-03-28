@@ -1,7 +1,9 @@
 @Library('conservify') _
 
-conservifyProperties([
-    pipelineTriggers([upstream('fk/mobile-app-ios, fk/mobile-app-android')])
+properties([
+    pipelineTriggers([upstream('fk/mobile-app-ios, fk/mobile-app-android')]),
+	buildDiscarder(logRotator(numToKeepStr: '10')),
+	disableConcurrentBuilds()
 ])
 
 timestamps {
