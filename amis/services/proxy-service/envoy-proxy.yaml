@@ -61,15 +61,6 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
-                    - name: well-known-passthru-vh
-                      domains:
-                        - "*"
-                      routes:
-                        - match:
-                            prefix: "/.well-known"
-                          route:
-                            cluster: fk-service
-                            timeout: 3000s
                     - name: fk-service-vh
                       domains:
                         - "*"
@@ -139,15 +130,6 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: fk-auth
-                            timeout: 3000s
-                    - name: well-known-passthru-vh
-                      domains:
-                        - "*"
-                      routes:
-                        - match:
-                            prefix: "/.well-known"
-                          route:
-                            cluster: fk-service
                             timeout: 3000s
                     - name: fk-service-vh
                       require_tls: EXTERNAL_ONLY
