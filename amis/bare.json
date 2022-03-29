@@ -77,7 +77,8 @@
     {
       "type": "shell",
       "inline": [
-        "sudo mkdir -p /app/.well-known"
+        "sudo mkdir -p /app/.well-known",
+        "sudo chown ubuntu. /app/.well-known"
       ]
     },
     {
