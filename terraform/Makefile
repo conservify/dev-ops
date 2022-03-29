@@ -4,7 +4,10 @@ DEPLOY_JSON := $(BUILD)/deploy.json
 FK_PLAN := $(BUILD)/fk/terraform.tfplan
 CRON_PLAN := $(BUILD)/cron/terraform.tfplan
 
-default: all
+default: all certbot
+
+certbot:
+	cd certbot && make
 
 all: plan
 
@@ -55,3 +58,5 @@ cron/.terraform: $(TERRAFORM)
 
 clean:
 	rm -rf $(BUILD)
+
+.PHONY: certbot

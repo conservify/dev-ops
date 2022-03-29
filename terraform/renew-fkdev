@@ -1,18 +1,26 @@
 #!/bin/bash
 
-pushd ssl
+set -xe
 
-dir=`pwd`/letsencrypt
+certs_dir=`pwd`/ssl/letsencrypt
+logs_dir=`pwd`/ssl/logs
+hooks_dir=`pwd`/certbot/hooks
+work_dir=`pwd`/ssl
 
-mkdir -p $dir
+mkdir -p $certs_dir $letsencrypt $hooks_dir
 
-docker run \
-	   --rm \
-	   -v "$dir:/etc/letsencrypt/" \
-	   -v "$HOME/.aws/:/root/.aws:ro" \
-	   -e AWS_PROFILE \
-	   -e AWS_ACCESS_KEY_ID \
-	   -e AWS_SECRET_ACCESS_KEY \
-	   danihodovic/certbot-route53 -d fkdev.org -d www.fkdev.org -d portal.fkdev.org -d api.fkdev.org -d auth.fkdev.org -m jacob@conservify.org --expand
+export PATH=$hooks_dir:$PATH
+export WEB_ROOT_HOST=fkdev
 
-popd
+if [ -d $certs_dir/live/fkdev.org ]; then
+	echo existing certificates found, rename
+	exit 2
+fi
+
+certbot certonly -v --config-dir "$certs_dir" --logs-dir "$logs_dir" --work-dir "$work_dir" \
+	--manual \
+	--manual-auth-hook $hooks_dir/authenticator.sh \
+	--manual-cleanup-hook $hooks_dir/cleanup.sh \
+	--preferred-challenges=http \
+	-d fkdev.org -d www.fkdev.org -d portal.fkdev.org -d api.fkdev.org -d auth.fkdev.org \
+	-m jacob@conservify.org --expand

@@ -7,3 +7,4 @@ graph.png
 bin
 deploy.env
 certs
+ssl/logs
