@@ -48,7 +48,7 @@ $(BUILD)/fk_cron_every_five.zip: $(BUILD) cron/fk_cron_every_five.py
 
 $(TERRAFORM):
 	rm -rf bin && mkdir -p bin
-	cd bin && wget https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip && unzip *.zip
+	cd bin && wget https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip && unzip *.zip
 
 fk/.terraform: $(TERRAFORM)
 	cd fk && $(TERRAFORM) init

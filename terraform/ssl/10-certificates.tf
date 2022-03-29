@@ -49,13 +49,10 @@ resource "aws_iam_server_certificate" "certificates" {
   private_key       = file(pathexpand(join("", [each.value.path, "/privkey.pem"])))
   certificate_chain = file(pathexpand(join("", [each.value.path, "/chain.pem"])))
 
-  # Some properties of an IAM Server Certificates cannot be updated while they
-  # are in use. In order for Terraform to effectively manage a Certificate in
-  # this situation, it is recommended you utilize the name_prefix attribute and
-  # enable the create_before_destroy lifecycle block.
+  # latest = true
+  
   lifecycle {
-	create_before_destroy = true
-	# prevent_destroy = true
+	  create_before_destroy = true
   }
 }
 
