@@ -22,5 +22,5 @@ certbot certonly -v --config-dir "$certs_dir" --logs-dir "$logs_dir" --work-dir 
 	--manual-auth-hook $hooks_dir/authenticator.sh \
 	--manual-cleanup-hook $hooks_dir/cleanup.sh \
 	--preferred-challenges=http \
-	-d fkdev.org -d www.fkdev.org -d portal.fkdev.org -d api.fkdev.org -d auth.fkdev.org \
+	-d fkdev.org -d www.fkdev.org -d portal.fkdev.org -d api.fkdev.org -d auth.fkdev.org -d floodnet.fkdev.org \
 	-m jacob@conservify.org --expand
