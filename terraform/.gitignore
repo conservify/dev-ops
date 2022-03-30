@@ -8,3 +8,4 @@ bin
 deploy.env
 certs
 ssl/logs
+.terraform.lock.hcl
