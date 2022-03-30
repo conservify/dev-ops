@@ -1,11 +1,11 @@
 resource "aws_s3_bucket" "fk-streams" {
   bucket = local.buckets.create.streams
-  acl = "private"
+  # acl = "private"
 }
 
 resource "aws_s3_bucket" "fk-media" {
   bucket = local.buckets.create.media
-  acl = "private"
+  # acl = "private"
 }
 
 resource "aws_s3_bucket_policy" "fk-streams" {
