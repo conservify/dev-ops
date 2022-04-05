@@ -55,8 +55,8 @@ sudo apt-get install -qy docker-ce
 
 # Build tools
 
-wget https://golang.org/dl/go1.15.2.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.17.2.linux-amd64.tar.gz
 
 wget https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-x64.tar.xz
 sudo tar -C /usr/local -xf node-v16.13.2-linux-x64.tar.xz
