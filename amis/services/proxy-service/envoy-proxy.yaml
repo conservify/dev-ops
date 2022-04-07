@@ -254,7 +254,7 @@ static_resources:
                   address:
                     socket_address:
                       address: fk-service
-                      port_value: 8080
+                      port_value: 8000
 
     - name: fk-ingester
       connect_timeout: 0.25s
