@@ -61,6 +61,8 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
+                            auto_host_rewrite: true
+                            append_x_forwarded_host: true
                     - name: fk-service-vh
                       domains:
                         - "*"
@@ -136,6 +138,8 @@ static_resources:
                           route:
                             cluster: fk-auth
                             timeout: 3000s
+                            auto_host_rewrite: true
+                            append_x_forwarded_host: true
                     - name: fk-service-vh
                       require_tls: EXTERNAL_ONLY
                       domains:
@@ -146,11 +150,15 @@ static_resources:
                           route:
                             cluster: fk-charting
                             timeout: 3000s
+                            auto_host_rewrite: true
+                            append_x_forwarded_host: true
                         - match:
                             prefix: "/"
                           route:
                             cluster: fk-service
                             timeout: 3000s
+                            auto_host_rewrite: true
+                            append_x_forwarded_host: true
                 http_filters:
                   - name: envoy.filters.http.router
                     typed_config: {}
