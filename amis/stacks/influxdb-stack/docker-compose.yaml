@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  proxy:
+    image: "conservify/influxdb-service:active"
+    networks:
+      - envoy-mesh
+    expose:
+      - "8086"
+    ports:
+      - "8086:8086"
+
+networks:
+  envoy-mesh:
+    name: envoy-mesh
