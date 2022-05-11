@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "core-js": "^3.6.5",
-        "lodash": "^4.17.20",
+        "lodash": "^4.17.21",
         "moment": "^2.29.2",
         "vue": "^2.6.11",
         "vue-headful": "^2.1.0",
