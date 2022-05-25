@@ -73,7 +73,7 @@ services:
     image: "mongo:3"
     restart: always
     volumes:
-      - /svr0/graylog/mongo:/data/db
+      - /svr2/graylog/mongo:/data/db
 
   logs-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.5
@@ -84,14 +84,14 @@ services:
       - network.host=0.0.0.0
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
-      - /svr0/graylog/data/elasticsearch:/usr/share/elasticsearch/data
+      - /svr2/graylog/data/elasticsearch:/usr/share/elasticsearch/data
 
   logs:
     image: graylog/graylog:4.3.0
     restart: always
     volumes:
-      - /svr0/graylog/journal:/usr/share/graylog/data/journal
-      - /svr0/graylog/config:/usr/share/graylog/data/config
+      - /svr2/graylog/journal:/usr/share/graylog/data/journal
+      - /svr2/graylog/config:/usr/share/graylog/data/config
     environment:
       - GRAYLOG_HTTP_PUBLISH_URI=http://127.0.0.1:9000/logs/
       - GRAYLOG_HTTP_EXTERNAL_URI=https://code.conservify.org/logs/
