@@ -4,7 +4,7 @@ resource "aws_vpc" "fk" {
   enable_dns_hostnames = true
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -12,7 +12,7 @@ resource "aws_internet_gateway" "fk" {
   vpc_id = aws_vpc.fk.id
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -22,7 +22,7 @@ resource "aws_subnet" "public" {
   cidr_block              = each.value.public
   availability_zone       = each.key
   tags = {
-	Name = "${local.env} public ${each.key}"
+    Name = "${local.env} public ${each.key}"
   }
 }
 
@@ -32,7 +32,7 @@ resource "aws_subnet" "private" {
   cidr_block              = each.value.private
   availability_zone       = each.key
   tags = {
-	Name = "${local.env} private ${each.key}"
+    Name = "${local.env} private ${each.key}"
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_nat_gateway" "fk-gw-a" {
   depends_on    = [ aws_internet_gateway.fk ]
 
   tags = {
-	Name = "${local.env} gateway"
+    Name = "${local.env} gateway"
   }
 }
 
@@ -53,17 +53,17 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.fk.id
 
   route {
-	cidr_block = var.infrastructure.cidr
-	vpc_peering_connection_id = local.network.peering
+    cidr_block = var.infrastructure.cidr
+    vpc_peering_connection_id = local.network.peering
   }
 
   route {
-	cidr_block = "0.0.0.0/0"
-	nat_gateway_id = aws_nat_gateway.fk-gw-a.id
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.fk-gw-a.id
   }
 
   tags = {
-	Name = "${local.env} private"
+    Name = "${local.env} private"
   }
 }
 
@@ -77,17 +77,17 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.fk.id
 
   route {
-	cidr_block = var.infrastructure.cidr
-	vpc_peering_connection_id = local.network.peering
+    cidr_block = var.infrastructure.cidr
+    vpc_peering_connection_id = local.network.peering
   }
 
   route {
-	cidr_block = "0.0.0.0/0"
-	gateway_id = aws_internet_gateway.fk.id
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.fk.id
   }
 
   tags = {
-	Name = "${local.env} public"
+    Name = "${local.env} public"
   }
 }
 
