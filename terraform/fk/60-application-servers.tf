@@ -6,7 +6,7 @@ data "aws_ami" "bare" {
 
 data "template_file" "app_server_user_data" {
   for_each                    = local.servers
-  template                    = file("user_data.yaml")
+  template                    = file("user_data_app.yaml")
 
   vars = {
 	hostname                  = each.value.name
