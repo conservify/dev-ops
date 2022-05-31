@@ -132,6 +132,15 @@ variable application_stack {
   default = ""
 }
 
+variable workspace_influxdb_servers {
+  type = map(map(object({
+	name = string
+	number = number
+	instance = string
+	live = bool
+	stacks = list(string)
+  })))
+}
 variable workspace_servers {
   type = map(map(object({
 	name = string
@@ -170,7 +179,21 @@ locals {
   network = var.workspace_networks[terraform.workspace]
   zones = keys(local.network.azs)
 
-  all = flatten([
+  all_influxdb_servers = flatten([
+	for k, v in var.workspace_influxdb_servers[terraform.workspace] : [
+	  for r in range(v.number) : {
+		name = "${local.env}-${v.name}-${r}"
+		number = r
+		config = v
+		zone = local.zones[r % length(local.zones)]
+	  }
+	]
+  ])
+  influxdb_servers = {
+	for r in local.all_influxdb_servers : r.name => r
+  }
+
+  all_app_servers = flatten([
 	for k, v in var.workspace_servers[terraform.workspace] : [
 	  for r in range(v.number) : {
 		name = "${local.env}-${v.name}-${r}"
@@ -181,7 +204,7 @@ locals {
 	]
   ])
   servers = {
-	for r in local.all : r.name => r
+	for r in local.all_app_servers : r.name => r
   }
 
   zone = var.workspace_zones[terraform.workspace]

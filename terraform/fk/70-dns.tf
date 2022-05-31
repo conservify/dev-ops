@@ -86,6 +86,16 @@ resource "aws_route53_record" "www" {
   }
 }
 
+resource "aws_route53_record" "influxdb-servers" {
+  zone_id = local.zone.id
+  name    = "influxdb-servers.aws.${local.zone.name}"
+  type    = "A"
+  ttl     = "60"
+  records = [ for key, value in aws_instance.influxdb_servers: value.private_ip
+              if lookup(local.influxdb_servers, key, { config: { live: false } }).config.live ]
+  count   = length(aws_instance.influxdb_servers) > 0 ? 1 : 0
+}
+
 resource "aws_route53_record" "app-servers" {
   zone_id = local.zone.id
   name    = "app-servers.aws.${local.zone.name}"
@@ -128,6 +138,15 @@ resource "aws_route53_record" "private-metrics" {
   type    = "A"
   ttl     = "300"
   records = [ var.infrastructure.address ]
+}
+
+resource "aws_route53_record" "influxdb" {
+  for_each = aws_instance.influxdb_servers
+  zone_id  = aws_route53_zone.private.id
+  name     = "${each.key}.${aws_route53_zone.private.name}"
+  type     = "A"
+  ttl      = "60"
+  records  = [ each.value.private_ip ]
 }
 
 resource "aws_route53_record" "servers" {
