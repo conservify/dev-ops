@@ -8,7 +8,7 @@ DEPDIR := $(abspath .deps)
 
 default: repository-stacks
 
-repository-stacks: dummy-stack proxy-stack auth-stack
+repository-stacks: dummy-stack proxy-stack auth-stack influxdb-stack
 
 $(DEPDIR)/rules.mk: Makefile
 	@rm -rf $(DEPDIR)
