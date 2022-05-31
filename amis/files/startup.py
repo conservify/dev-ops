@@ -23,7 +23,8 @@ def main():
 
     for url in flatten([url.split(",") for url in args.urls]):
         log.info("downloading %s" % (url),)
-        os.system("wget -q --auth-no-challenge '%s'" % (url,))
+        output = os.system("wget -q --auth-no-challenge '%s'" % (url,))
+        log.info(output)
         log.info("done downloading %s" % (url),)
 
 if __name__ == "__main__":
