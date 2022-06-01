@@ -15,10 +15,10 @@ write_files:
 
       APPLICATION_STACKS=${application_stacks}
 
-      INFLUX_URL=${influx_url}
-      INFLUX_DATABASE=${influx_database}
-      INFLUX_USER=${influx_user}
-      INFLUX_PASSWORD=${influx_password}
+      METRICS_INFLUXDB_URL=${metrics_influxdb_url}
+      METRICS_INFLUXDB_DATABASE=${metrics_influxdb_database}
+      METRICS_INFLUXDB_USER=${metrics_influxdb_user}
+      METRICS_INFLUXDB_PASSWORD=${metrics_influxdb_password}
 
       DATABASE_URL=${database_url}
       DATABASE_ADDRESS=${database_address}
@@ -60,6 +60,8 @@ write_files:
       FIELDKIT_OIDC_REDIRECT_URL=${oidc_redirect_url}
       FIELDKIT_OIDC_CONFIG_URL=${oidc_config_url}
 
+      FIELDKIT_INFLUXDB_URL=${influxdb_url}
+
   - path: /etc/default/filebeat
     content: |
       HOSTNAME=${hostname}
@@ -72,10 +74,10 @@ write_files:
       SERVER_NAME=${hostname}
       ENV_TAG=${env_tag}
 
-      INFLUX_URL=${influx_url}
-      INFLUX_DATABASE=${influx_database}
-      INFLUX_USER=${influx_user}
-      INFLUX_PASSWORD=${influx_password}
+      METRICS_INFLUXDB_URL=${metrics_influxdb_url}
+      METRICS_INFLUXDB_DATABASE=${metrics_influxdb_database}
+      METRICS_INFLUXDB_USER=${metrics_influxdb_user}
+      METRICS_INFLUXDB_PASSWORD=${metrics_influxdb_password}
 
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}

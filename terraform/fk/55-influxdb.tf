@@ -12,10 +12,10 @@ data "template_file" "influxdb_server_user_data" {
 
 	gelf_url                  = var.gelf_url
 	statsd_address            = var.statsd_address
-	influx_url                = var.influx_database.url
-	influx_database           = var.influx_database.name
-	influx_user               = var.influx_database.user
-	influx_password           = var.influx_database.password
+	metrics_influxdb_url      = var.metrics_influxdb.url
+	metrics_influxdb_database = var.metrics_influxdb.name
+	metrics_influxdb_user     = var.metrics_influxdb.user
+	metrics_influxdb_password = var.metrics_influxdb.password
 
 	application_stacks        = join(",", each.value.config.stacks)
 

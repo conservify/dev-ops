@@ -114,7 +114,7 @@ variable statsd_address {
   default = "172.17.0.1:8125"
 }
 
-variable influx_database {
+variable metrics_influxdb {
   type = object({
 	url = string
 	name = string
