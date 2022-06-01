@@ -4,6 +4,18 @@ services:
     image: "conservify/influxdb-service:active"
     networks:
       - envoy-mesh
+    volumes:
+      - /svr0/influxdb/data:/var/lib/influxdb2
+      - /svr0/influxdb/config:/etc/influxdb2
+    environment:
+      - TAG=${TAG}
+      - HOSTNAME=${HOSTNAME}
+      - FIELDKIT_TAG=${TAG}
+      - FIELDKIT_SERVER_NAME=${HOSTNAME}
+      - FIELDKIT_DOMAIN=${ZONE_NAME}
+      - FIELDKIT_PRODUCTION=${PRODUCTION}
+      - FIELDKIT_LOGGING_FULL=true
+      - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
     expose:
       - "8086"
     ports:
