@@ -10,6 +10,12 @@ data "template_file" "influxdb_server_user_data" {
     aws_access_key            = var.access_key
     aws_secret_key            = var.secret_key
 
+    influxdb_username         = local.influxdb.username
+    influxdb_password         = local.influxdb.password
+    influxdb_org              = local.influxdb.org
+    influxdb_bucket           = local.influxdb.bucket
+    influxdb_token            = local.influxdb.token
+
     gelf_url                  = var.gelf_url
     statsd_address            = var.statsd_address
     metrics_influxdb_url      = var.metrics_influxdb.url

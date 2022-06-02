@@ -53,6 +53,16 @@ variable workspace_databases {
   }))
 }
 
+variable workspace_influxdbs {
+  type = map(object({
+	username = string
+	password = string
+	org = string
+	bucket = string
+	token = string
+  }))
+}
+
 variable bastions {
   // This crashes?
   /*
@@ -216,6 +226,7 @@ locals {
   env = var.workspace_tags[terraform.workspace]
   buckets = var.workspace_buckets[terraform.workspace]
   database = var.workspace_databases[terraform.workspace]
+  influxdb = var.workspace_influxdbs[terraform.workspace]
   production = terraform.workspace == "prod" ? "true" : "false"
   email_override = terraform.workspace == "prod" ? "" : "fkdev@conservify.org"
   session_key = var.workspace_session_keys[terraform.workspace]

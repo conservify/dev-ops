@@ -15,6 +15,12 @@ write_files:
 
       APPLICATION_STACKS=${application_stacks}
 
+      INFLUXDB_INIT_USERNAME=${influxdb_username}
+      INFLUXDB_INIT_PASSWORD=${influxdb_password}
+      INFLUXDB_INIT_ORG=${influxdb_org}
+      INFLUXDB_INIT_BUCKET=${influxdb_bucket}
+      INFLUXDB_INIT_ADMIN_TOKEN=${influxdb_token}
+
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
 
