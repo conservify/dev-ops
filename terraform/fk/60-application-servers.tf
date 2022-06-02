@@ -27,6 +27,11 @@ data "template_file" "app_server_user_data" {
 	metrics_influxdb_password = var.metrics_influxdb.password
 
 	influxdb_url              = "influxdb-servers.aws.${local.zone.name}"
+	influxdb_username         = local.influxdb.username
+	influxdb_password         = local.influxdb.password
+	influxdb_org              = local.influxdb.org
+	influxdb_bucket           = local.influxdb.bucket
+	influxdb_token            = local.influxdb.token
 
 	application_stacks        = join(",", each.value.config.stacks)
 

@@ -60,7 +60,12 @@ write_files:
       FIELDKIT_OIDC_REDIRECT_URL=${oidc_redirect_url}
       FIELDKIT_OIDC_CONFIG_URL=${oidc_config_url}
 
-      FIELDKIT_INFLUXDB_URL=${influxdb_url}
+      FIELDKIT_INFLUX_DB_URL=${influxdb_url}
+      FIELDKIT_INFLUX_DB_USERNAME=${influxdb_username}
+      FIELDKIT_INFLUX_DB_PASSWORD=${influxdb_password}
+      FIELDKIT_INFLUX_DB_ORG=${influxdb_org}
+      FIELDKIT_INFLUX_DB_BUCKET=${influxdb_bucket}
+      FIELDKIT_INFLUX_DB_TOKEN=${influxdb_token}
 
   - path: /etc/default/filebeat
     content: |
@@ -104,4 +109,4 @@ write_files:
     content: ${saml_key_data}
 
 runcmd:
-  - [ /var/lib/conservify/startup.sh ]
+  - [/var/lib/conservify/startup.sh]

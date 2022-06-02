@@ -15,11 +15,12 @@ write_files:
 
       APPLICATION_STACKS=${application_stacks}
 
-      INFLUXDB_INIT_USERNAME=${influxdb_username}
-      INFLUXDB_INIT_PASSWORD=${influxdb_password}
-      INFLUXDB_INIT_ORG=${influxdb_org}
-      INFLUXDB_INIT_BUCKET=${influxdb_bucket}
-      INFLUXDB_INIT_ADMIN_TOKEN=${influxdb_token}
+      FIELDKIT_INFLUX_DB_URL=${influxdb_url}
+      FIELDKIT_INFLUX_DB_USERNAME=${influxdb_username}
+      FIELDKIT_INFLUX_DB_PASSWORD=${influxdb_password}
+      FIELDKIT_INFLUX_DB_ORG=${influxdb_org}
+      FIELDKIT_INFLUX_DB_BUCKET=${influxdb_bucket}
+      FIELDKIT_INFLUX_DB_TOKEN=${influxdb_token}
 
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
@@ -36,10 +37,10 @@ write_files:
       SERVER_NAME=${hostname}
       ENV_TAG=${env_tag}
 
-      METRICS_INFLUXDB_URL=${metrics_influxdb_url}
-      METRICS_INFLUXDB_DATABASE=${metrics_influxdb_database}
-      METRICS_INFLUXDB_USER=${metrics_influxdb_user}
-      METRICS_INFLUXDB_PASSWORD=${metrics_influxdb_password}
+      METRICS_INFLUX_DB_URL=${metrics_influxdb_url}
+      METRICS_INFLUX_DB_DATABASE=${metrics_influxdb_database}
+      METRICS_INFLUX_DB_USER=${metrics_influxdb_user}
+      METRICS_INFLUX_DB_PASSWORD=${metrics_influxdb_password}
 
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
@@ -57,4 +58,4 @@ write_files:
       }
 
 runcmd:
-  - [ /var/lib/conservify/startup.sh ]
+  - [/var/lib/conservify/startup.sh]
