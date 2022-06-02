@@ -26,7 +26,7 @@ data "template_file" "app_server_user_data" {
 	metrics_influxdb_user     = var.metrics_influxdb.user
 	metrics_influxdb_password = var.metrics_influxdb.password
 
-	influxdb_url              = "influxdb-servers.aws.${local.zone.name}"
+	influxdb_url              = "http://influxdb-servers.aws.${local.zone.name}:8086"
 	influxdb_username         = local.influxdb.username
 	influxdb_password         = local.influxdb.password
 	influxdb_org              = local.influxdb.org

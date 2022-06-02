@@ -10,6 +10,7 @@ data "template_file" "influxdb_server_user_data" {
     aws_access_key            = var.access_key
     aws_secret_key            = var.secret_key
 
+    influxdb_url              = "http://influxdb-servers.aws.${local.zone.name}:8086"
     influxdb_username         = local.influxdb.username
     influxdb_password         = local.influxdb.password
     influxdb_org              = local.influxdb.org
@@ -50,6 +51,9 @@ resource "aws_instance" "influxdb_servers" {
   root_block_device {
     volume_type = "gp2"
     volume_size = 100
+    tags = {
+      Name = "${each.value.name}"
+    }
   }
 
   tags = {
@@ -64,12 +68,17 @@ resource "aws_ebs_volume" "influxdb_data" {
   type              = "io1"
   iops              = 4000
   availability_zone = each.value.zone
+
+  tags = {
+    Name = "${each.value.name}"
+  }
 }
 
 resource "aws_volume_attachment" "influxdb_data_attach" {
-  for_each          = { for key, value in aws_instance.influxdb_servers: key => value }
-  device_name       = "/dev/xvdh"
-  volume_id         = aws_ebs_volume.influxdb_data[each.key].id
-  instance_id       = each.value.id
-  force_detach      = true
+  for_each                       = { for key, value in aws_instance.influxdb_servers: key => value }
+  device_name                    = "/dev/xvdh"
+  volume_id                      = aws_ebs_volume.influxdb_data[each.key].id
+  instance_id                    = each.value.id
+  force_detach                   = true
+  stop_instance_before_detaching = true
 }
