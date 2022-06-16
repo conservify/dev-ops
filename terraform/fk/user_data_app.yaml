@@ -36,6 +36,9 @@ write_files:
       EMAIL_OVERRIDE=${email_override}
       SESSION_KEY=${session_key}
 
+      FIELDKIT_WORKERS=${workers}
+      FIELDKIT_LIVE=${live}
+
       FIELDKIT_SAML_CERT=/etc/fk/fk-saml.cert
       FIELDKIT_SAML_KEY=/etc/fk/fk-saml.key
       FIELDKIT_SAML_SP_URL=${saml_sp_url}

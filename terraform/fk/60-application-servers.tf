@@ -34,6 +34,8 @@ data "template_file" "app_server_user_data" {
 	influxdb_token            = local.influxdb.token
 
 	application_stacks        = join(",", each.value.config.stacks)
+	workers                   = each.value.config.workers
+	live                      = each.value.config.live
 
 	database_url              = local.database_url
 	database_address          = local.database_address

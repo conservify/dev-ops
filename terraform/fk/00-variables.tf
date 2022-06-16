@@ -151,12 +151,14 @@ variable workspace_influxdb_servers {
 	stacks = list(string)
   })))
 }
+
 variable workspace_servers {
   type = map(map(object({
 	name = string
 	number = number
 	instance = string
 	live = bool
+	workers = number
 	stacks = list(string)
   })))
 }
