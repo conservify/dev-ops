@@ -2,6 +2,7 @@ version: "3.7"
 services:
   proxy:
     image: "conservify/influxdb-service:active"
+    restart: unless-stopped
     networks:
       - envoy-mesh
     volumes:

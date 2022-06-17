@@ -3,6 +3,7 @@ services:
   fk-ingester:
     image: "conservify/portal-service:active"
     command: [ "/app/ingester" ]
+    restart: unless-stopped
     networks:
       - envoy-mesh
     environment:
@@ -33,6 +34,7 @@ services:
   fk-service:
     image: "conservify/portal-service:active"
     command: [ "/app/server" ]
+    restart: unless-stopped
     networks:
       - envoy-mesh
     environment:

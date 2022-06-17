@@ -2,6 +2,7 @@ version: "3.7"
 services:
   proxy:
     image: "conservify/proxy-service:active"
+    restart: unless-stopped
     networks:
       - envoy-mesh
     expose:

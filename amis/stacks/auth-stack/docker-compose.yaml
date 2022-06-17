@@ -2,6 +2,7 @@ version: "3.7"
 services:
   keycloak:
     image: "conservify/auth-keycloak:active"
+    restart: unless-stopped
     networks:
       - envoy-mesh
     environment:

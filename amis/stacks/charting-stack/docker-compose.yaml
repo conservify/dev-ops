@@ -2,6 +2,7 @@ version: "3.7"
 services:
   fk-charting:
     image: "conservify/charting-service:active"
+    restart: unless-stopped
     networks:
       - envoy-mesh
     environment:
