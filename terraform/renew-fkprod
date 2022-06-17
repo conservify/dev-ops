@@ -17,11 +17,13 @@ if [ -d $certs_dir/live/fieldkit.org ]; then
 	exit 2
 fi
 
+# -d fieldkit.org -d www.fieldkit.org \
+
 certbot certonly -v --config-dir "$certs_dir" --logs-dir "$logs_dir" --work-dir "$work_dir" \
 	--manual \
 	--manual-auth-hook $hooks_dir/authenticator.sh \
 	--manual-cleanup-hook $hooks_dir/cleanup.sh \
 	--preferred-challenges=http \
-	-d fieldkit.org -d www.fieldkit.org -d portal.fieldkit.org -d api.fieldkit.org -d auth.fieldkit.org -d floodnet.fieldkit.org \
+	-d portal.fieldkit.org -d api.fieldkit.org -d auth.fieldkit.org -d floodnet.fieldkit.org \
 	-d dataviz.floodnet.nyc \
 	-m jacob@conservify.org --expand
