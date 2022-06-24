@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  proxy:
+    image: "conservify/postgres-service:active"
+    restart: unless-stopped
+    networks:
+      - envoy-mesh
+    volumes:
+      - /svr0/postgres/data:/var/lib/postgresql/data
+    environment:
+      - TAG=${TAG}
+      - HOSTNAME=${HOSTNAME}
+      - FIELDKIT_TAG=${TAG}
+      - FIELDKIT_SERVER_NAME=${HOSTNAME}
+      - FIELDKIT_DOMAIN=${ZONE_NAME}
+      - FIELDKIT_PRODUCTION=${PRODUCTION}
+      - FIELDKIT_LOGGING_FULL=true
+      - FIELDKIT_STATSD_ADDRESS=172.17.0.1:8125
+      - DOCKER_POSTGRES_INIT_PASSWORD=${FIELDKIT_POSTGRES_DB_PASSWORD}
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+
+networks:
+  envoy-mesh:
+    name: envoy-mesh
