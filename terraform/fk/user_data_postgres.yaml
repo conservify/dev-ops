@@ -1,0 +1,56 @@
+#cloud-config
+hostname: ${hostname}
+fqdn: ${hostname}.${zone_name}
+manage_etc_hosts: true
+write_files:
+  - path: /etc/user_data.env
+    content: |
+      HOSTNAME=${hostname}
+      SERVER_NAME=${hostname}
+      ZONE_NAME=${zone_name}
+      ENV_TAG=${env_tag}
+      GELF_TAGS=${env_tag}
+      GELF_URL=${gelf_url}
+      STATSD_ADDRESS=${statsd_address}
+
+      FIELDKIT_POSTGRES_DB_PASSWORD=${postgres_password}
+
+      APPLICATION_STACKS=${application_stacks}
+
+      AWS_ACCESS_KEY=${aws_access_key}
+      AWS_SECRET_KEY=${aws_secret_key}
+
+  - path: /etc/default/filebeat
+    content: |
+      HOSTNAME=${hostname}
+      ENV_TAG=${env_tag}
+      FIELDKIT_SERVER_NAME=${hostname}
+
+  - path: /etc/default/telegraf
+    content: |
+      HOSTNAME=${hostname}
+      SERVER_NAME=${hostname}
+      ENV_TAG=${env_tag}
+
+      METRICS_INFLUX_DB_URL=${metrics_influxdb_url}
+      METRICS_INFLUX_DB_DATABASE=${metrics_influxdb_database}
+      METRICS_INFLUX_DB_USER=${metrics_influxdb_user}
+      METRICS_INFLUX_DB_PASSWORD=${metrics_influxdb_password}
+
+      AWS_ACCESS_KEY=${aws_access_key}
+      AWS_SECRET_KEY=${aws_secret_key}
+      STATSD_ADDRESS=${statsd_address}
+      PRODUCTION=${production}
+
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "log-driver": "gelf",
+        "log-opts":  {
+          "gelf-address": "${gelf_url}",
+          "tag": "${env_tag}"
+        }
+      }
+
+runcmd:
+  - [/var/lib/conservify/startup.sh]

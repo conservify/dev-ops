@@ -79,6 +79,30 @@ resource "aws_security_group" "influxdb-server" {
   }
 }
 
+resource "aws_security_group" "postgres-server" {
+  name        = "${local.env}-postgres-server"
+  description = "${local.env}-postgres-server"
+  vpc_id      = aws_vpc.fk.id
+
+  ingress {
+	from_port       = 5432
+	to_port         = 5432
+	protocol        = "tcp"
+	security_groups = [ aws_security_group.fk-app-server.id, var.infrastructure.sg_id ]
+  }
+
+  egress {
+	from_port       = 0
+	to_port         = 0
+	protocol        = "-1"
+	cidr_blocks     = [ "0.0.0.0/0" ]
+  }
+
+  tags = {
+	Name = local.env
+  }
+}
+
 resource "aws_security_group" "fk-app-server" {
   name        = "${local.env}-app-server"
   description = "${local.env}-app-server"
