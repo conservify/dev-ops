@@ -6,7 +6,7 @@ logging.json: true
 
 filebeat.inputs:
 - type: log
-  enabled: false
+  enabled: true
   paths:
     - /var/log/syslog
 

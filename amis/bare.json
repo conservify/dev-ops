@@ -115,7 +115,8 @@
         "sudo mkdir -p /etc/filebeat",
         "sudo mv /tmp/filebeat.yml /etc/filebeat/filebeat.yml",
         "sudo mv /tmp/filebeat.service /lib/systemd/system/filebeat.service",
-        "sudo chown -R root. /etc/filebeat/filebeat.yml /lib/systemd/system/filebeat.service"
+        "sudo chown -R root. /etc/filebeat/filebeat.yml /lib/systemd/system/filebeat.service",
+        "sudo chmod 644 /etc/filebeat/filebeat.yml"
       ]
     },
     {
