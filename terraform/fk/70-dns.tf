@@ -96,6 +96,16 @@ resource "aws_route53_record" "influxdb-servers" {
   count   = length(aws_instance.influxdb_servers) > 0 ? 1 : 0
 }
 
+resource "aws_route53_record" "postgres-servers" {
+  zone_id = local.zone.id
+  name    = "postgres-servers.aws.${local.zone.name}"
+  type    = "A"
+  ttl     = "60"
+  records = [ for key, value in aws_instance.postgres_servers: value.private_ip
+              if lookup(local.postgres_servers, key, { config: { live: false } }).config.live ]
+  count   = length(aws_instance.postgres_servers) > 0 ? 1 : 0
+}
+
 resource "aws_route53_record" "app-servers" {
   zone_id = local.zone.id
   name    = "app-servers.aws.${local.zone.name}"
