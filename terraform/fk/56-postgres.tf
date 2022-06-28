@@ -1,3 +1,7 @@
+locals {
+  timescaledb_url = "postgres://postgres:${local.database.password}@postgres-servers.aws.${local.zone.name}/postgres?sslmode=disable"
+}
+
 data "template_file" "postgres_server_user_data" {
   for_each                    = local.postgres_servers
   template                    = file("user_data_postgres.yaml")

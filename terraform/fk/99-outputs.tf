@@ -7,6 +7,11 @@ output database_url {
   sensitive = true
 }
 
+output timescaledb_url {
+  value = local.timescaledb_url
+  sensitive = true
+}
+
 output database_address {
   value = local.database_address
 }
