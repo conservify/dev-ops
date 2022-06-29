@@ -7,6 +7,11 @@ output database_url {
   sensitive = true
 }
 
+output database_admin_url {
+  value = local.database_admin_url
+  sensitive = true
+}
+
 output database_address {
   value = local.database_address
 }
@@ -22,6 +27,11 @@ output database_password {
 
 output timescaledb_url {
   value = local.timescaledb_url
+  sensitive = true
+}
+
+output timescaledb_admin_url {
+  value = local.timescaledb_admin_url
   sensitive = true
 }
 

@@ -1,5 +1,6 @@
 locals {
   database_url = "postgres://${local.database.username}:${local.database.password}@${aws_db_instance.fk-database.address}/${local.database.name}?sslmode=disable"
+  database_admin_url = "postgres://${local.database.username}:${local.database.password}@${aws_db_instance.fk-database.address}/postgres?sslmode=disable"
   database_address = aws_db_instance.fk-database.address
 }
 
