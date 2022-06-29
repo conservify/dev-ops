@@ -1,5 +1,8 @@
 locals {
-  timescaledb_url = "postgres://postgres:${local.database.password}@postgres-servers.aws.${local.zone.name}/postgres?sslmode=disable"
+  timescaledb_address = "postgres-servers.aws.${local.zone.name}"
+  timescaledb_username = "postgres"
+  timescaledb_password = local.database.password
+  timescaledb_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/postgres?sslmode=disable"
 }
 
 data "template_file" "postgres_server_user_data" {
