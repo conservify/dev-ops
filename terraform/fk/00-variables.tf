@@ -193,7 +193,9 @@ variable infrastructure {
   type = object({
 	address = string
 	cidr = string
+	secondary_cidr = string
 	sg_id = string
+	secondary_sg_id = string
   })
 }
 
