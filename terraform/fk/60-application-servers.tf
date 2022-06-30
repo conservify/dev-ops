@@ -42,6 +42,8 @@ data "template_file" "app_server_user_data" {
 	database_username         = local.database.username
 	database_password         = local.database.password
 
+	timescaledb_url           = local.timescaledb_url
+
 	streams_buckets           = local.buckets.config.streams
 	media_buckets             = local.buckets.config.media
 
