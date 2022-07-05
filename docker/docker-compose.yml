@@ -9,6 +9,11 @@ services:
       - /svr0/strapi:/srv/app
     ports:
       - "1337:1337"
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   jenkins:
     image: "conservify/jenkins"
@@ -26,6 +31,11 @@ services:
       - "45900:45900"
       - "49001:8080"
       - "50000:50000"
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   jira:
     image: "ivantichy/jira:7.13.0"
@@ -40,6 +50,11 @@ services:
       - /svr0/jira/pg:/var/lib/postgresql/9.6/main
       - /svr0/jira/app:/var/atlassian/jira-app
       - /svr0/jira/home:/var/atlassian/jira-home
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   proxy:
     image: "nginx-rproxy"
@@ -62,18 +77,33 @@ services:
     ports:
       - "443:443"
       - "80:80"
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   diagnostics:
     build: ./diagnostics
     restart: always
     volumes:
       - /svr0/diagnostics:/data
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   logs-mongo:
     image: "mongo:3"
     restart: always
     volumes:
       - /svr2/graylog/mongo:/data/db
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   logs-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.5
@@ -85,6 +115,11 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - /svr2/graylog/data/elasticsearch:/usr/share/elasticsearch/data
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   logs:
     image: graylog/graylog:4.3.0
@@ -106,12 +141,22 @@ services:
       - "9000:9000"
       - "12201:12201"
       - "12201:12201/udp"
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   logs-viewer:
     build: ./logs-viewer
     restart: always
     volumes:
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   grafana:
     image: grafana/grafana
@@ -125,6 +170,11 @@ services:
       - 3000:3000
     volumes:
       - /svr0/grafana:/var/lib/grafana
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
   influxdb:
     image: influxdb:1.8
@@ -133,6 +183,11 @@ services:
       - 8086:8086
     volumes:
       - /svr0/influxdb:/var/lib/influxdb
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
 
 volumes:
   jenkins_home:
