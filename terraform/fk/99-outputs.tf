@@ -62,6 +62,18 @@ output influxdb_servers {
   ]
 }
 
+output postgres_servers {
+  value = [
+    for key, i in aws_instance.postgres_servers: {
+      id = i.id
+      key = key
+      user = "ubuntu"
+      ip = i.private_ip
+      sshAt = "ubuntu@${i.private_ip}"
+    }
+  ]
+}
+
 output app_servers {
   value = [
     for key, i in aws_instance.app-servers: {
