@@ -75,7 +75,7 @@ resource "aws_ebs_volume" "postgres_data" {
 
   tags = {
     Name = "${each.value.name} svr0"
-    Snapshot = "true"
+    Snapshot = local.env
   }
 }
 
@@ -119,13 +119,13 @@ resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
     }
 
     target_tags = {
-      Snapshot = "true"
+      Snapshot = local.env
+      Env = local.env
     }
   }
 
   tags = {
     Name = "${local.env} postgres backup policy"
-    Snapshot = "true"
-    Env = local.env
+    Snapshot = local.env
   }
 }
