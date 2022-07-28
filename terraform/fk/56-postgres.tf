@@ -56,7 +56,7 @@ resource "aws_instance" "postgres_servers" {
     volume_type = "gp2"
     volume_size = 100
     tags = {
-      Name = "${each.value.name}"
+      Name = "${each.value.name} root"
     }
   }
 
@@ -74,7 +74,8 @@ resource "aws_ebs_volume" "postgres_data" {
   availability_zone = each.value.zone
 
   tags = {
-    Name = "${each.value.name}"
+    Name = "${each.value.name} svr0"
+    Snapshot = "true"
   }
 }
 
@@ -85,4 +86,46 @@ resource "aws_volume_attachment" "postgres_data_attach" {
   instance_id                    = each.value.id
   force_detach                   = true
   stop_instance_before_detaching = true
+}    
+
+resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
+  description        = "DLM lifecycle policy for postgres_data"
+  execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
+  state              = "ENABLED"
+
+  policy_details {
+    resource_types = ["VOLUME"]
+
+    schedule {
+      name = "2 weeks of daily snapshots"
+
+      create_rule {
+        interval      = 24
+        interval_unit = "HOURS"
+        times         = ["23:45"]
+      }
+
+      retain_rule {
+        count = 14
+      }
+
+      tags_to_add = {
+        SnapshotCreator = "DLM"
+	PostgresBackup = "true"
+	Env = local.env
+      }
+
+      copy_tags = false
+    }
+
+    target_tags = {
+      Snapshot = "true"
+    }
+  }
+
+  tags = {
+    Name = "${local.env} postgres backup policy"
+    Snapshot = "true"
+    Env = local.env
+  }
 }
