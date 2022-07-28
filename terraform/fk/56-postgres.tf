@@ -120,7 +120,6 @@ resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
 
     target_tags = {
       Snapshot = local.env
-      Env = local.env
     }
   }
 
