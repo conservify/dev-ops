@@ -107,3 +107,30 @@ resource "aws_instance" "app-servers" {
 	Name = "${each.value.name}"
   }
 }
+
+resource "aws_cloudwatch_metric_alarm" "auto_recovery_alarm" {
+  # for_each                    = local.servers
+  for_each         = {
+	for key, value in aws_instance.app-servers:
+	key => value
+	# if lookup(local.servers, key, { config: { live: false } }).config.live
+  }
+
+  alarm_name = "${local.env}-auto-recovery-${each.key}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods = "2"
+  metric_name = "StatusCheckFailed_System"
+  namespace = "AWS/EC2"
+  period = "300"
+  statistic = "Minimum"
+  threshold = "0"
+
+  dimensions = {
+    InstanceId = "${each.value.id}"
+  }
+
+  alarm_actions = [
+    "arn:aws:automate:${var.region}:ec2:recover",
+    "arn:aws:automate:${var.region}:ec2:reboot"
+  ]
+}
