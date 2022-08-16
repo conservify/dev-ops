@@ -209,7 +209,8 @@ locals {
 		name = "${local.env}-${v.name}-${r}"
 		number = r
 		config = v
-		zone = local.zones[r % length(local.zones)]
+		# zone = local.zones[r % length(local.zones)]
+		zone = local.zones[0]
 	  }
 	]
   ])
@@ -223,7 +224,8 @@ locals {
 		name = "${local.env}-${v.name}-${r}"
 		number = r
 		config = v
-		zone = local.zones[r % length(local.zones)]
+		# zone = local.zones[r % length(local.zones)]
+		zone = local.zones[0]
 	  }
 	]
   ])
@@ -237,7 +239,8 @@ locals {
 		name = "${local.env}-${v.name}-${r}"
 		number = r
 		config = v
-		zone = local.zones[r % length(local.zones)]
+		# zone = local.zones[r % length(local.zones)]
+		zone = local.zones[0]
 	  }
 	]
   ])
