@@ -98,10 +98,10 @@ write_files:
   - path: /etc/docker/daemon.json
     content: |
       {
-        "log-driver": "gelf",
+        "log-driver": "json-file",
         "log-opts":  {
-          "gelf-address": "${gelf_url}",
-          "tag": "${env_tag}"
+          "max-size": "10m",
+          "max-file": "3"
         }
       }
 
