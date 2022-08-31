@@ -4,18 +4,21 @@ logging.metrics.enabled: false
 
 logging.json: true
 
+fields:
+  tag: ${ENV_TAG}
+
 filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - /var/log/syslog
+    - '/var/log/syslog'
+- type: container
+  paths:
+    - '/var/lib/docker/containers/*/*.log'
 
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
-
-fields:
-  tag: ${ENV_TAG}
 
 output.logstash:
   hosts: [ "logs.fk.private:5044" ]
@@ -25,3 +28,7 @@ processors:
   - add_cloud_metadata: ~
   - add_docker_metadata: ~
   - add_kubernetes_metadata: ~
+  - decode_json_fields:
+      fields: ["message"]
+      target: "json"
+      overwrite_keys: true
