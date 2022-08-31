@@ -9,8 +9,6 @@ write_files:
       SERVER_NAME=${hostname}
       ZONE_NAME=${zone_name}
       ENV_TAG=${env_tag}
-      GELF_TAGS=${env_tag}
-      GELF_URL=${gelf_url}
       STATSD_ADDRESS=${statsd_address}
 
       APPLICATION_STACKS=${application_stacks}
