@@ -21,18 +21,12 @@ dpkg -i filebeat-7.6.0-amd64.deb && rm *.deb
 filebeat modules enable system
 systemctl enable filebeat
 
-# jq
-
-curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-chmod 755 jq-linux64
-mv jq-linux64 /usr/bin
-
 # update packages and install the things we need
 
 apt-get update
 
 apt-get install -y \
-		tmux vim git \
+		tmux vim git ripgrep htop jq \
 		docker-ce docker-ce-cli containerd.io \
 		telegraf
 
