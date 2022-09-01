@@ -56,4 +56,5 @@ write_files:
       }
 
 runcmd:
-  - [/var/lib/conservify/startup.sh]
+  - [ /var/lib/conservify/startup.sh ]
+

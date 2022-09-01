@@ -112,4 +112,5 @@ write_files:
     content: ${saml_key_data}
 
 runcmd:
-  - [/var/lib/conservify/startup.sh]
+  - [ /var/lib/conservify/startup.sh ]
+

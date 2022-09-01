@@ -53,4 +53,7 @@ write_files:
       }
 
 runcmd:
-  - [/var/lib/conservify/startup.sh]
+  - [ /bin/mv, /etc/telegraf/telegraf.conf, /etc/telegraf/telegraf-plain.conf ]
+  - [ /bin/mv, /etc/telegraf/telegraf-postgresql.conf, /etc/telegraf/telegraf.conf ]
+  - [ /var/lib/conservify/startup.sh ]
+

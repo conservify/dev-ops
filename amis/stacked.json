@@ -92,10 +92,15 @@
       "destination": "/tmp/telegraf.conf"
     },
     {
+      "type": "file",
+      "source": "files/telegraf-postgresql.conf",
+      "destination": "/tmp/telegraf-postgresql.conf"
+    },
+    {
       "type": "shell",
       "inline": [
         "sudo mkdir -p /etc/telegraf",
-        "sudo mv /tmp/telegraf.conf /etc/telegraf",
+        "sudo mv /tmp/telegraf*.conf /etc/telegraf",
         "sudo chown -R root. /etc/telegraf"
       ]
     },
