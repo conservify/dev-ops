@@ -35,6 +35,8 @@ write_files:
       METRICS_INFLUX_DB_USER=${metrics_influxdb_user}
       METRICS_INFLUX_DB_PASSWORD=${metrics_influxdb_password}
 
+      FIELDKIT_POSTGRES_DB_PASSWORD=${postgres_password}
+
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
       STATSD_ADDRESS=${statsd_address}
