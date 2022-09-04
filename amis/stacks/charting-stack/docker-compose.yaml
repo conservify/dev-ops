@@ -18,6 +18,8 @@ services:
       - FIELDKIT_BASE_URL=http://fk-service:8000
     expose:
       - "8000"
+    volumes:
+      - /tmp/scratch:/tmp/scratch
 
 networks:
   envoy-mesh:

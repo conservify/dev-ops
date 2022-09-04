@@ -30,6 +30,8 @@ services:
       - FIELDKIT_SESSION_KEY=${SESSION_KEY}
     expose:
       - "8000"
+    volumes:
+      - /tmp/scratch:/tmp/scratch
 
   fk-service:
     image: "conservify/portal-service:active"
@@ -89,6 +91,7 @@ services:
     volumes:
       - /etc/fk:/etc/fk
       - /app/.well-known:/app/.well-known
+      - /tmp/scratch:/tmp/scratch
 
 networks:
   envoy-mesh:
