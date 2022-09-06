@@ -49,4 +49,6 @@ systemctl enable telegraf
 
 systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent
 
-chown -R ubuntu. ~ubuntu/.config
+if [ -d ~ubuntu/.config ]; then
+	chown -R ubuntu. ~ubuntu/.config
+fi
