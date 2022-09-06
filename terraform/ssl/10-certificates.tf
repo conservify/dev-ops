@@ -17,7 +17,7 @@ variable domains {
 	  path: "./letsencrypt/live/fkdev.org"
 	},
 	"fieldkit.org": {
-	  path: "./letsencrypt/live/fieldkit.org"
+	  path: "./letsencrypt/live/portal.fieldkit.org"
 	}
   }
 }

@@ -11,7 +11,11 @@ echo $CERTBOT_VALIDATION > $CHALLENGES/$CERTBOT_TOKEN
 
 ls -lh $CHALLENGES
 
-scp -r $CHALLENGES $WEB_ROOT_HOST:/app/.well-known/
+for HOST in $WEB_ROOT_HOSTS; do
+	echo $HOST
+
+    scp -o StrictHostKeyChecking=no -J code -r $CHALLENGES ubuntu@$HOST:/app/.well-known/
+done
 
 rm -rf $WORK
 

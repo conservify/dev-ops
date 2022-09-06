@@ -9,13 +9,20 @@ work_dir=`pwd`/ssl
 
 mkdir -p $certs_dir $letsencrypt $hooks_dir
 
-export PATH=$hooks_dir:$PATH
-export WEB_ROOT_HOST=fkdev
+make dev env
+
+export WEB_ROOT_HOSTS=`cat build/deploy.json | jq -r '[.app_servers.value[].ip] | join(" ")'`
+
+for host in $WEB_ROOT_HOSTS; do
+	echo $host
+done
 
 if [ -d $certs_dir/live/fkdev.org ]; then
 	echo existing certificates found, rename
 	exit 2
 fi
+
+export PATH=$hooks_dir:$PATH
 
 certbot certonly -v --config-dir "$certs_dir" --logs-dir "$logs_dir" --work-dir "$work_dir" \
 	--manual \
