@@ -77,6 +77,21 @@
     {
       "type": "shell",
       "inline": [
+        "sudo systemctl disable ua-timer.service",
+        "sudo systemctl disable ua-timer.timer"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo systemctl disable snapd.service",
+        "sudo systemctl disable snapd.socket",
+        "sudo systemctl disable snapd.seeded.service"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
         "sudo mkdir -p /app/.well-known",
         "sudo chown ubuntu. /app/.well-known"
       ]
