@@ -2,14 +2,14 @@
   "variables": {},
   "builders": [
     {
-      "name": "conservify-ubuntu-18.04",
+      "name": "conservify-ubuntu-20.04",
       "type": "amazon-ebs",
       "region": "us-east-1",
       "associate_public_ip_address": true,
       "source_ami_filter": {
         "filters": {
           "virtualization-type": "hvm",
-          "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
           "root-device-type": "ebs"
         },
         "owners": [
@@ -19,7 +19,7 @@
       },
       "spot_price": "auto",
       "instance_type": "t2.micro",
-      "ami_name": "conservify-bare-ubuntu-18.04-{{timestamp}}",
+      "ami_name": "conservify-bare-ubuntu-20.04-{{timestamp}}",
       "ssh_username": "ubuntu",
       "run_tags": {
         "owner": "packer/run"
@@ -77,6 +77,21 @@
     {
       "type": "shell",
       "inline": [
+        "sudo systemctl disable ua-timer.service",
+        "sudo systemctl disable ua-timer.timer"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo systemctl disable snapd.service",
+        "sudo systemctl disable snapd.socket",
+        "sudo systemctl disable snapd.seeded.service"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
         "sudo mkdir -p /app/.well-known",
         "sudo chown ubuntu. /app/.well-known"
       ]
@@ -92,10 +107,15 @@
       "destination": "/tmp/telegraf.conf"
     },
     {
+      "type": "file",
+      "source": "files/telegraf-postgresql.conf",
+      "destination": "/tmp/telegraf-postgresql.conf"
+    },
+    {
       "type": "shell",
       "inline": [
         "sudo mkdir -p /etc/telegraf",
-        "sudo mv /tmp/telegraf.conf /etc/telegraf",
+        "sudo mv /tmp/telegraf*.conf /etc/telegraf",
         "sudo chown -R root. /etc/telegraf"
       ]
     },

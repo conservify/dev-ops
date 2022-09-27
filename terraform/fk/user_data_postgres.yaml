@@ -9,8 +9,6 @@ write_files:
       SERVER_NAME=${hostname}
       ZONE_NAME=${zone_name}
       ENV_TAG=${env_tag}
-      GELF_TAGS=${env_tag}
-      GELF_URL=${gelf_url}
       STATSD_ADDRESS=${statsd_address}
 
       FIELDKIT_POSTGRES_DB_PASSWORD=${postgres_password}
@@ -37,6 +35,8 @@ write_files:
       METRICS_INFLUX_DB_USER=${metrics_influxdb_user}
       METRICS_INFLUX_DB_PASSWORD=${metrics_influxdb_password}
 
+      FIELDKIT_POSTGRES_DB_PASSWORD=${postgres_password}
+
       AWS_ACCESS_KEY=${aws_access_key}
       AWS_SECRET_KEY=${aws_secret_key}
       STATSD_ADDRESS=${statsd_address}
@@ -45,12 +45,15 @@ write_files:
   - path: /etc/docker/daemon.json
     content: |
       {
-        "log-driver": "gelf",
+        "log-driver": "json-file",
         "log-opts":  {
-          "gelf-address": "${gelf_url}",
-          "tag": "${env_tag}"
+          "max-size": "10m",
+          "max-file": "3"
         }
       }
 
 runcmd:
-  - [/var/lib/conservify/startup.sh]
+  - [ /bin/mv, /etc/telegraf/telegraf.conf, /etc/telegraf/telegraf-plain.conf ]
+  - [ /bin/mv, /etc/telegraf/telegraf-postgresql.conf, /etc/telegraf/telegraf.conf ]
+  - [ /var/lib/conservify/startup.sh ]
+

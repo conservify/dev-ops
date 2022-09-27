@@ -9,8 +9,6 @@ write_files:
       SERVER_NAME=${hostname}
       ZONE_NAME=${zone_name}
       ENV_TAG=${env_tag}
-      GELF_TAGS=${env_tag}
-      GELF_URL=${gelf_url}
       STATSD_ADDRESS=${statsd_address}
 
       APPLICATION_STACKS=${application_stacks}
@@ -50,12 +48,13 @@ write_files:
   - path: /etc/docker/daemon.json
     content: |
       {
-        "log-driver": "gelf",
+        "log-driver": "json-file",
         "log-opts":  {
-          "gelf-address": "${gelf_url}",
-          "tag": "${env_tag}"
+          "max-size": "10m",
+          "max-file": "3"
         }
       }
 
 runcmd:
-  - [/var/lib/conservify/startup.sh]
+  - [ /var/lib/conservify/startup.sh ]
+
