@@ -9,7 +9,9 @@ WorkingDirectory=/etc/docker/compose/%i
 ExecStartPre=-/bin/bash -c "cp /etc/user_data.env 99_user_data.env"
 ExecStartPre=-/bin/bash -c "cat *_*.env > .env"
 ExecStart=/usr/bin/docker-compose --no-ansi up
+ExecStartPost=-/etc/docker/compose/%i/started.sh
 ExecStop=/usr/bin/docker-compose --no-ansi down
+ExecStopPost=-/etc/docker/compose/%i/stopped.sh
 StandardOutput=null
 
 [Install]
