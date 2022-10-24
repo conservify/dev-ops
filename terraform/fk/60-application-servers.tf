@@ -35,6 +35,7 @@ data "template_file" "app_server_user_data" {
 
 	application_stacks        = join(",", each.value.config.stacks)
 	workers                   = each.value.config.workers
+	queues                    = each.value.config.queues
 	live                      = each.value.config.live
 
 	database_url              = local.database_url

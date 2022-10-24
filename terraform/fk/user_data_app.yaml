@@ -37,6 +37,7 @@ write_files:
       SESSION_KEY=${session_key}
 
       FIELDKIT_WORKERS=${workers}
+      FIELDKIT_QUEUES=${queues}
       FIELDKIT_LIVE=${live}
 
       FIELDKIT_SAML_CERT=/etc/fk/fk-saml.cert

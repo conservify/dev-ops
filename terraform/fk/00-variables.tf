@@ -169,6 +169,7 @@ variable workspace_servers {
 	instance = string
 	live = bool
 	workers = number
+	queues = string
 	stacks = list(string)
   })))
 }
