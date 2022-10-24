@@ -5,6 +5,20 @@ locals {
   timescaledb_password = local.database.password
   timescaledb_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/${local.timescaledb_name}?sslmode=disable"
   timescaledb_admin_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/postgres?sslmode=disable"
+  prod = terraform.workspace == "prod"
+}
+
+data "aws_ebs_snapshot" "tsdb_snapshot" {
+  owners           = ["self"]
+  filter {
+    name = "tag:Env"
+    values = [ "fkprd" ]
+  }
+  filter {
+    name = "tag:PostgresBackup"
+    values = [ "true" ]
+  }
+  most_recent      = true
 }
 
 data "template_file" "postgres_server_user_data" {
@@ -66,12 +80,33 @@ resource "aws_instance" "postgres_servers" {
 }
 
 resource "aws_ebs_volume" "postgres_data" {
-  for_each          = local.postgres_servers
+  for_each          = local.prod ? local.postgres_servers : {}
   size              = 300
   encrypted         = true
   type              = "io1"
   iops              = 4000
   availability_zone = each.value.zone
+  snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
+
+  lifecycle {
+    ignore_changes  = [ snapshot_id ]
+    # prevent_destroy = true
+  }
+
+  tags = {
+    Name = "${each.value.name} svr0"
+    Snapshot = local.env
+  }
+}
+
+resource "aws_ebs_volume" "postgres_data_from_snapshot" {
+  for_each          = local.prod ? {} : local.postgres_servers
+  size              = 300
+  encrypted         = true
+  type              = "io1"
+  iops              = 4000
+  availability_zone = each.value.zone
+  snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
 
   tags = {
     Name = "${each.value.name} svr0"
@@ -82,7 +117,7 @@ resource "aws_ebs_volume" "postgres_data" {
 resource "aws_volume_attachment" "postgres_data_attach" {
   for_each                       = { for key, value in aws_instance.postgres_servers: key => value }
   device_name                    = "/dev/xvdh"
-  volume_id                      = aws_ebs_volume.postgres_data[each.key].id
+  volume_id                      = local.prod ? aws_ebs_volume.postgres_data[each.key].id : aws_ebs_volume.postgres_data_from_snapshot[each.key].id
   instance_id                    = each.value.id
   force_detach                   = true
   stop_instance_before_detaching = true

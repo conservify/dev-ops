@@ -2,6 +2,10 @@ output bare_ami_id {
   value = data.aws_ami.bare.id
 }
 
+output tsdb_snapshot_id {
+  value = data.aws_ebs_snapshot.tsdb_snapshot.id
+}
+
 output database_url {
   value = local.database_url
   sensitive = true
