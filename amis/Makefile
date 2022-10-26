@@ -87,7 +87,9 @@ $(STACK_ARCHIVES):
 	done
 	echo "TAG=$(TAG)" > $(WORK)/10_tag.env
 	cp $(SOURCES)/*.yaml $(WORK)
-	cd $(WORK) && tar chf $@ *.env *.yaml *.di *.sh
+	cp $(SOURCES)/*.sh $(WORK)
+	ls -alh $(WORK)
+	cd $(WORK) && tar chf $@ *
 	rm -rf $(WORK)
 
 tools: .bin/yq
