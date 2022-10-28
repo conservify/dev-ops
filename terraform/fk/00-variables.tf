@@ -203,6 +203,7 @@ variable infrastructure {
 locals {
   network = var.workspace_networks[terraform.workspace]
   zones = keys(local.network.azs)
+  zone = var.workspace_zones[terraform.workspace]
 
   all_influxdb_servers = flatten([
 	for k, v in var.workspace_influxdb_servers[terraform.workspace] : [
@@ -215,6 +216,7 @@ locals {
 	  }
 	]
   ])
+
   influxdb_servers = {
 	for r in local.all_influxdb_servers : r.name => r
   }
@@ -230,6 +232,7 @@ locals {
 	  }
 	]
   ])
+
   postgres_servers = {
 	for r in local.all_postgres_servers : r.name => r
   }
@@ -245,11 +248,11 @@ locals {
 	  }
 	]
   ])
-  servers = {
+
+  app_servers = {
 	for r in local.all_app_servers : r.name => r
   }
 
-  zone = var.workspace_zones[terraform.workspace]
   partners = {
     floodnet = {
       zone = var.workspace_zones["floodnet.nyc"]

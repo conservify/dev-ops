@@ -112,7 +112,7 @@ resource "aws_route53_record" "app-servers" {
   type    = "A"
   ttl     = "60"
   records = [ for key, value in aws_instance.app-servers: value.private_ip
-              if lookup(local.servers, key, { config: { live: false } }).config.live ]
+              if lookup(local.app_servers, key, { config: { live: false } }).config.live ]
   count   = length(aws_instance.app-servers) > 0 ? 1 : 0
 }
 
@@ -122,7 +122,7 @@ resource "aws_route53_record" "auth-servers" {
   type    = "A"
   ttl     = "60"
   records = [ for key, value in aws_instance.app-servers: value.private_ip
-              if lookup(local.servers, key, { config: { live: false } }).config.live ]
+              if lookup(local.app_servers, key, { config: { live: false } }).config.live ]
   count   = length(aws_instance.app-servers) > 0 ? 1 : 0
 }
 

@@ -5,7 +5,7 @@ data "aws_ami" "bare" {
 }
 
 data "template_file" "app_server_user_data" {
-  for_each                    = local.servers
+  for_each                    = local.app_servers
   template                    = file("user_data_app.yaml")
 
   vars = {
@@ -81,7 +81,7 @@ data "template_file" "app_server_user_data" {
 }
 
 resource "aws_instance" "app-servers" {
-  for_each                    = local.servers
+  for_each                    = local.app_servers
   depends_on                  = [aws_internet_gateway.fk]
   ami                         = data.aws_ami.bare.id
   subnet_id                   = aws_subnet.private[each.value.zone].id
@@ -110,11 +110,11 @@ resource "aws_instance" "app-servers" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "auto_recovery_alarm" {
-  # for_each                    = local.servers
+  # for_each       = local.app_servers
   for_each         = {
 	for key, value in aws_instance.app-servers:
 	key => value
-	# if lookup(local.servers, key, { config: { live: false } }).config.live
+	# if lookup(local.app_servers, key, { config: { live: false } }).config.live
   }
 
   alarm_name = "${local.env}-auto-recovery-${each.key}"
