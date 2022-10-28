@@ -2,9 +2,11 @@
 Description=%i service with docker compose
 Requires=docker.service
 After=docker.service
+StartLimitIntervalSec=0
 
 [Service]
 Restart=always
+RestartSec=2
 WorkingDirectory=/etc/docker/compose/%i
 ExecStartPre=-/bin/bash -c "cp /etc/user_data.env 99_user_data.env"
 ExecStartPre=-/bin/bash -c "cat *_*.env > .env"
