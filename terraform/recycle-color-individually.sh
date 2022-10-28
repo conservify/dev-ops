@@ -10,7 +10,7 @@ ENV=dev
 APPLY=0
 
 usage() {
-  echo "Usage: recycle-color.sh --env <dev|prod> --color <COLOR>  --kind (workspace_postgres_servers|workspace_servers) --apply"
+  echo "Usage: recycle-color-individually.sh --env <dev|prod> --color <COLOR>  --kind (workspace_postgres_servers|workspace_servers) --apply"
 
   exit 2
 }
@@ -36,31 +36,34 @@ do
 done
 
 NUMBER_PATH=".${KIND}.${ENV}.${COLOR}.number"
-BEFORE=`jq ${NUMBER_PATH} < ${CONFIG_FILE}`
+EXCLUDE_PATH=".${KIND}.${ENV}.${COLOR}.exclude"
+NUMBER_OF_SERVERS=`jq ${NUMBER_PATH} < ${CONFIG_FILE}`
 
-case $BEFORE in
+case $NUMBER_OF_SERVERS in
     ''|*[!0-9]*) echo "FAIL ${NUMBER_PATH} is invalid"; exit 2 ;;
     *) echo "OK ${NUMBER_PATH} = ${BEFORE}" ;;
 esac
 
 cp ${CONFIG_FILE} ${BACKUP_FILE}
 
-jq "${NUMBER_PATH} = 0" < ${BACKUP_FILE} > ${CONFIG_FILE}
+for number in $(seq 0 $(($NUMBER_OF_SERVERS-1))); do
+  echo "recycling #$number..."
 
-diff ${BACKUP_FILE} ${CONFIG_FILE} || true
+  jq "${EXCLUDE_PATH} = ${number}" < ${BACKUP_FILE} > ${CONFIG_FILE}
+  diff ${BACKUP_FILE} ${CONFIG_FILE} || true
 
-if [ $APPLY -eq 1 ]; then
-	make ${ENV} plan apply
-else
-	make ${ENV} plan
-fi
+  if [ $APPLY -eq 1 ]; then
+    make ${ENV} plan apply
+  else
+    echo make ${ENV} plan
+  fi
 
-jq "${NUMBER_PATH} = ${BEFORE}" < ${BACKUP_FILE} > ${CONFIG_FILE}
+  jq "${EXCLUDE_PATH} = -1" < ${BACKUP_FILE} > ${CONFIG_FILE}
+  diff ${BACKUP_FILE} ${CONFIG_FILE} || true
 
-diff ${BACKUP_FILE} ${CONFIG_FILE} || true
-
-if [ $APPLY -eq 1 ]; then
-	make ${ENV} plan apply
-else
-	make ${ENV} plan
-fi
+  if [ $APPLY -eq 1 ]; then
+    make ${ENV} plan apply
+  else
+    echo make ${ENV} plan
+  fi
+done
