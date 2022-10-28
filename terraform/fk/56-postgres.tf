@@ -6,10 +6,11 @@ locals {
   timescaledb_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/${local.timescaledb_name}?sslmode=disable"
   timescaledb_admin_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/postgres?sslmode=disable"
   prod = terraform.workspace == "prod"
+  tsdb_snapshot_id = "snap-0b9c34f20d7f9941b"
 }
 
 data "aws_ebs_snapshot" "tsdb_snapshot" {
-  owners           = ["self"]
+  owners = ["self"]
   filter {
     name = "tag:Env"
     values = [ "fkprd" ]
@@ -18,7 +19,7 @@ data "aws_ebs_snapshot" "tsdb_snapshot" {
     name = "tag:PostgresBackup"
     values = [ "true" ]
   }
-  most_recent      = true
+  most_recent = true
 }
 
 data "template_file" "postgres_server_user_data" {
@@ -86,7 +87,8 @@ resource "aws_ebs_volume" "postgres_data" {
   type              = "io1"
   iops              = 4000
   availability_zone = each.value.zone
-  snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
+  // snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
+  snapshot_id       = local.tsdb_snapshot_id
 
   lifecycle {
     ignore_changes  = [ snapshot_id ]
@@ -106,7 +108,8 @@ resource "aws_ebs_volume" "postgres_data_from_snapshot" {
   type              = "io1"
   iops              = 4000
   availability_zone = each.value.zone
-  snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
+  // snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
+  snapshot_id       = local.tsdb_snapshot_id
 
   tags = {
     Name = "${each.value.name} svr0"
