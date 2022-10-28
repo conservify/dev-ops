@@ -166,6 +166,7 @@ variable workspace_servers {
   type = map(map(object({
 	name = string
 	number = number
+	exclude = number
 	instance = string
 	live = bool
 	workers = number
@@ -241,6 +242,7 @@ locals {
 	for k, v in var.workspace_servers[terraform.workspace] : [
 	  for r in range(v.number) : {
 		name = "${local.env}-${v.name}-${r}"
+		excluded = r == v.exclude
 		number = r
 		config = v
 		# zone = local.zones[r % length(local.zones)]
@@ -250,7 +252,7 @@ locals {
   ])
 
   app_servers = {
-	for r in local.all_app_servers : r.name => r
+	for r in local.all_app_servers : r.name => r if !r.excluded
   }
 
   partners = {
