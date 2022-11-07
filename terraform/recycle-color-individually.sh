@@ -8,6 +8,8 @@ KIND=unset
 COLOR=unset
 ENV=dev
 APPLY=0
+OFFSET=0
+LIMIT=0
 
 usage() {
   echo "Usage: recycle-color-individually.sh --env <dev|prod> --color <COLOR>  --kind (workspace_postgres_servers|workspace_servers) --apply"
@@ -15,7 +17,7 @@ usage() {
   exit 2
 }
 
-PARSED_ARGUMENTS=$(getopt -o '' --long env:,color:,kind:,apply -- "$@")
+PARSED_ARGUMENTS=$(getopt -o '' --long env:,color:,kind:,apply,offset:,limit: -- "$@")
 VALID_ARGUMENTS=$?
 if [ "$VALID_ARGUMENTS" != "0" ]; then
 	  usage
@@ -25,10 +27,12 @@ eval set -- "$PARSED_ARGUMENTS"
 while :
 do
   case "$1" in
-    --env)   ENV="$2"   ; shift 2 ;;
-    --color) COLOR="$2" ; shift 2 ;;
-    --kind)  KIND="$2"  ; shift 2 ;;
-    --apply) APPLY=1    ; shift   ;;
+    --env)    ENV="$2"     ; shift 2 ;;
+    --color)  COLOR="$2"   ; shift 2 ;;
+    --kind)   KIND="$2"    ; shift 2 ;;
+    --apply)  APPLY=1      ; shift   ;;
+    --offset) OFFSET="$2"  ; shift 2 ;;
+    --limit)  LIMIT="$2"   ; shift 2 ;;
     --) shift; break ;;
     *) echo "Unexpected option: $1 - how did you get here?"
        usage ;;
@@ -46,7 +50,7 @@ esac
 
 cp ${CONFIG_FILE} ${BACKUP_FILE}
 
-for number in $(seq 0 $(($NUMBER_OF_SERVERS-1))); do
+for number in $(seq $OFFSET $(($NUMBER_OF_SERVERS-$LIMIT-1))); do
   echo "recycling #$number..."
 
   jq "${EXCLUDE_PATH} = ${number}" < ${BACKUP_FILE} > ${CONFIG_FILE}
