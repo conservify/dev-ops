@@ -57,15 +57,12 @@ echo Added repository.
 sudo apt-get update
 
 if sudo apt-get install -y -q docker-ce; then
-	echo SUCCESS
+	echo "docker installed"
 else
-	echo FAILED
+	echo "docker install failed"
 	sudo systemctl status docker || true
 	sudo journalctl -xe || true
-	sudo systemctl start docker || true
-	sudo systemctl status docker || true
-	sudo journalctl -xe || true
-	echo FAILING
+	echo "failing"
 	exit 2
 fi
 
