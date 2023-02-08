@@ -21,7 +21,7 @@ sudo mkdir -p /svr0/docker
 sudo mkdir -p /var/jenkins_home
 sudo ln -sf /svr0/workspace /var/jenkins_home/workspace
 sudo mkdir -p /etc/docker
-echo '{"graph": "/svr0/docker"}' > /etc/docker/daemon.json
+echo '{"data-root": "/svr0/docker"}' > /etc/docker/daemon.json
 
 # Start installing packages
 sudo apt-get update -y
