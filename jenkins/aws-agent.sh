@@ -23,6 +23,9 @@ sudo ln -sf /svr0/workspace /var/jenkins_home/workspace
 sudo mkdir -p /etc/docker
 echo '{"data-root": "/svr0/docker"}' > /etc/docker/daemon.json
 
+# Annoying, fix needrestart being interactive by default.
+sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+
 # Start installing packages
 sudo apt-get update -y
 sudo apt-get update -y
