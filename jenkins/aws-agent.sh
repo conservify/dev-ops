@@ -23,7 +23,11 @@ sudo ln -sf /svr0/workspace /var/jenkins_home/workspace
 sudo mkdir -p /etc/docker
 echo '{"data-root": "/svr0/docker"}' > /etc/docker/daemon.json
 
-# Annoying, fix needrestart being interactive by default.
+# Annoying, fix needrestart being interactive by default. May eventually want
+# to just use the ENV variable approach. Though, these machines will never use
+# anything else.
+export NEEDRESTART_SUSPEND=1 
+
 sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
 
 # Start installing packages
