@@ -42,6 +42,7 @@ def call(Map parameters = [:]) {
         stage ('build') {
             withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
 				withEnv(["PATH+GOHOME=${HOME}/go/bin"]) {
+                    sh "mkdir -p ${HOME}/.pub-cache/bin"
                     withEnv(["PATH+FLUTTER=/usr/local/flutter/bin", "${HOME}/.pub-cache/bin"]) {
                         withPythonEnv(python) {
                             if (target) {
