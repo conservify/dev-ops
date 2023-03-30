@@ -104,6 +104,11 @@ for a in /usr/local/docker/*; do
     # sudo ln -sf $a /usr/local/bin/$n
 done
 
+wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.7.8-stable.tar.xz
+sudo tar -C /usr/local -xf flutter_linux_3.7.8-stable.tar.xz
+
+ls -alh /usr/local/flutter
+
 # Cleanup
 rm -f *.tar.* *.tgz
 
