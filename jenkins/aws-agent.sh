@@ -32,11 +32,12 @@ sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrest
 
 # Start installing packages
 sudo apt-get update -y
-sudo apt-get update -y
 sudo apt-get install -qy \
 	 apt-transport-https ca-certificates software-properties-common build-essential python3-pip python3-venv python-is-python3 zip ripgrep \
 	 openjdk-11-jdk-headless \
-	 wget unzip jq curl htop tig valgrind
+	 wget unzip jq curl htop tig valgrind \
+         lib32stdc++6 lib32z1 \ # This is necessary to run android-sdk's aapt.
+         clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev # This is for flutter builds.
 
 # Python stuffs.
 sudo which pip3
@@ -44,12 +45,6 @@ sudo which python3
 
 sudo pip3 install --upgrade pip
 sudo pip3 install virtualenv
-
-# This is necessary to run android-sdk's aapt.
-sudo apt-get install -qy lib32stdc++6 lib32z1
-
-# This is for flutter builds.
-sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
 
 # Docker
 # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
