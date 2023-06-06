@@ -48,6 +48,9 @@ sudo pip3 install virtualenv
 # This is necessary to run android-sdk's aapt.
 sudo apt-get install -qy lib32stdc++6 lib32z1
 
+# This is for flutter builds.
+sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+
 # Docker
 # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
