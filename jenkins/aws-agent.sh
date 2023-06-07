@@ -5,6 +5,7 @@ set -xe
 whoami
 
 # See if we have been created with a mapped block device for extra space.
+
 sudo mkdir -p /svr0
 if [ -e /dev/xvdd ]; then
 	sudo mkfs.ext4 /dev/xvdd
@@ -16,8 +17,10 @@ if [ -e /dev/nvme1n1 ]; then
 fi
 sudo mkdir -p /svr0/workspace
 sudo mkdir -p /svr0/docker
+sudo mkdir -p /svr0/tools
 
 # When docker installs, it'll find this and end up on extra space.
+
 sudo mkdir -p /var/jenkins_home
 sudo ln -sf /svr0/workspace /var/jenkins_home/workspace
 sudo mkdir -p /etc/docker
@@ -26,11 +29,13 @@ echo '{"data-root": "/svr0/docker"}' > /etc/docker/daemon.json
 # Annoying, fix needrestart being interactive by default. May eventually want
 # to just use the ENV variable approach. Though, these machines will never use
 # anything else.
+
 export NEEDRESTART_SUSPEND=1 
 
 sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
 
-# Start installing packages
+# Apt packages
+
 sudo apt-get update -y
 sudo apt-get update -y
 sudo apt-get install -qy \
@@ -38,9 +43,11 @@ sudo apt-get install -qy \
          openjdk-11-jdk-headless \
          wget unzip jq curl htop tig valgrind \
          lib32stdc++6 lib32z1 \
-         clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+         clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev \
+         libjsoncpp-dev libsecret-1-dev protobuf-compiler
 
-# Python stuffs.
+# Python
+
 sudo which pip3
 sudo which python3
 
@@ -48,11 +55,24 @@ sudo pip3 install --upgrade pip
 sudo pip3 install virtualenv
 
 # Rustup
+
+export CARGO_HOME=/svr0/tools/.cargo
+export RUSTUP_HOME=/svr0/tools/.rustup
+
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh
+
 sh rustup.sh -y
 
+sudo ln -sf /svr0/tools/.cargo /home/ubuntu/.cargo
+sudo ln -sf /svr0/tools/.rustup /home/ubuntu/.rustup
+
+export PATH=/svr0/tools/.cargo/bin:$PATH
+
+rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+cargo install cargo-ndk
+
 # Docker
-# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 sudo mkdir -m 0755 -p /etc/apt/keyrings
 
@@ -76,48 +96,58 @@ else
 	exit 2
 fi
 
-# Build tools
+# Golang
 
 wget https://golang.org/dl/go1.19.1.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.19.1.linux-amd64.tar.gz
+sudo tar -C /svr0/tools -xzf go1.19.1.linux-amd64.tar.gz
+sudo ln -sf /svr0/tools/go /usr/local/go
+
+# Nodejs
 
 wget https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-x64.tar.xz
-sudo tar -C /usr/local -xf node-v16.13.2-linux-x64.tar.xz
-sudo mv /usr/local/node-* /usr/local/node
+sudo tar -C /svr0/tools -xf node-v16.13.2-linux-x64.tar.xz
+sudo mv /svr0/tools/node-* /svr0/tools/node
+sudo ln -sf /svr0/tools/node /usr/local/go
+
+# Docker
 
 wget https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz
-sudo tar -C /usr/local -xf docker-17.09.0-ce.tgz
+sudo tar -C /svr0/tools -xf docker-17.09.0-ce.tgz
+sudo ln -sf /svr0/tools/docker /usr/local/docker
+
+# CMake
 
 wget https://github.com/Kitware/CMake/releases/download/v3.19.7/cmake-3.19.7-Linux-x86_64.tar.gz
-sudo tar -C /usr/local -xf cmake-3.19.7-Linux-x86_64.tar.gz
-sudo mv /usr/local/cmake-* /usr/local/cmake
+sudo tar -C /svr0/tools -xf cmake-3.19.7-Linux-x86_64.tar.gz
+sudo mv /svr0/tools/cmake-* /svr0/tools/cmake
+sudo ln -sf /svr0/tools/cmake /usr/local/cmake
 
-sudo ln -sf /usr/local/cmake/bin/cmake /usr/local/bin/cmake
-sudo ln -sf /usr/local/go/bin/go /usr/local/bin/go
-sudo ln -sf /usr/local/node/bin/node /usr/local/bin/node
-sudo ln -sf /usr/local/node/bin/npm /usr/local/bin/npm
+# Tools
+
+sudo ln -sf /svr0/tools/cmake/bin/cmake /usr/local/bin/cmake
+sudo ln -sf /svr0/tools/go/bin/go /usr/local/bin/go
+sudo ln -sf /svr0/tools/node/bin/node /usr/local/bin/node
+sudo ln -sf /svr0/tools/node/bin/npm /usr/local/bin/npm
 
 sudo npm install -g yarn
 
-sudo ln -sf /usr/local/node/bin/yarn /usr/local/bin/yarn
+sudo ln -sf /svr0/tools/node/bin/yarn /usr/local/bin/yarn
 
-for a in /usr/local/docker/*; do
-    echo $a
-    n=`basename $a`
-    # sudo ln -sf $a /usr/local/bin/$n
-done
+# Flutter
 
 wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.10.3-stable.tar.xz
-sudo tar -C /usr/local -xf flutter_linux_3.10.3-stable.tar.xz
+sudo tar -C /svr0/tools -xf flutter_linux_3.10.3-stable.tar.xz
 
-ls -alh /usr/local/flutter
+ls -alh /svr0/tools
 
 # Cleanup
+
 rm -f *.tar.* *.tgz
 
 # Permissions. We're run from the cloud initialize so that jenkins
 # agent starts with the correct group permissions. Otherwise if we're
 # run from jenkins this never gets inherited.
+
 sudo usermod -aG docker ubuntu
 
 sudo mkdir /svr0/home
@@ -135,16 +165,25 @@ cat /etc/docker/daemon.json
 # Ideally the group would handle this for us but I can't seem to get
 # the ssh process that Jenkins starts to inherit the permissions
 # because of various races with the startup scripts.
+
 sudo chmod 777 /var/run/docker.sock
 
 sudo rm -rf ~/.npm
 
-sudo whoami
-sudo id
-id
-env
+# Install Android SDK
 
-# HUP java agent if it's running to get new permissions.
-# sudo pkill java
+mkdir -p /svr0/tools
+pushd /svr0/tools
+wget https://raw.githubusercontent.com/conservify/dev-ops/main/android-sdk/android-sdk-setup.sh
+bash android-sdk-setup.sh
+popd
+
+# Free space, chown tools.
+
+sudo apt-get clean
+
+sudo chown -R ubuntu. /svr0/tools
+
+df -h
 
 echo done!

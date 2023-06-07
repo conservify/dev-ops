@@ -36,7 +36,10 @@ which sdkmanager
 
 sdkmanager --list
 
-yes | sdkmanager --install "build-tools;25.0.1" "build-tools;25.0.3" "build-tools;26.0.1" "build-tools;28.0.2" "build-tools;29.0.2"
-yes | sdkmanager --install "platforms;android-26" "platforms;android-27" "platforms;android-28" "platforms;android-29" "platforms;android-30" "platforms;android-31"
+yes | sdkmanager --install "build-tools;30.0.3"
+yes | sdkmanager --install "platforms;android-33"
 yes | sdkmanager --install "platform-tools"
 yes | sdkmanager --install "cmdline-tools;latest"
+yes | sdkmanager --install "ndk;25.2.9519653"
+yes | sdkmanager --install "cmake;3.22.1"
+
