@@ -47,6 +47,10 @@ sudo which python3
 sudo pip3 install --upgrade pip
 sudo pip3 install virtualenv
 
+# Rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh
+sh rustup.sh -y
+
 # Docker
 # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
