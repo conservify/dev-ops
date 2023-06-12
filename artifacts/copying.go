@@ -12,12 +12,14 @@ import (
 
 type ArtifactsCopier struct {
 	Directory string
+	Jobs      []string
 	Copied    []string
 }
 
-func NewArtifactsCopier(directory string) (am *ArtifactsCopier) {
+func NewArtifactsCopier(directory string, jobs []string) (am *ArtifactsCopier) {
 	return &ArtifactsCopier{
 		Directory: directory,
+		Jobs:      jobs,
 		Copied:    make([]string, 0),
 	}
 }
@@ -31,6 +33,21 @@ func (am *ArtifactsCopier) Copy(source string) error {
 
 	err := walkBuilds(source, func(path string, relative string, jobName string, buildXmlPath string, info *BuildInfo, artifactPaths []string) error {
 		if len(artifactPaths) == 0 {
+			return nil
+		}
+
+		jobNameParts := strings.Split(jobName, " ")
+
+		copying := false
+		for _, test := range am.Jobs {
+			if test == jobNameParts[0] {
+				copying = true
+				break
+			}
+		}
+
+		if !copying {
+			log.Printf("skipping job=%s", jobName)
 			return nil
 		}
 

@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
 type options struct {
 	Source      string
 	Destination string
+	Jobs        string
 }
 
 func main() {
@@ -18,6 +20,7 @@ func main() {
 
 	flag.StringVar(&o.Source, "source", "", "source directory")
 	flag.StringVar(&o.Destination, "destination", "", "destination directory")
+	flag.StringVar(&o.Jobs, "jobs", "", "jobs")
 
 	flag.Parse()
 
@@ -30,7 +33,7 @@ func main() {
 	forcePreserve := make([]string, 0)
 
 	if o.Source != "" && o.Destination != "" {
-		ac := NewArtifactsCopier(o.Destination)
+		ac := NewArtifactsCopier(o.Destination, strings.Split(o.Jobs, ","))
 		err := ac.Copy(o.Source)
 		if err != nil {
 			log.Fatalf("error: %v", err)
