@@ -60,11 +60,12 @@ export CARGO_HOME=/svr0/tools/.cargo
 export RUSTUP_HOME=/svr0/tools/.rustup
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh
+chown -R ubuntu. rustup.sh
 
 sh rustup.sh -y
 
-sudo ln -sf /svr0/tools/.cargo /home/ubuntu/.cargo
-sudo ln -sf /svr0/tools/.rustup /home/ubuntu/.rustup
+ln -sf /svr0/tools/.cargo /home/ubuntu/.cargo
+ln -sf /svr0/tools/.rustup /home/ubuntu/.rustup
 
 export PATH=/svr0/tools/.cargo/bin:$PATH
 
@@ -178,6 +179,7 @@ wget https://raw.githubusercontent.com/conservify/dev-ops/main/android-sdk/andro
 bash android-sdk-setup.sh
 popd
 mkdir -p /home/ubuntu/.gradle
+chown -R ubuntu. /home/ubuntu/.gradle
 echo 'ANDROID_NDK=/svr0/tools/android-sdk/ndk' > /home/ubuntu/.gradle/gradle.properties
 
 # Free space, chown tools.
