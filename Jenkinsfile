@@ -8,10 +8,6 @@ properties([
 
 timestamps {
 	node ('main') {
-		stage ('git') {
-			checkout scm
-		}
-
 		stage ('build') {
 			withEnv(["PATH+GOLANG=${tool 'golang-amd64'}/bin"]) {
 				sh "make clean build"
