@@ -4,7 +4,7 @@ env
 
 ANDROID_SDK_VERSION=8092744
 GRADLE_VERSION=7.4.1
-GRADLE_HOME=./gradle-${GRADLE_VERSION}
+GRADLE_HOME=./gradle
 ANDROID_HOME=./android-sdk
 PATH=${GRADLE_HOME}/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
@@ -18,6 +18,7 @@ fi
 if [ ! -f gradle-${GRADLE_VERSION}-bin.zip ]; then
 	wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
 	unzip gradle*.zip
+	mv gradle-${GRADLE_VERSION} gradle
 fi
 
 ls -alh
