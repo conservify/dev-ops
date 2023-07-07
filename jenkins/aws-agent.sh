@@ -136,8 +136,8 @@ sudo ln -sf /svr0/tools/node/bin/yarn /usr/local/bin/yarn
 
 # Flutter
 
-wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.10.3-stable.tar.xz
-sudo tar -C /svr0/tools -xf flutter_linux_3.10.3-stable.tar.xz
+wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.10.5-stable.tar.xz
+sudo tar -C /svr0/tools -xf flutter_linux_3.10.5-stable.tar.xz
 
 ls -alh /svr0/tools
 
