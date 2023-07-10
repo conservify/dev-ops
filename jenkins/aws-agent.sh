@@ -178,6 +178,7 @@ pushd /svr0/tools
 wget https://raw.githubusercontent.com/conservify/dev-ops/main/android-sdk/android-sdk-setup.sh
 bash android-sdk-setup.sh
 popd
+rm -rf /home/ubuntu/.gradle
 mkdir -p /home/ubuntu/.gradle
 chown -R ubuntu. /home/ubuntu/.gradle
 echo 'ANDROID_NDK=/svr0/tools/android-sdk/ndk' > /home/ubuntu/.gradle/gradle.properties
