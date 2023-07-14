@@ -182,7 +182,7 @@ services:
     ports:
       - 8086:8086
     volumes:
-      - /svr0/influxdb:/var/lib/influxdb
+      - /svr3/influxdb:/var/lib/influxdb
     logging:
         driver: "json-file"
         options:
