@@ -80,10 +80,9 @@ server {
 }
 
 server {
-	listen   443;
+	listen   443 ssl;
 	server_name	code.conservify.org;
 
-	ssl                  on;
 	ssl_certificate      /etc/letsencrypt/live/code.conservify.org/fullchain.pem;
 	ssl_certificate_key  /etc/letsencrypt/live/code.conservify.org/privkey.pem;
 
@@ -244,10 +243,9 @@ server {
 }
 
 server {
-	listen   443;
+	listen   443 ssl;
 	server_name	pga.conservify.org;
 
-	ssl                  on;
 	ssl_certificate      /etc/letsencrypt/live/code.conservify.org/fullchain.pem;
 	ssl_certificate_key  /etc/letsencrypt/live/code.conservify.org/privkey.pem;
 
@@ -283,10 +281,10 @@ server {
 }
 
 server {
-	listen   443;
+	listen   443 ssl;
 	server_name	strapi.conservify.org;
 
-	ssl                  on;
+	
 	ssl_certificate      /etc/letsencrypt/live/code.conservify.org/fullchain.pem;
 	ssl_certificate_key  /etc/letsencrypt/live/code.conservify.org/privkey.pem;
 
