@@ -77,7 +77,10 @@ cargo install cargo-ndk
 
 sudo mkdir -m 0755 -p /etc/apt/keyrings
 
-curl -vfsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+DOCKER_GPG=https://download.docker.com/linux/ubuntu/gpg
+DOCKER_GPG=https://raw.githubusercontent.com/conservify/dev-ops/main/jenkins/docker.gpg
+
+curl -vfsSL $DOCKER_GPG | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
