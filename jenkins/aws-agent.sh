@@ -105,8 +105,8 @@ sudo ln -sf /svr0/tools/go /usr/local/go
 
 # Nodejs
 
-wget https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-x64.tar.xz
-sudo tar -C /svr0/tools -xf node-v16.13.2-linux-x64.tar.xz
+wget https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz
+sudo tar -C /svr0/tools -xf node-v18.17.0-linux-x64.tar.xz
 sudo mv /svr0/tools/node-* /svr0/tools/node
 sudo ln -sf /svr0/tools/node /usr/local/go
 
