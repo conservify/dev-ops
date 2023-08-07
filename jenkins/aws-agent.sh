@@ -40,7 +40,7 @@ sudo apt-get update -y
 sudo apt-get update -y
 sudo apt-get install -qy \
          apt-transport-https ca-certificates software-properties-common build-essential python3-pip python3-venv python-is-python3 zip ripgrep \
-         openjdk-11-jdk-headless \
+         openjdk-18-jdk-headless \
          wget unzip jq curl htop tig valgrind \
          lib32stdc++6 lib32z1 \
          clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev \
