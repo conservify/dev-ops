@@ -1,18 +1,14 @@
-# Right now this will successfully renew the certificates. Unfortunately the
-# way things are, it's tricky getting this to update the ELBs so I've been
-# doing this manually
+# Updating Certificates
 
-# Login to the EC2 Console and then go to the ELB and Edit the listener to
-# change the default certificate. Then you can run the plan again to delete the
-# old certificates.
-
-# 2020/11/24: I ran a terraform plan and apply in ssl and the apply in the main
-# fk terraform and the SSL change took effect.
-
-# 2020/12/11: You need to run the terraform twice, once to create and
-# then allow them to destroy after they've moved over to the LBs
-
-# 2021/04/26: Ran w/o the prevent_destroy and just manually made the changes to
-# the ELBs while terraform was trying to destroy them.
-
-
+1. Backup `ssl/letsencrypt` into `ssl/backups`
+2. Use `ssh-add` to load server's private key into your SSH agent so that the custom certbot scripts are able to copy the authentication files to the servers.
+3. Run `renew-fkdev`
+4. Run `renew-fkprod`
+5. Use terraform to add the certificates: `cd ssl && teraform plan && teraform apply` This will stay running until the old certificates are removed in step 10.
+6. Login to AWS EC2 console.
+7. Navigate to the Load Balancers, choose `fkdev-lb`, then the `HTTPS:443` listener.
+8. Find the "Actions" drop down and choose "Edit listener".
+9. Scroll to the bottom and change Default SSL/TLS certificate to the one added by teraform, paying attention to dates and "Save changes"
+10. Choose "Certificates" tab and remove the old certificate.
+11. Repeat these steps for `fkprd-lb`
+12. Once done, terraform should successfully complete.
