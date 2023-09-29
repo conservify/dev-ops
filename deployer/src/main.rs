@@ -4,10 +4,14 @@ use serde::Deserialize;
 use ssh2::Session;
 use std::net::TcpStream;
 use std::path::PathBuf;
-use std::thread;
+use std::thread::{self, JoinHandle};
+use std::time::Duration;
 use std::{io::prelude::*, path::Path};
 use tracing::*;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+const PREPARE_COMMANDS: [&'static str; 2] = ["whoami", "sudo rm -f *.tar"];
+const COMMIT_COMMANDS: [&'static str; 1] = ["sudo mv *.tar /tmp/incoming-stacks"];
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -25,12 +29,21 @@ pub struct Deploy {
     #[arg(long, value_name = "FILE")]
     archive: PathBuf,
     #[arg(long)]
+    poll: Option<String>,
+    #[arg(long)]
     prepare_only: bool,
+}
+
+#[derive(Debug, Args)]
+pub struct Poll {
+    #[arg(long)]
+    url: String,
 }
 
 #[derive(Subcommand)]
 enum Commands {
     Deploy(Deploy),
+    Poll(Poll),
 }
 
 fn get_rust_log() -> String {
@@ -77,9 +90,9 @@ impl Executor {
         let file_meta = file.metadata()?;
 
         info!(
-            "copying {} bytes to {}:{}",
-            file_meta.len(),
+            "{} copying {} bytes to {}",
             &server.ip,
+            file_meta.len(),
             file_name.to_str().unwrap()
         );
 
@@ -95,16 +108,21 @@ impl Executor {
     }
 }
 
+trait Step {
+    fn run(&self) -> Result<()>;
+}
+
 struct PrepareStep {
     exec: Executor,
     server: Server,
     archive: PathBuf,
 }
 
-impl PrepareStep {
+impl Step for PrepareStep {
     fn run(&self) -> Result<()> {
-        self.exec.execute(&self.server, "whoami")?;
-        self.exec.execute(&self.server, "sudo rm -f *.tar")?;
+        for command in PREPARE_COMMANDS {
+            self.exec.execute(&self.server, command)?;
+        }
         self.exec.scp(&self.server, &self.archive)?;
 
         Ok(())
@@ -116,13 +134,28 @@ struct CommitStep {
     server: Server,
 }
 
-impl CommitStep {
+impl Step for CommitStep {
     fn run(&self) -> Result<()> {
-        self.exec
-            .execute(&self.server, "sudo mv *.tar /tmp/incoming-stacks")?;
+        for command in COMMIT_COMMANDS {
+            self.exec.execute(&self.server, command)?;
+        }
 
         Ok(())
     }
+}
+
+fn run_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Vec<JoinHandle<Result<()>>> {
+    steps
+        .into_iter()
+        .map(|step| thread::spawn(move || step.run()))
+        .collect::<Vec<_>>()
+}
+
+fn run_and_join_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Result<Vec<Result<()>>> {
+    run_all(steps)
+        .into_iter()
+        .map(|j| j.join().map_err(|e| anyhow::anyhow!("{:?}", e)))
+        .collect::<Result<Vec<_>>>()
 }
 
 fn main() -> Result<()> {
@@ -143,13 +176,6 @@ fn main() -> Result<()> {
             };
 
             let servers = env.servers.value;
-            let servers = vec![Server {
-                id: "NOT USED".to_owned(),
-                ip: "192.168.0.110".to_owned(),
-                key: "NOT USED".to_owned(),
-                ssh_at: "NOT USED".to_owned(),
-                user: "jlewallen".to_owned(),
-            }];
 
             let preparations = servers
                 .iter()
@@ -162,15 +188,7 @@ fn main() -> Result<()> {
 
             info!("preparing");
 
-            let tasks = preparations
-                .into_iter()
-                .map(|step| thread::spawn(move || step.run()))
-                .collect::<Vec<_>>();
-
-            let joined = tasks
-                .into_iter()
-                .map(|j| j.join().map_err(|e| anyhow::anyhow!("{:?}", e)))
-                .collect::<Result<Vec<_>>>()?;
+            let joined = run_and_join_all(preparations);
 
             info!("{:?}", joined);
 
@@ -182,19 +200,28 @@ fn main() -> Result<()> {
                 })
                 .collect::<Vec<_>>();
 
-            info!("committing");
+            if !deploy.prepare_only {
+                info!("committing");
 
-            let tasks = commits
-                .into_iter()
-                .map(|step| thread::spawn(move || step.run()))
-                .collect::<Vec<_>>();
+                let poller = deploy.poll.map(|url| Poller::new(url.clone()));
+                let poller = thread::spawn(move || match poller {
+                    Some(poller) => poller.run(),
+                    None => Ok(None),
+                });
 
-            let joined = tasks
-                .into_iter()
-                .map(|j| j.join().map_err(|e| anyhow::anyhow!("{:?}", e)))
-                .collect::<Result<Vec<_>>>()?;
+                let joined = run_and_join_all(commits);
 
-            info!("{:?}", joined);
+                info!("{:?}", joined);
+
+                let polled = poller.join().map_err(|e| anyhow::anyhow!("{:?}", e))?;
+
+                info!("{:?}", polled);
+            }
+        }
+        Commands::Poll(poll) => {
+            let poller = Poller::new(poll.url.clone());
+
+            poller.once()?;
         }
     }
 
@@ -211,8 +238,8 @@ struct ServersDef {
     value: Vec<Server>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
 #[allow(dead_code)]
+#[derive(Deserialize, Clone, Debug)]
 struct Server {
     id: String,
     ip: String,
@@ -220,4 +247,69 @@ struct Server {
     #[serde(rename = "sshAt")]
     ssh_at: String,
     user: String,
+}
+
+struct Poller {
+    url: String,
+}
+
+impl Poller {
+    fn new(url: String) -> Self {
+        Self { url }
+    }
+
+    fn run(&self) -> Result<Option<Status>> {
+        let initial = self.once()?;
+
+        let mut error = false;
+
+        for _n in 1..120 {
+            thread::sleep(Duration::from_secs(1));
+
+            match self.once() {
+                Ok(latest) => {
+                    if initial.git.hash != latest.git.hash {
+                        return Ok(Some(latest));
+                    } else {
+                        if error {
+                            return Err(anyhow::anyhow!(
+                                "Git hash unchanged after error, assuming same version."
+                            ));
+                        }
+                    }
+                }
+                Err(e) => {
+                    error = true;
+
+                    warn!("poll error {:?}", e);
+                }
+            }
+        }
+
+        Err(anyhow::anyhow!("Git hash unchanged."))
+    }
+
+    fn once(&self) -> Result<Status> {
+        let resp = reqwest::blocking::get(&self.url)?.json::<Status>()?;
+
+        info!("{:?}", resp);
+
+        Ok(resp)
+    }
+}
+
+#[allow(dead_code)]
+#[derive(Deserialize, Debug)]
+struct Status {
+    server_name: String,
+    version: String,
+    tag: String,
+    name: String,
+    git: Git,
+}
+
+#[allow(dead_code)]
+#[derive(Deserialize, Debug)]
+struct Git {
+    hash: String,
 }

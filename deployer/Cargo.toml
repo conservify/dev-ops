@@ -9,8 +9,9 @@ edition = "2021"
 anyhow = "1.0.75"
 clap = { version = "4.4.5", features = ["derive"] }
 duct = "0.13.6"
+reqwest = { version = "0.11.20", features = ["blocking", "json", "rustls-tls"] }
 serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.107"
-ssh2 = "0.9.4"
+ssh2 = { version = "0.9.4", features = ["vendored-openssl"] }
 tracing = "0.1.37"
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
