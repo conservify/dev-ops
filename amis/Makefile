@@ -5,6 +5,8 @@ IMAGES ?= dummy-proxy dummy-service proxy-service auth-keycloak portal-service c
 # NOTE: This fails miserably with spaces.
 BUILD := $(abspath build)
 DEPDIR := $(abspath .deps)
+DATED_TAG := $(shell date "+%Y%m%d-%H%M%S")
+TAG ?= $(DATED_TAG)
 
 default: repository-stacks
 
@@ -13,30 +15,30 @@ repository-stacks: dummy-stack proxy-stack auth-stack influxdb-stack postgres-st
 $(DEPDIR)/rules.mk: Makefile
 	@rm -rf $(DEPDIR)
 	@mkdir -p $(DEPDIR)
-	@for s in services/*; do                                                        \
-		service_name=`basename $$s`                           	                   ;\
-		echo ".PHONY: $$service_name" >> $@                   	                   ;\
-		for f in $$s/*; do                                                          \
-			if [ -f $$f ]; then                                                     \
+	@for s in services/*; do                                                                    \
+		service_name=`basename $$s`                           	                           ;\
+		echo ".PHONY: $$service_name" >> $@                   	                           ;\
+		for f in $$s/*; do                                                                  \
+			if [ -f $$f ]; then                                                         \
 				echo $$service_name: including $$f                                 ;\
 				echo "$(BUILD)/$$service_name.di: $$f" >> $@                       ;\
-			fi                                                                      \
-		done                                                                        \
+			fi                                                                          \
+		done                                                                                \
 	done
-	@for s in stacks/*; do                                                          \
-		stack_name=`basename $$s`                                                  ;\
-		echo ".PHONY: $$stack_name" >> $@                                          ;\
-		echo "$$stack_name: $$s/docker-compose.yaml" >> $@                         ;\
-		echo "$$stack_name: $(BUILD)/$$stack_name.tar" >> $@                       ;\
-		for f in $$s/*; do                                                          \
-			if [ -d $$f ]; then                                                     \
+	@for s in stacks/*; do                                                                      \
+		stack_name=`basename $$s`                                                          ;\
+		echo ".PHONY: $$stack_name" >> $@                                                  ;\
+		echo "$$stack_name: $$s/docker-compose.yaml" >> $@                                 ;\
+		echo "$$stack_name: $(BUILD)/$$stack_name.tar" >> $@                               ;\
+		for f in $$s/*; do                                                                  \
+			if [ -d $$f ]; then                                                         \
 				service_name=`basename $$f`                                        ;\
 				echo $$stack_name: including $$service_name                        ;\
 				echo "$(BUILD)/$$stack_name.tar: $(BUILD)/$$service_name.di" >> $@ ;\
-			fi                                                                      \
-		done                                                                        \
+			fi                                                                          \
+		done                                                                                \
 	done
-	echo TAG=`date "+%Y%m%d-%H%M%S"` >> $@
+	echo TAG=$(TAG) >> $@
 
 -include $(DEPDIR)/rules.mk
 
@@ -78,12 +80,12 @@ $(STACK_ARCHIVES):
 $(STACK_ARCHIVES):
 	@mkdir -p $(WORK)
 	@echo $@: building from $(SOURCES)
-	@for f in $(SOURCES)/*; do                                   \
-		if [ -d $$f ]; then                                      \
+	@for f in $(SOURCES)/*; do                                           \
+		if [ -d $$f ]; then                                          \
 			name=`basename $$f`                                 ;\
 			echo $@: including $$name                           ;\
 			ln -sf ../$$name.di $(WORK)/$$name.di               ;\
-		fi                                                       \
+		fi                                                           \
 	done
 	echo "TAG=$(TAG)" > $(WORK)/10_tag.env
 	cp $(SOURCES)/*.yaml $(WORK)
