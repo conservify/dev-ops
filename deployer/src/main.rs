@@ -34,16 +34,9 @@ pub struct Deploy {
     prepare_only: bool,
 }
 
-#[derive(Debug, Args)]
-pub struct Poll {
-    #[arg(long)]
-    url: String,
-}
-
 #[derive(Subcommand)]
 enum Commands {
     Deploy(Deploy),
-    Poll(Poll),
 }
 
 fn get_rust_log() -> String {
@@ -53,11 +46,12 @@ fn get_rust_log() -> String {
 #[derive(Clone)]
 struct Executor {
     cert: PathBuf,
+    port: usize,
 }
 
 impl Executor {
     fn execute(&self, server: &Server, command: &str) -> Result<()> {
-        let tcp = TcpStream::connect(format!("{}:22", server.ip))?;
+        let tcp = TcpStream::connect(format!("{}:{}", server.ip, self.port))?;
         let mut sess = Session::new()?;
         sess.set_tcp_stream(tcp);
         sess.handshake()?;
@@ -144,6 +138,26 @@ impl Step for CommitStep {
     }
 }
 
+struct VerifyStep {
+    server: Server,
+}
+
+impl Step for VerifyStep {
+    fn run(&self) -> Result<()> {
+        let url = format!("http://{}:7000/status", self.server.ip);
+        let poller = Poller::new(self.server.ip.clone(), url);
+
+        match poller.run() {
+            Ok(polled) => {
+                info!("{} {:?}", &self.server.ip, polled);
+
+                Ok(())
+            }
+            Err(e) => Err(e),
+        }
+    }
+}
+
 fn run_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Vec<JoinHandle<Result<()>>> {
     steps
         .into_iter()
@@ -151,11 +165,15 @@ fn run_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Vec<JoinHandle<Res
         .collect::<Vec<_>>()
 }
 
-fn run_and_join_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Result<Vec<Result<()>>> {
-    run_all(steps)
+fn join_all(handles: Vec<JoinHandle<Result<()>>>) -> Result<Vec<Result<()>>> {
+    handles
         .into_iter()
         .map(|j| j.join().map_err(|e| anyhow::anyhow!("{:?}", e)))
         .collect::<Result<Vec<_>>>()
+}
+
+fn run_and_join_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Result<Vec<Result<()>>> {
+    join_all(run_all(steps))
 }
 
 fn main() -> Result<()> {
@@ -173,6 +191,7 @@ fn main() -> Result<()> {
 
             let exec = Executor {
                 cert: deploy.cert.clone(),
+                port: 22,
             };
 
             let servers = env.servers.value;
@@ -190,7 +209,7 @@ fn main() -> Result<()> {
 
             let joined = run_and_join_all(preparations);
 
-            info!("{:?}", joined);
+            info!("prepare = {:?}", joined);
 
             let commits = servers
                 .iter()
@@ -200,28 +219,28 @@ fn main() -> Result<()> {
                 })
                 .collect::<Vec<_>>();
 
+            let verify = servers
+                .iter()
+                .map(|server| VerifyStep {
+                    server: server.clone(),
+                })
+                .collect::<Vec<_>>();
+
+            let verify = run_all(verify);
+
             if !deploy.prepare_only {
                 info!("committing");
 
-                let poller = deploy.poll.map(|url| Poller::new(url.clone()));
-                let poller = thread::spawn(move || match poller {
-                    Some(poller) => poller.run(),
-                    None => Ok(None),
-                });
-
                 let joined = run_and_join_all(commits);
 
-                info!("{:?}", joined);
-
-                let polled = poller.join().map_err(|e| anyhow::anyhow!("{:?}", e))?;
-
-                info!("{:?}", polled);
+                info!("commit = {:?}", joined);
+            } else {
+                info!("prepare-only");
             }
-        }
-        Commands::Poll(poll) => {
-            let poller = Poller::new(poll.url.clone());
 
-            poller.once()?;
+            let joined = join_all(verify);
+
+            info!("verify = {:?}", joined);
         }
     }
 
@@ -249,52 +268,47 @@ struct Server {
     user: String,
 }
 
+#[derive(Debug)]
+enum Polled {
+    Modified(Status),
+    Unchanged(Status),
+}
+
 struct Poller {
+    prefix: String,
     url: String,
 }
 
 impl Poller {
-    fn new(url: String) -> Self {
-        Self { url }
+    fn new(prefix: String, url: String) -> Self {
+        Self { prefix, url }
     }
 
-    fn run(&self) -> Result<Option<Status>> {
+    fn run(&self) -> Result<Polled> {
         let initial = self.once()?;
-
-        let mut error = false;
 
         for _n in 1..120 {
             thread::sleep(Duration::from_secs(1));
 
             match self.once() {
                 Ok(latest) => {
+                    info!(tag = latest.tag, hash = latest.git.hash, "{}", &self.prefix);
+
                     if initial.git.hash != latest.git.hash {
-                        return Ok(Some(latest));
-                    } else {
-                        if error {
-                            return Err(anyhow::anyhow!(
-                                "Git hash unchanged after error, assuming same version."
-                            ));
-                        }
+                        return Ok(Polled::Modified(latest));
                     }
                 }
                 Err(e) => {
-                    error = true;
-
                     warn!("poll error {:?}", e);
                 }
             }
         }
 
-        Err(anyhow::anyhow!("Git hash unchanged."))
+        Ok(Polled::Unchanged(initial))
     }
 
     fn once(&self) -> Result<Status> {
-        let resp = reqwest::blocking::get(&self.url)?.json::<Status>()?;
-
-        info!("{:?}", resp);
-
-        Ok(resp)
+        Ok(reqwest::blocking::get(&self.url)?.json::<Status>()?)
     }
 }
 
