@@ -32,3 +32,6 @@ TM_WORLD_BORDERS_SIMPL-0.3.sql
 deployed.json
 deploy.json
 deploy.env
+dev.json
+prod.json
+deploy
