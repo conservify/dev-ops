@@ -68,6 +68,7 @@ services:
       - jenkins
       - logs
       - logs-viewer
+      - laborator
       - jira
       - diagnostics
       - grafana
@@ -145,6 +146,19 @@ services:
             max-file: "5"
             max-size: "1m"
 
+  laborator:
+    build: ./laborator
+    restart: always
+    volumes:
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+    command: --group fieldkit
+    env_file: .env
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
+
   logs-viewer:
     build: ./logs-viewer
     restart: always
@@ -160,12 +174,9 @@ services:
     image: grafana/grafana
     restart: always
     environment:
-      #GF_PATHS_CONFIG: /var/lib/grafana/grafana.ini
       GF_SERVER_ROOT_URL: https://code.conservify.org/grafana
       GF_SERVER_DOMAIN: code.conservify.org
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-    ports:
-      - 3000:3000
     volumes:
       - /svr0/grafana:/var/lib/grafana
     logging:

@@ -128,6 +128,27 @@ server {
 		proxy_busy_buffers_size    64k;
 	}
 
+	location /laborator {
+		proxy_pass         http://laborator:3000/laborator;
+		proxy_redirect     off;
+
+		proxy_set_header   Host             $host;
+		proxy_set_header   X-Real-IP        $remote_addr;
+		proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+		proxy_max_temp_file_size 0;
+
+		client_max_body_size       1g;
+		client_body_buffer_size    128k;
+
+		proxy_connect_timeout      90;
+		proxy_send_timeout         90;
+		proxy_read_timeout         90;
+
+		proxy_buffer_size          4k;
+		proxy_buffers              4 32k;
+		proxy_busy_buffers_size    64k;
+	}
+
 	location /logs-viewer {
 		proxy_pass         http://logs-viewer:3000/logs-viewer;
 		proxy_redirect     off;
