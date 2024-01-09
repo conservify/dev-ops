@@ -12,6 +12,13 @@ resource "aws_security_group" "ssh" {
   }
 
   ingress {
+	from_port       = 22
+	to_port         = 22
+	protocol        = "tcp"
+	security_groups = [ var.infrastructure.secondary_sg_id ]
+  }
+
+  ingress {
 	from_port   = 22
 	to_port     = 22
 	protocol    = "tcp"
@@ -105,21 +112,21 @@ resource "aws_security_group" "fk-app-server" {
 	from_port       = 7000
 	to_port         = 7000
 	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id ]
+	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   ingress {
 	from_port       = 8000
 	to_port         = 8000
 	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id ]
+	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   ingress {
 	from_port       = 9000
 	to_port         = 9000
 	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id ]
+	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   egress {
