@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{Args, Parser, Subcommand};
 use serde::Deserialize;
 use ssh2::Session;
@@ -186,7 +186,8 @@ fn main() -> Result<()> {
 
     match cli.command {
         Commands::Deploy(deploy) => {
-            let terraform = std::fs::File::open(&deploy.terraform)?;
+            let terraform = std::fs::File::open(&deploy.terraform)
+                .with_context(|| format!("{:?}", deploy.terraform))?;
             let env: Environment = serde_json::from_reader(terraform)?;
 
             let exec = Executor {
