@@ -37,6 +37,16 @@ services:
 #           max-file: "5"
 #           max-size: "1m"
 
+  glacier-renderer:
+    build: ./glacier-renderer
+    restart: always
+    depends_on:
+      - logs
+    volumes:
+      - /svr1/glacier/archive:/svr0/glacier/archive
+    ports:
+      - "9090:9090"
+
   jira:
     image: "ivantichy/jira:7.13.0"
     restart: always
@@ -68,6 +78,7 @@ services:
 #     - jenkins
       - logs
       - logs-viewer
+      - glacier-renderer
       - laborator
       - jira
       - diagnostics
@@ -152,6 +163,8 @@ services:
     volumes:
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
     command: --group fieldkit
+    environment:
+      - RUST_LOG=info
     env_file: .env
     logging:
         driver: "json-file"
