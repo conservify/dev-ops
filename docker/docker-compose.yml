@@ -211,5 +211,14 @@ services:
             max-file: "5"
             max-size: "1m"
 
+# docker_proxy:
+#   image: rpardini/docker-registry-proxy:0.6.2
+#   ports:
+#     - 3128:3128
+#   env_file: .env
+#   volumes:
+#     - /svr0/docker_mirror/cache:/docker_mirror_cache
+#     - /svr0/docker_mirror/certs:/ca
+
 volumes:
   jenkins_home:
