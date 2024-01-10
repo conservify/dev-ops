@@ -43,7 +43,7 @@ services:
     depends_on:
       - logs
     volumes:
-      - /svr1/glacier/archive:/svr0/glacier/archive
+      - /svr1/glacier/archive:/svr1/glacier/archive
     ports:
       - "9090:9090"
 
