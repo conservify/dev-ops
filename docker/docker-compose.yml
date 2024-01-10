@@ -15,27 +15,27 @@ services:
             max-file: "5"
             max-size: "1m"
 
-  jenkins:
-    image: "conservify/jenkins"
-    restart: always
-    depends_on:
-      - logs
-    environment:
-      JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=True -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Los_Angeles -Dhudson.model.WorkspaceCleanupThread.disabled=true
-      JENKINS_OPTS: --prefix=/jenkins
-    volumes:
-      - /svr0/jenkins:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /svr0/distribution:/var/lib/distribution
-    ports:
-      - "45900:45900"
-      - "49001:8080"
-      - "50000:50000"
-    logging:
-        driver: "json-file"
-        options:
-            max-file: "5"
-            max-size: "1m"
+# jenkins:
+#   image: "conservify/jenkins"
+#   restart: always
+#   depends_on:
+#     - logs
+#   environment:
+#     JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=True -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Los_Angeles -Dhudson.model.WorkspaceCleanupThread.disabled=true
+#     JENKINS_OPTS: --prefix=/jenkins
+#   volumes:
+#     - /svr0/jenkins:/var/jenkins_home
+#     - /var/run/docker.sock:/var/run/docker.sock
+#     - /svr0/distribution:/var/lib/distribution
+#   ports:
+#     - "45900:45900"
+#     - "49001:8080"
+#     - "50000:50000"
+#   logging:
+#       driver: "json-file"
+#       options:
+#           max-file: "5"
+#           max-size: "1m"
 
   jira:
     image: "ivantichy/jira:7.13.0"
@@ -65,7 +65,7 @@ services:
       - /svr0/web/conservify.org:/var/www/conservify.org
     links:
       - strapi
-      - jenkins
+#     - jenkins
       - logs
       - logs-viewer
       - laborator
