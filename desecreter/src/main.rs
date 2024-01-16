@@ -63,6 +63,7 @@ fn main() -> Result<()> {
 
     let mut writer = WriterBuilder::new()
         .flexible(true)
+        .quote_style(csv::QuoteStyle::Never)
         .from_writer(std::io::stdout());
 
     let password = make_password()?;
