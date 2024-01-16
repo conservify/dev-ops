@@ -62,6 +62,7 @@ fn main() -> Result<()> {
         .from_reader(std::io::stdin());
 
     let mut writer = WriterBuilder::new()
+        .delimiter(b'\t')
         .flexible(true)
         .quote_style(csv::QuoteStyle::Never)
         .from_writer(std::io::stdout());
