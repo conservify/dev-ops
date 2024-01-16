@@ -36,9 +36,17 @@ fn sanitize(record: StringRecord, password: &str) -> Result<StringRecord> {
 }
 
 fn make_password() -> Result<String> {
+    use rand::{distributions::Alphanumeric, Rng};
+
+    let password: String = rand::thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(32)
+        .map(char::from)
+        .collect();
+
     let mut field = BYTES_PREFIX.to_owned();
     field += hex::encode(
-        bcrypt::hash_with_result("asdfasdfasdf", 10)?
+        bcrypt::hash_with_result(password, 10)?
             .to_string()
             .as_bytes(),
     )
