@@ -9,6 +9,6 @@
 7. Navigate to the Load Balancers, choose `fkdev-lb`, then the `HTTPS:443` listener.
 8. Find the "Actions" drop down and choose "Edit listener".
 9. Scroll to the bottom and change Default SSL/TLS certificate to the one added by teraform, paying attention to dates and "Save changes"
-10. Choose "Certificates" tab and remove the old certificate.
+10. Choose "Certificates" tab and remove the old certificate. If you don't do this you won't be able to remove the old certificates.
 11. Repeat these steps for `fkprd-lb`
 12. Once done, terraform should successfully complete.
