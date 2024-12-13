@@ -138,10 +138,12 @@ services:
     build: ./laborator
     restart: always
     volumes:
+      - /svr0/laborator:/data
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
     command: --group fieldkit
     environment:
-      - RUST_LOG=info
+      - RUST_LOG_DISABLED=info
+      - DB_PATH=/data/laborator.sqlite3
     env_file: .env
     logging:
         driver: "json-file"
