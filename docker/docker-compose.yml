@@ -144,6 +144,7 @@ services:
     environment:
       - RUST_LOG_DISABLED=info
       - DB_PATH=/data/laborator.sqlite3
+      - CACHE_PATH=/data/cache
     env_file: .env
     logging:
         driver: "json-file"
