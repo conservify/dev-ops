@@ -270,6 +270,7 @@ struct Server {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 enum Polled {
     Modified(Status),
     Unchanged(Status),
