@@ -84,7 +84,7 @@ services:
             max-size: "1m"
 
   logs-mongo:
-    image: "mongo:3"
+    image: "mongo:5"
     restart: always
     volumes:
       - /svr2/graylog/mongo:/data/db
@@ -95,13 +95,13 @@ services:
             max-size: "1m"
 
   logs-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.5
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     restart: always
     environment:
       - http.host=0.0.0.0
       - transport.host=localhost
       - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     volumes:
       - /svr2/graylog/data/elasticsearch:/usr/share/elasticsearch/data
     logging:
@@ -111,7 +111,7 @@ services:
             max-size: "1m"
 
   logs:
-    image: graylog/graylog:4.3.0
+    image: graylog/graylog:6.1.4
     restart: always
     volumes:
       - /svr2/graylog/journal:/usr/share/graylog/data/journal
@@ -122,6 +122,8 @@ services:
     links:
       - logs-mongo:mongo
       - logs-elasticsearch:elasticsearch
+    security_opt:
+      - seccomp:unconfined
     ports:
       - "5044:5044"
       - "5045:5045"
