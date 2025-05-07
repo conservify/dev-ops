@@ -25,6 +25,7 @@ variable workspace_zones {
   type = map(object({
 	id = string
 	name = string
+	certificate_arn = string
   }))
 }
 
