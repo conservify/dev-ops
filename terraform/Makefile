@@ -6,9 +6,6 @@ CRON_PLAN := $(BUILD)/cron/terraform.tfplan
 
 default: all certbot
 
-certbot:
-	cd certbot && make
-
 all: plan
 
 dev: fk/.terraform
@@ -59,4 +56,3 @@ cron/.terraform: $(TERRAFORM)
 clean:
 	rm -rf $(BUILD)
 
-.PHONY: certbot
