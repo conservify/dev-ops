@@ -44,25 +44,23 @@ services:
             max-file: "5"
             max-size: "1m"
 
-  proxy:
-    image: "nginx-rproxy"
+  caddy:
+    image: "caddy:latest"
     restart: always
     volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/data:/data
       - /svr0/distribution:/var/lib/distribution
-      - /svr0/glacier:/var/lib/glacier-data
       - /svr0/web/conservify.org:/var/www/conservify.org
     links:
       - strapi
       - logs
       - logs-viewer
-      - glacier-renderer
       - laborator
       - jira
       - diagnostics
       - grafana
       - influxdb
-    extra_hosts:
-      - "parent:127.0.0.1"
     ports:
       - "443:443"
       - "80:80"
@@ -77,6 +75,8 @@ services:
     restart: always
     volumes:
       - /svr0/diagnostics:/data
+    security_opt:
+      - seccomp:unconfined
     logging:
         driver: "json-file"
         options:

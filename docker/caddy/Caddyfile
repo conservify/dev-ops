@@ -1,0 +1,52 @@
+code.conservify.org {
+	tls jacob@conservify.org
+
+	handle /logs-viewer/* {
+		# rewrite /logs-viewer{uri}
+		reverse_proxy http://logs-viewer:3000
+	}
+
+	handle_path /archives/* {
+		root /var/lib/distribution
+		file_server
+	}
+
+	handle /distribution/* {
+		# rewrite /distribution{uri}
+		reverse_proxy http://laborator:3000
+	}
+
+	handle /laborator/* {
+		# rewrite /laborator{uri}
+		reverse_proxy http://laborator:3000
+	}
+
+	handle /jira/* {
+		# rewrite /jira{uri}
+		reverse_proxy http://jira:8080
+	}
+
+	handle /logs/* {
+		# rewrite /logs{uri}
+		reverse_proxy http://logs:9000
+	}
+
+	handle /diagnostics/* {
+		reverse_proxy http://diagnostics:8080
+	}
+
+	handle_path /grafana/* {
+		reverse_proxy http://grafana:3000
+	}
+
+  	root /var/www/conservify.org
+
+   	handle {
+       		file_server
+   	}
+}
+
+strapi.conservify.org {
+	tls jacob@conservify.org
+	reverse_proxy http://172.17.0.1:1337
+}
