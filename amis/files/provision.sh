@@ -4,11 +4,18 @@ source /etc/lsb-release
 
 set -xe
 
-# configure apt
+# configure influxdata apt for telegraf, copied literally from documentation
 
-curl -fsSL https://repos.influxdata.com/influxdb.key | apt-key add -
+curl --silent --location -O \
+https://repos.influxdata.com/influxdata-archive.key \
+&& echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  influxdata-archive.key" \
+| sha256sum -c - && cat influxdata-archive.key \
+| gpg --dearmor \
+| sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null \
+&& echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' \
+| sudo tee /etc/apt/sources.list.d/influxdata.list
 
-echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | tee /etc/apt/sources.list.d/influxdb.list
+# configure docker apt
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 
@@ -50,5 +57,5 @@ systemctl enable telegraf
 systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent
 
 if [ -d ~ubuntu/.config ]; then
-	chown -R ubuntu. ~ubuntu/.config
+	chown -R ubuntu: ~ubuntu/.config
 fi
