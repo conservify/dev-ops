@@ -5,4 +5,4 @@ RUN packer plugins install github.com/hashicorp/amazon
 WORKDIR /work
 
 COPY bare.json /work/bare.json
-COPY files build/*.tar* /work/files/
+COPY files /work/files/

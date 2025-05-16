@@ -18,6 +18,8 @@ if [ ! -z "$AWS_SECRET_ACCESS_KEY" ]; then
 	AWS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
 fi
 
+mkdir -p build
+
 docker build --rm -t conservify/build-ami .
 
 docker run --rm \
