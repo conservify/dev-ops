@@ -9,6 +9,7 @@ build
 .env
 vpn.env
 aws.env
+secrets.env
 
 docker/nginx/letsencrypt*
 docker/logs.env
