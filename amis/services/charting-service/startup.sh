@@ -9,10 +9,6 @@ if [ -f /etc/static.env ]; then
 	source /etc/static.env
 fi
 
-pwd
-ls -alh
-env
-
-pushd /usr/app
-/usr/app/node_modules/.bin/ts-node server.ts
+pushd /app
+node_modules/.bin/ts-node server.ts
 popd
