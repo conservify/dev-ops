@@ -32,8 +32,8 @@ apt-get install -y \
 
 # install log forwarding tooling
 
-curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-amd64.deb
-dpkg -i filebeat-7.6.0-amd64.deb && rm *.deb
+curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-9.0.1-amd64.deb
+dpkg -i filebeat-9.0.1-amd64.deb && rm *.deb
 filebeat modules enable system
 systemctl enable filebeat
 
