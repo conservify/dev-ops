@@ -45,9 +45,6 @@ $(DEPDIR)/rules.mk: Makefile
 bare-ami:
 	./build-ami.sh bare.json
 
-stacked-ami: stacks
-	./build-ami.sh stacked.json
-
 clean:
 	rm -rf $(BUILD) $(DEPDIR)
 
