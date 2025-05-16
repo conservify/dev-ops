@@ -44,36 +44,36 @@ write_files:
       FIELDKIT_QUEUES=${queues}
       FIELDKIT_LIVE=${live}
 
-      FIELDKIT_SAML_CERT=/etc/fk/fk-saml.cert
-      FIELDKIT_SAML_KEY=/etc/fk/fk-saml.key
-      FIELDKIT_SAML_SP_URL=${saml_sp_url}
-      FIELDKIT_SAML_LOGIN_URL=${saml_login_url}
-      FIELDKIT_SAML_IPD_META=${saml_ipd_meta}
-
-      FIELDKIT_KEYCLOAK_URL_PUBLIC=${keycloak_url_public}
-      FIELDKIT_KEYCLOAK_URL_PRIVATE=${keycloak_url_private}
-      FIELDKIT_KEYCLOAK_REALM=${keycloak_realm}
-      FIELDKIT_KEYCLOAK_API_USER=${keycloak_api_user}
-      FIELDKIT_KEYCLOAK_API_PASSWORD=${keycloak_api_password}
-      FIELDKIT_KEYCLOAK_API_REALM=${keycloak_api_realm}
-      FIELDKIT_KEYCLOAK_ADMIN_USER=${keycloak_admin_user}
-      FIELDKIT_KEYCLOAK_ADMIN_PASSWORD=${keycloak_admin_password}
-
       FIELDKIT_DISCOURSE_SECRET=${discourse_secret}
       FIELDKIT_DISCOURSE_REDIRECT_URL=${discourse_redirect_url}
       FIELDKIT_DISCOURSE_ADMIN_KEY=${discourse_admin_key}
 
-      FIELDKIT_OIDC_CLIENT_ID=${oidc_client_id}
-      FIELDKIT_OIDC_CLIENT_SECRET=${oidc_client_secret}
-      FIELDKIT_OIDC_REDIRECT_URL=${oidc_redirect_url}
-      FIELDKIT_OIDC_CONFIG_URL=${oidc_config_url}
+      # FIELDKIT_SAML_CERT=/etc/fk/fk-saml.cert
+      # FIELDKIT_SAML_KEY=/etc/fk/fk-saml.key
+      # FIELDKIT_SAML_SP_URL=${saml_sp_url}
+      # FIELDKIT_SAML_LOGIN_URL=${saml_login_url}
+      # FIELDKIT_SAML_IPD_META=${saml_ipd_meta}
 
-      FIELDKIT_INFLUX_DB_URL=${influxdb_url}
-      FIELDKIT_INFLUX_DB_USERNAME=${influxdb_username}
-      FIELDKIT_INFLUX_DB_PASSWORD=${influxdb_password}
-      FIELDKIT_INFLUX_DB_ORG=${influxdb_org}
-      FIELDKIT_INFLUX_DB_BUCKET=${influxdb_bucket}
-      FIELDKIT_INFLUX_DB_TOKEN=${influxdb_token}
+      # FIELDKIT_KEYCLOAK_URL_PUBLIC=${keycloak_url_public}
+      # FIELDKIT_KEYCLOAK_URL_PRIVATE=${keycloak_url_private}
+      # FIELDKIT_KEYCLOAK_REALM=${keycloak_realm}
+      # FIELDKIT_KEYCLOAK_API_USER=${keycloak_api_user}
+      # FIELDKIT_KEYCLOAK_API_PASSWORD=${keycloak_api_password}
+      # FIELDKIT_KEYCLOAK_API_REALM=${keycloak_api_realm}
+      # FIELDKIT_KEYCLOAK_ADMIN_USER=${keycloak_admin_user}
+      # FIELDKIT_KEYCLOAK_ADMIN_PASSWORD=${keycloak_admin_password}
+
+      # FIELDKIT_OIDC_CLIENT_ID=${oidc_client_id}
+      # FIELDKIT_OIDC_CLIENT_SECRET=${oidc_client_secret}
+      # FIELDKIT_OIDC_REDIRECT_URL=${oidc_redirect_url}
+      # FIELDKIT_OIDC_CONFIG_URL=${oidc_config_url}
+
+      # FIELDKIT_INFLUX_DB_URL=${influxdb_url}
+      # FIELDKIT_INFLUX_DB_USERNAME=${influxdb_username}
+      # FIELDKIT_INFLUX_DB_PASSWORD=${influxdb_password}
+      # FIELDKIT_INFLUX_DB_ORG=${influxdb_org}
+      # FIELDKIT_INFLUX_DB_BUCKET=${influxdb_bucket}
+      # FIELDKIT_INFLUX_DB_TOKEN=${influxdb_token}
 
   - path: /etc/default/filebeat
     content: |
