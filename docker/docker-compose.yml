@@ -54,6 +54,7 @@ services:
       - /svr0/web/conservify.org:/var/www/conservify.org
     links:
       - strapi
+      - graylog
       - logs
       - logs-viewer
       - laborator
@@ -77,6 +78,78 @@ services:
       - /svr0/diagnostics:/data
     security_opt:
       - seccomp:unconfined
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
+
+  graylog-mongodb:
+    image: "mongo:6.0"
+    hostname: "graylog-mongodb"
+    volumes:
+      - /svr2/gl/mongo-db:/data/db
+      - /svr2/gl/mongo-configdb:/data/configdb
+    security_opt:
+      - seccomp:unconfined
+    restart: "on-failure"
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
+  
+  graylog-datanode:
+    image: graylog/graylog-datanode:6.2.2
+    hostname: "graylog-datanode"
+    environment:
+      GRAYLOG_DATANODE_NODE_ID_FILE: ""
+      GRAYLOG_DATANODE_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+      GRAYLOG_DATANODE_MONGODB_URI: "mongodb://graylog-mongodb:27017/graylog"
+    ports:
+      - "8999:8999/tcp"   # DataNode API
+      - "9200:9200/tcp"
+      - "9300:9300/tcp"
+    volumes:
+      - "/svr2/gl/datanode:/var/lib/graylog-datanode"
+    security_opt:
+      - seccomp:unconfined
+    restart: always
+    logging:
+        driver: "json-file"
+        options:
+            max-file: "5"
+            max-size: "1m"
+ 
+  graylog:
+    image: graylog/graylog:6.2.2
+    depends_on:
+      graylog-mongodb:
+        condition: "service_started"
+      graylog-datanode:
+        condition: "service_started"
+    entrypoint: "/usr/bin/tini --  /docker-entrypoint.sh"
+    environment:
+      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/data/node-id"
+      # GRAYLOG_DATANODE_PASSWORD_SECRET and GRAYLOG_PASSWORD_SECRET MUST be the same value
+      GRAYLOG_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+      GRAYLOG_ROOT_PASSWORD_SHA2: "${GRAYLOG_ROOT_PASSWORD_SHA2:?Please configure GRAYLOG_ROOT_PASSWORD_SHA2 in the .env file}"
+      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9001"
+      GRAYLOG_HTTP_EXTERNAL_URI: "https://code.conservify.org/gl/"
+      GRAYLOG_MONGODB_URI: "mongodb://graylog-mongodb:27017/graylog"
+    volumes:
+      - /svr2/gl/data:/usr/share/graylog/data/data
+      - /svr2/gl/journal:/usr/share/graylog/data/journal
+    ports:
+      # "5044:5044"
+      # "5045:5045"
+      - "5144:5144"
+      - "9001:9001"
+      # "12201:12201"
+      # "12201:12201/udp"
+    security_opt:
+      - seccomp:unconfined
+    restart: always
     logging:
         driver: "json-file"
         options:
@@ -109,9 +182,9 @@ services:
         options:
             max-file: "5"
             max-size: "1m"
-
+     
   logs:
-    image: graylog/graylog:6.1.4
+    image: graylog/graylog:6.2.2
     restart: always
     volumes:
       - /svr2/graylog/journal:/usr/share/graylog/data/journal
@@ -192,6 +265,7 @@ services:
         options:
             max-file: "5"
             max-size: "1m"
+  
   minio:
     image: minio/minio
     restart: always
@@ -207,15 +281,3 @@ services:
       MINIO_ROOT_PASSWORD: password
     command:
       server /data --console-address ":9001" --address ":9002"
-
-# docker_proxy:
-#   image: rpardini/docker-registry-proxy:0.6.2
-#   ports:
-#     - 3128:3128
-#   env_file: .env
-#   volumes:
-#     - /svr0/docker_mirror/cache:/docker_mirror_cache
-#     - /svr0/docker_mirror/certs:/ca
-
-volumes:
-  jenkins_home:

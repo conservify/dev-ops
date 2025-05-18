@@ -2,7 +2,6 @@ code.conservify.org {
 	tls jacob@conservify.org
 
 	handle /logs-viewer/* {
-		# rewrite /logs-viewer{uri}
 		reverse_proxy http://logs-viewer:3000
 	}
 
@@ -12,23 +11,23 @@ code.conservify.org {
 	}
 
 	handle /distribution/* {
-		# rewrite /distribution{uri}
 		reverse_proxy http://laborator:3000
 	}
 
 	handle /laborator/* {
-		# rewrite /laborator{uri}
 		reverse_proxy http://laborator:3000
 	}
 
 	handle /jira/* {
-		# rewrite /jira{uri}
 		reverse_proxy http://jira:8080
 	}
 
 	handle /logs/* {
-		# rewrite /logs{uri}
 		reverse_proxy http://logs:9000
+	}
+
+	handle_path /gl/* {
+		reverse_proxy http://graylog:9001
 	}
 
 	handle /diagnostics/* {
