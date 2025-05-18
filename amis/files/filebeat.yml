@@ -8,23 +8,25 @@ fields:
   tag: ${ENV_TAG}
 
 filebeat.inputs:
-- type: log
+- type: filestream
+  id: var-log-syslog
   enabled: true
   paths:
-    - '/var/log/syslog'
-- type: container
+    - "/var/log/syslog"
+- type: filestream
+  id: var-lib-docker
+  enabled: true
+  parsers:
+    - container:
   paths:
-    - '/var/lib/docker/containers/*/*.log'
-
-filebeat.config.modules:
-  path: ${path.config}/modules.d/*.yml
-  reload.enabled: false
+    - "/var/lib/docker/containers/*/*.log"
+  processors:
+    - add_docker_metadata:
 
 output.logstash:
-  hosts: [ "logs.fk.private:5044" ]
+  enabled: true
+  hosts: [ "logs.fk.private:${LOGS_PORT}" ]
 
 processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
-  - add_docker_metadata: ~
-  - add_kubernetes_metadata: ~

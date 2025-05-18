@@ -63,6 +63,14 @@ resource "aws_iam_role_policy" "fk-server" {
 	"Version": "2012-10-17",
 	"Statement": [
 		{
+			"Sid": "DescribeTagsForFileBeat",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:DescribeTags"
+			],
+			"Resource": "*"
+		},
+		{
 			"Sid": "VisualEditor0",
 			"Effect": "Allow",
 			"Action": "ses:SendEmail",

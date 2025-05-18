@@ -9,7 +9,8 @@ EnvironmentFile=-/etc/default/filebeat
 Environment="BEAT_LOG_OPTS=-e"
 Environment="BEAT_CONFIG_OPTS=-c /etc/filebeat/filebeat.yml"
 Environment="BEAT_PATH_OPTS=--path.home /usr/share/filebeat --path.config /etc/filebeat --path.data /var/lib/filebeat --path.logs /var/log/filebeat"
-ExecStart=/usr/share/filebeat/bin/filebeat $BEAT_LOG_OPTS $BEAT_CONFIG_OPTS $BEAT_PATH_OPTS
+Environment="BEAT_MODULE_OPTS="
+ExecStart=/usr/share/filebeat/bin/filebeat $BEAT_LOG_OPTS $BEAT_CONFIG_OPTS $BEAT_PATH_OPTS $BEAT_MODULE_OPS
 Restart=always
 
 [Install]
