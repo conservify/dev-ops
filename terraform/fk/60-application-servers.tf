@@ -13,6 +13,8 @@ data "template_file" "app_server_user_data" {
 	zone_name                 = local.zone.name
 	env_tag                   = local.env
 
+	logs_port                 = local.infra.logs_port
+
 	aws_access_key            = var.access_key
 	aws_secret_key            = var.secret_key
 

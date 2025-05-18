@@ -15,6 +15,12 @@ variable workspace_tags {
   type = map(string)
 }
 
+variable workspace_infra {
+  type = map(object({
+	  logs_port = number
+  }))
+}
+
 variable workspace_tokens {
   type = map(object({
 	  mapbox = string
@@ -270,6 +276,7 @@ locals {
   email_override = terraform.workspace == "prod" ? "" : "fkdev@conservify.org"
   session_key = var.workspace_session_keys[terraform.workspace]
   tokens = var.workspace_tokens[terraform.workspace]
+  infra = var.workspace_infra[terraform.workspace]
   keycloak = var.workspace_keycloak[terraform.workspace]
   saml = var.workspace_saml[terraform.workspace]
   discourse = var.workspace_discourse[terraform.workspace]

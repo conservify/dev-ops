@@ -79,6 +79,7 @@ write_files:
     content: |
       HOSTNAME=${hostname}
       ENV_TAG=${env_tag}
+      LOGS_PORT=${logs_port}
       FIELDKIT_SERVER_NAME=${hostname}
 
   - path: /etc/default/telegraf
