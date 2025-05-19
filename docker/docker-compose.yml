@@ -4,7 +4,7 @@ services:
     build: ./strapi
     restart: always
     depends_on:
-      - logs
+      - graylog
     volumes:
       - /svr0/strapi:/srv/app
     ports:
@@ -19,7 +19,7 @@ services:
     build: ./glacier-renderer
     restart: always
     depends_on:
-      - logs
+      - graylog
     volumes:
       - /svr1/glacier/archive:/svr1/glacier/archive
     ports:
@@ -29,7 +29,7 @@ services:
     image: "ivantichy/jira:7.13.0"
     restart: always
     depends_on:
-      - logs
+      - graylog
     environment:
       JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=True
     ports:
@@ -55,7 +55,6 @@ services:
     links:
       - strapi
       - graylog
-      - logs
       - logs-viewer
       - laborator
       - jira
@@ -141,68 +140,15 @@ services:
       - /svr2/gl/data:/usr/share/graylog/data/data
       - /svr2/gl/journal:/usr/share/graylog/data/journal
     ports:
-      # "5044:5044"
-      # "5045:5045"
-      - "5144:5144"
-      - "9001:9001"
-      # "12201:12201"
-      # "12201:12201/udp"
-    security_opt:
-      - seccomp:unconfined
-    restart: always
-    logging:
-        driver: "json-file"
-        options:
-            max-file: "5"
-            max-size: "1m"
-
-  logs-mongo:
-    image: "mongo:5"
-    restart: always
-    volumes:
-      - /svr2/graylog/mongo:/data/db
-    logging:
-        driver: "json-file"
-        options:
-            max-file: "5"
-            max-size: "1m"
-
-  logs-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
-    restart: always
-    environment:
-      - http.host=0.0.0.0
-      - transport.host=localhost
-      - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-    volumes:
-      - /svr2/graylog/data/elasticsearch:/usr/share/elasticsearch/data
-    logging:
-        driver: "json-file"
-        options:
-            max-file: "5"
-            max-size: "1m"
-     
-  logs:
-    image: graylog/graylog:6.2.2
-    restart: always
-    volumes:
-      - /svr2/graylog/journal:/usr/share/graylog/data/journal
-      - /svr2/graylog/config:/usr/share/graylog/data/config
-    environment:
-      - GRAYLOG_HTTP_PUBLISH_URI=http://127.0.0.1:9000/logs/
-      - GRAYLOG_HTTP_EXTERNAL_URI=https://code.conservify.org/logs/
-    links:
-      - logs-mongo:mongo
-      - logs-elasticsearch:elasticsearch
-    security_opt:
-      - seccomp:unconfined
-    ports:
       - "5044:5044"
       - "5045:5045"
-      - "9000:9000"
+      - "5144:5144"
+      - "9001:9001"
       - "12201:12201"
       - "12201:12201/udp"
+    security_opt:
+      - seccomp:unconfined
+    restart: always
     logging:
         driver: "json-file"
         options:
