@@ -1,1 +1,0 @@
-sudo docker run --name jenkins-agent -d --restart always -v /home/jenkins:/home/jenkins kodbasen/jenkins-docker-slave-arm -headless -noreconnect -url https://code.conservify.org/jenkins $SECRET $NAME

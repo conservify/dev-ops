@@ -1,1 +1,0 @@
-sudo docker run --name jenkins --rm -p 45900:45900 -p 50000:50000 -p 49001:8080 -v jenkins_home:/var/jenkins_home conservify/jenkins
