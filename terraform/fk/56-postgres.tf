@@ -82,7 +82,7 @@ resource "aws_instance" "postgres_servers" {
 
 resource "aws_ebs_volume" "postgres_data" {
   for_each          = local.prod ? local.postgres_servers : {}
-  size              = 300
+  size              = 800
   encrypted         = true
   type              = "io1"
   iops              = 4000
@@ -103,7 +103,7 @@ resource "aws_ebs_volume" "postgres_data" {
 
 resource "aws_ebs_volume" "postgres_data_from_snapshot" {
   for_each          = local.prod ? {} : local.postgres_servers
-  size              = 300
+  size              = 800
   encrypted         = true
   type              = "io1"
   iops              = 4000
