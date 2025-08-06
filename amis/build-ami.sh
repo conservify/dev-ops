@@ -3,7 +3,8 @@
 TEMPLATE=$1
 
 if [ -z $TEMPLATE ]; then
-	TEMPLATE=bare.json
+	echo "usage: build-ami.sh <TEMPLATE>"
+	exit 2
 fi
 
 if [ -f aws.env ]; then

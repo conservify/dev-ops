@@ -2,7 +2,7 @@
   "variables": {},
   "builders": [
     {
-      "name": "conservify-bare-ubuntu-24.04",
+      "name": "conservify-postgres-ubuntu-24.04",
       "type": "amazon-ebs",
       "region": "us-east-1",
       "associate_public_ip_address": true,
@@ -19,7 +19,7 @@
       },
       "spot_price": "auto",
       "instance_type": "t2.micro",
-      "ami_name": "conservify-bare-ubuntu-24.04-{{timestamp}}",
+      "ami_name": "conservify-postgres-ubuntu-24.04-{{timestamp}}",
       "ssh_username": "ubuntu",
       "run_tags": {
         "owner": "packer/run"
@@ -36,6 +36,33 @@
     {
       "type": "shell",
       "inline": [ "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections" ]
+    },
+    {
+      "type": "file",
+      "sources": "files/postgresql.list",
+      "destination": "/tmp/postgresql.list"
+    },
+    {
+      "type": "file",
+      "sources": "files/postgresql.list.asc",
+      "destination": "/tmp/postgresql.list.asc"
+    },
+    {
+      "type": "file",
+      "sources": "files/timescaledb.list",
+      "destination": "/tmp/timescaledb.list"
+    },
+    {
+      "type": "file",
+      "sources": "files/timescaledb.list.asc",
+      "destination": "/tmp/timescaledb.list.asc"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/*.list /etc/apt/sources.list.d/",
+        "sudo mv /tmp/*.list.asc /etc/apt/trusted.gpg.d/"
+      ]
     },
     {
       "type": "file",
@@ -179,6 +206,20 @@
       "inline": [
         "sudo mv /tmp/40-graylog.conf /etc/rsyslog.d",
         "sudo chown root: /etc/rsyslog.d/40-graylog.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt update",
+        "sudo apt install -y rsync"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt update",
+        "sudo apt install -y postgresql-17 timescaledb-2-2.17.2-postgresql-17 postgresql-17-postgis-3 postgresql-17-pgvector postgresql-server-dev-17"
       ]
     }
   ]
