@@ -134,13 +134,8 @@
     },
     {
       "type": "file",
-      "source": "files/telegraf.conf",
-      "destination": "/tmp/telegraf.conf"
-    },
-    {
-      "type": "file",
       "source": "files/telegraf-postgresql.conf",
-      "destination": "/tmp/telegraf-postgresql.conf"
+      "destination": "/tmp/telegraf.conf"
     },
     {
       "type": "shell",
