@@ -4,6 +4,12 @@ data "aws_ami" "bare" {
   most_recent      = true
 }
 
+data "aws_ami" "postgres" {
+  owners           = ["self"]
+  name_regex       = "^conservify-postgres-.*"
+  most_recent      = true
+}
+
 data "template_file" "app_server_user_data" {
   for_each                    = local.app_servers
   template                    = file("user_data_app.yaml")

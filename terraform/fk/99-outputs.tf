@@ -2,6 +2,10 @@ output bare_ami_id {
   value = data.aws_ami.bare.id
 }
 
+output postgres_ami_id {
+  value = data.aws_ami.postgres.id
+}
+
 output tsdb_snapshot_id {
   value = data.aws_ebs_snapshot.tsdb_snapshot.id
 }
@@ -69,6 +73,18 @@ output influxdb_servers {
 output postgres_servers {
   value = [
     for key, i in aws_instance.postgres_servers: {
+      id = i.id
+      key = key
+      user = "ubuntu"
+      ip = i.private_ip
+      sshAt = "ubuntu@${i.private_ip}"
+    }
+  ]
+}
+
+output postgres_standby_servers {
+  value = [
+    for key, i in aws_instance.postgres_standby_servers: {
       id = i.id
       key = key
       user = "ubuntu"
