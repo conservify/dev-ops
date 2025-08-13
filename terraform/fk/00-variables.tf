@@ -38,14 +38,14 @@ variable workspace_zones {
 
 variable workspace_buckets {
   type = map(object({
-	create = object({
-	  streams = string
-	  media = string
-	})
-	config = object({
-	  streams = string
-	  media = string
-	})
+	  create = object({
+	    streams = string
+	    media = string
+	  })
+	  config = object({
+	    streams = string
+	    media = string
+	  })
   }))
 }
 
@@ -137,7 +137,7 @@ variable metrics_influxdb {
 	  url = string
 	  name = string
 	  user = string
-	password = string
+	  password = string
   })
 }
 
@@ -152,53 +152,53 @@ variable application_stack {
 
 variable workspace_influxdb_servers {
   type = map(map(object({
-	name = string
-	number = number
-	instance = string
-	live = bool
-	stacks = list(string)
+	  name = string
+	  number = number
+	  instance = string
+	  live = bool
+	  stacks = list(string)
   })))
 }
 
 variable workspace_postgres_standby_servers {
   type = map(map(object({
-	instance = string
-	enabled = bool
+	  instance = string
+	  enabled = bool
   })))
 }
 
 variable workspace_postgres_servers {
   type = map(map(object({
-	name = string
-	number = number
-	instance = string
-	live = bool
-	stacks = list(string)
+	  name = string
+	  number = number
+	  instance = string
+	  live = bool
+	  stacks = list(string)
   })))
 }
 
 variable workspace_servers {
   type = map(map(object({
-	name = string
-	number = number
-	exclude = number
-	instance = string
-	live = bool
-	workers = number
-	queues = string
-	stacks = list(string)
+	  name = string
+	  number = number
+	  exclude = number
+	  instance = string
+	  live = bool
+	  workers = number
+	  queues = string
+	  stacks = list(string)
   })))
 }
 
 variable workspace_networks {
   type = map(object({
-	cidr = string
-	peering = string
-	azs = map(object({
-	  public = string
-	  private = string
-	  gateway = bool
-	}))
+	  cidr = string
+	  peering = string
+	  azs = map(object({
+	    public = string
+	    private = string
+	    gateway = bool
+	  }))
   }))
 }
 
@@ -208,11 +208,11 @@ variable workspace_session_keys {
 
 variable infrastructure {
   type = object({
-	address = string
-	cidr = string
-	secondary_cidr = string
-	sg_id = string
-	secondary_sg_id = string
+	  address = string
+	  cidr = string
+	  secondary_cidr = string
+	  sg_id = string
+	  secondary_sg_id = string
   })
 }
 
@@ -222,68 +222,64 @@ locals {
   zone = var.workspace_zones[terraform.workspace]
 
   all_influxdb_servers = flatten([
-	for k, v in var.workspace_influxdb_servers[terraform.workspace] : [
-	  for r in range(v.number) : {
-		name = "${local.env}-${v.name}-${r}"
-		number = r
-		config = v
-		# zone = local.zones[r % length(local.zones)]
-		zone = local.zones[0]
-	  }
-	]
+	  for k, v in var.workspace_influxdb_servers[terraform.workspace] : [
+	    for r in range(v.number) : {
+  		  name = "${local.env}-${v.name}-${r}"
+		    number = r
+		    config = v
+		    zone = local.zones[0]
+	    }
+	  ]
   ])
 
   influxdb_servers = {
-	for r in local.all_influxdb_servers : r.name => r
+	  for r in local.all_influxdb_servers : r.name => r
   }
 
   all_postgres_standby_servers = flatten([
-	for k, v in var.workspace_postgres_standby_servers[terraform.workspace] : [
-	  for r in range(1) : {
-		name = "${local.env}-${k}-${r}"
-		number = r
-		config = v
-		# zone = local.zones[r % length(local.zones)]
-		zone = local.zones[0]
-	  }
-	] if v.enabled
+	  for k, v in var.workspace_postgres_standby_servers[terraform.workspace] : [
+	    for r in range(1) : {
+		    name = "${local.env}-${k}-${r}"
+		    number = r
+		    config = v
+		    zone = local.zones[0]
+	    }
+	  ] if v.enabled
   ])
 
   postgres_standby_servers = {
-	for r in local.all_postgres_standby_servers : r.name => r
+	  for r in local.all_postgres_standby_servers : r.name => r
   }
 
   all_postgres_servers = flatten([
-	for k, v in var.workspace_postgres_servers[terraform.workspace] : [
-	  for r in range(v.number) : {
-		name = "${local.env}-${k}-${r}"
-		number = r
-		config = v
-		# zone = local.zones[r % length(local.zones)]
-		zone = local.zones[0]
-	  }
-	]
+	  for k, v in var.workspace_postgres_servers[terraform.workspace] : [
+	    for r in range(v.number) : {
+		    name = "${local.env}-${k}-${r}"
+		    number = r
+		    config = v
+		    zone = local.zones[0]
+	    }
+	  ]
   ])
 
   postgres_servers = {
-	for r in local.all_postgres_servers : r.name => r
+	  for r in local.all_postgres_servers : r.name => r
   }
 
   all_app_servers = flatten([
-	for k, v in var.workspace_servers[terraform.workspace] : [
-	  for r in range(v.number) : {
-		name = "${local.env}-${v.name}-${r}"
-		excluded = r == v.exclude
-		number = r
-		config = v
-		# zone = local.zones[r % length(local.zones)]
-		zone = local.zones[0]
-	  }
-	]
+	  for k, v in var.workspace_servers[terraform.workspace] : [
+	    for r in range(v.number) : {
+		    name = "${local.env}-${v.name}-${r}"
+		    excluded = r == v.exclude
+		    number = r
+		    config = v
+		    zone = local.zones[0]
+	    }
+	  ]
   ])
 
   app_servers = {
-	for r in local.all_app_servers : r.name => r if !r.excluded
+	  for r in local.all_app_servers : r.name => r if !r.excluded
   }
 
   partners = {

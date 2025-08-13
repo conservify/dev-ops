@@ -170,8 +170,8 @@ resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
 
       tags_to_add = {
         SnapshotCreator = "DLM"
-	PostgresBackup = "true"
-	Env = local.env
+	      PostgresBackup = "true"
+	      Env = local.env
       }
 
       copy_tags = false
@@ -250,7 +250,7 @@ resource "aws_instance" "postgres_standby_servers" {
   }
 }
 
-resource "aws_ebs_volume" "postgres_standby_data" {
+resource "aws_ebs_volume" "postgres_standby_data_svr0" {
   for_each          = local.postgres_standby_servers
   size              = 1000
   encrypted         = true
@@ -264,10 +264,10 @@ resource "aws_ebs_volume" "postgres_standby_data" {
   }
 }
 
-resource "aws_volume_attachment" "postgres_standby_data_attach" {
+resource "aws_volume_attachment" "postgres_standby_data_attach_svr0" {
   for_each                       = { for key, value in aws_instance.postgres_standby_servers: key => value }
   device_name                    = "/dev/xvdh"
-  volume_id                      = aws_ebs_volume.postgres_standby_data[each.key].id
+  volume_id                      = aws_ebs_volume.postgres_standby_data_svr0[each.key].id
   instance_id                    = each.value.id
   force_detach                   = true
   stop_instance_before_detaching = true

@@ -6,9 +6,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-	bucket = "conservify-terraform-state"
-	region = "us-west-2"
-	encrypt = true
-	key = "cron"
+	  bucket = "conservify-terraform-state"
+	  region = "us-west-2"
+	  encrypt = true
+	  key = "cron"
   }
 }

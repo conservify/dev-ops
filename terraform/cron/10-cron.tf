@@ -70,7 +70,7 @@ resource "aws_lambda_function" "fk-cron-every-five" {
   source_code_hash = filesha256("../build/fk_cron_every_five.zip")
 
   lifecycle {
-	ignore_changes = [ ]
+	  ignore_changes = [ ]
   }
 }
 

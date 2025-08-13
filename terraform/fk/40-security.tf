@@ -4,37 +4,37 @@ resource "aws_security_group" "ssh" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port   = 22
-	to_port     = 22
-	protocol    = "tcp"
-	cidr_blocks = var.bastions.manual.cidr
-	description = var.bastions.manual.name
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.bastions.manual.cidr
+    description = var.bastions.manual.name
   }
 
   ingress {
-	from_port       = 22
-	to_port         = 22
-	protocol        = "tcp"
-	security_groups = [ var.infrastructure.secondary_sg_id ]
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [ var.infrastructure.secondary_sg_id ]
   }
 
   ingress {
-	from_port   = 22
-	to_port     = 22
-	protocol    = "tcp"
-	cidr_blocks = var.bastions.tooling.cidr
-	description = var.bastions.tooling.name
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.bastions.tooling.cidr
+    description = var.bastions.tooling.name
   }
 
   egress {
-	from_port   = 0
-	to_port     = 0
-	protocol    = "-1"
-	cidr_blocks = [ "0.0.0.0/0" ]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -44,21 +44,21 @@ resource "aws_security_group" "influxdb-server" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port       = 8086
-	to_port         = 8086
-	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-app-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
+    from_port       = 8086
+    to_port         = 8086
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.fk-app-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   egress {
-	from_port       = 0
-	to_port         = 0
-	protocol        = "-1"
-	cidr_blocks     = [ "0.0.0.0/0" ]
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = [ "0.0.0.0/0" ]
   }
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -68,14 +68,14 @@ resource "aws_security_group" "db-server" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port       = 5432
-	to_port         = 5432
-	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-app-server.id, aws_security_group.postgres-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.fk-app-server.id, aws_security_group.postgres-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -85,21 +85,21 @@ resource "aws_security_group" "postgres-server" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port       = 5432
-	to_port         = 5432
-	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-app-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.fk-app-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   egress {
-	from_port       = 0
-	to_port         = 0
-	protocol        = "-1"
-	cidr_blocks     = [ "0.0.0.0/0" ]
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = [ "0.0.0.0/0" ]
   }
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -109,35 +109,35 @@ resource "aws_security_group" "fk-app-server" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port       = 7000
-	to_port         = 7000
-	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
+    from_port       = 7000
+    to_port         = 7000
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   ingress {
-	from_port       = 8000
-	to_port         = 8000
-	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   ingress {
-	from_port       = 9000
-	to_port         = 9000
-	protocol        = "tcp"
-	security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
+    from_port       = 9000
+    to_port         = 9000
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.fk-server-alb.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
   }
 
   egress {
-	from_port       = 0
-	to_port         = 0
-	protocol        = "-1"
-	cidr_blocks     = [ "0.0.0.0/0" ]
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = [ "0.0.0.0/0" ]
   }
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -147,27 +147,27 @@ resource "aws_security_group" "fk-server-alb" {
   vpc_id      = aws_vpc.fk.id
 
   ingress {
-	from_port   = 80
-	to_port     = 80
-	protocol    = "tcp"
-	cidr_blocks = [ "0.0.0.0/0" ]
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 
   ingress {
-	from_port   = 443
-	to_port     = 443
-	protocol    = "tcp"
-	cidr_blocks = [ "0.0.0.0/0" ]
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 
   egress {
-	from_port   = 0
-	to_port     = 0
-	protocol    = "-1"
-	cidr_blocks = [ "0.0.0.0/0" ]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }

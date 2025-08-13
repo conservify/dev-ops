@@ -10,7 +10,7 @@ resource "aws_db_subnet_group" "fk" {
   subnet_ids  = [ for key, value in local.network.azs: aws_subnet.private[key].id ]
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 }
 
@@ -29,10 +29,10 @@ resource "aws_db_instance" "fk-database" {
   skip_final_snapshot    = false
 
   tags = {
-	Name = local.env
+    Name = local.env
   }
 
   lifecycle {
-	prevent_destroy = true
+    prevent_destroy = true
   }
 }
