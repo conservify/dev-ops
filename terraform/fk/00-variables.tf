@@ -160,7 +160,7 @@ variable workspace_influxdb_servers {
   })))
 }
 
-variable workspace_postgres_standby_servers {
+variable workspace_pg_servers {
   type = map(map(object({
 	  instance = string
 	  enabled = bool
@@ -236,8 +236,8 @@ locals {
 	  for r in local.all_influxdb_servers : r.name => r
   }
 
-  all_postgres_standby_servers = flatten([
-	  for k, v in var.workspace_postgres_standby_servers[terraform.workspace] : [
+  all_pg_servers = flatten([
+	  for k, v in var.workspace_pg_servers[terraform.workspace] : [
 	    for r in range(1) : {
 		    name = "${local.env}-${k}-${r}"
 		    number = r
@@ -247,8 +247,8 @@ locals {
 	  ] if v.enabled
   ])
 
-  postgres_standby_servers = {
-	  for r in local.all_postgres_standby_servers : r.name => r
+  pg_servers = {
+	  for r in local.all_pg_servers : r.name => r
   }
 
   all_postgres_servers = flatten([

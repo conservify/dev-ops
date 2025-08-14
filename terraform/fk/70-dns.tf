@@ -106,13 +106,13 @@ resource "aws_route53_record" "postgres-servers" {
   count   = length(aws_instance.postgres_servers) > 0 ? 1 : 0
 }
 
-resource "aws_route53_record" "postgres-standby-servers" {
+resource "aws_route53_record" "pg-servers" {
   zone_id = local.zone.id
-  name    = "postgres-standby-servers.aws.${local.zone.name}"
+  name    = "pg-servers.aws.${local.zone.name}"
   type    = "A"
   ttl     = "60"
-  records = [ for key, value in aws_instance.postgres_standby_servers: value.private_ip ]
-  count   = length(aws_instance.postgres_standby_servers) > 0 ? 1 : 0
+  records = [ for key, value in aws_instance.pg_servers: value.private_ip ]
+  count   = length(aws_instance.pg_servers) > 0 ? 1 : 0
 }
 
 resource "aws_route53_record" "app-servers" {

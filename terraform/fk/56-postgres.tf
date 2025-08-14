@@ -189,11 +189,11 @@ resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-// Standby Servers
+// 2025 Postgres Servers
 // --------------------------------------------------------------------------------------------------------------------
 
-data "template_file" "postgres_standby_server_user_data" {
-  for_each                    = local.postgres_standby_servers
+data "template_file" "pg_server_user_data" {
+  for_each                    = local.pg_servers
   template                    = file("user_data_postgres.yaml")
 
   vars = {
@@ -219,13 +219,13 @@ data "template_file" "postgres_standby_server_user_data" {
   }
 }
 
-resource "aws_instance" "postgres_standby_servers" {
-  for_each                    = local.postgres_standby_servers
+resource "aws_instance" "pg_servers" {
+  for_each                    = local.pg_servers
   ami                         = data.aws_ami.postgres.id
   subnet_id                   = aws_subnet.private[each.value.zone].id
   instance_type               = each.value.config.instance
   vpc_security_group_ids      = [ aws_security_group.ssh.id, aws_security_group.postgres-server.id ]
-  user_data                   = data.template_file.postgres_standby_server_user_data[each.key].rendered
+  user_data                   = data.template_file.pg_server_user_data[each.key].rendered
   monitoring                  = true
   associate_public_ip_address = false
   key_name                    = "cfy-dev-server"
@@ -250,8 +250,8 @@ resource "aws_instance" "postgres_standby_servers" {
   }
 }
 
-resource "aws_ebs_volume" "postgres_standby_data_svr0" {
-  for_each          = local.postgres_standby_servers
+resource "aws_ebs_volume" "pg_data_svr0" {
+  for_each          = local.pg_servers
   size              = 1000
   encrypted         = true
   type              = "io1"
@@ -264,10 +264,10 @@ resource "aws_ebs_volume" "postgres_standby_data_svr0" {
   }
 }
 
-resource "aws_volume_attachment" "postgres_standby_data_attach_svr0" {
-  for_each                       = { for key, value in aws_instance.postgres_standby_servers: key => value }
+resource "aws_volume_attachment" "pg_data_attach_svr0" {
+  for_each                       = { for key, value in aws_instance.pg_servers: key => value }
   device_name                    = "/dev/xvdh"
-  volume_id                      = aws_ebs_volume.postgres_standby_data_svr0[each.key].id
+  volume_id                      = aws_ebs_volume.pg_data_svr0[each.key].id
   instance_id                    = each.value.id
   force_detach                   = true
   stop_instance_before_detaching = true

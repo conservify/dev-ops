@@ -82,9 +82,9 @@ output postgres_servers {
   ]
 }
 
-output postgres_standby_servers {
+output pg_servers {
   value = [
-    for key, i in aws_instance.postgres_standby_servers: {
+    for key, i in aws_instance.pg_servers: {
       id = i.id
       key = key
       user = "ubuntu"
