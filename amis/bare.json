@@ -47,7 +47,7 @@
       "inline": [
         "sudo mv /tmp/apt-sources.d/*.list /etc/apt/sources.list.d/",
         "sudo mv /tmp/apt-sources.d/*.list.asc /etc/apt/trusted.gpg.d/",
-	"sudo rmdir /tmp/apt-sources.d"
+        "sudo rmdir /tmp/apt-sources.d"
       ]
     },
     {
@@ -99,8 +99,10 @@
         "sudo systemctl disable snapd.service",
         "sudo systemctl disable snapd.socket",
         "sudo systemctl disable snapd.seeded.service",
-	"sudo systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent",
-	"sudo systemctl disable ModemManager" 
+        "sudo systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent",
+        "sudo systemctl disable ModemManager",
+        "sudo systemctl stop update-notifier-download.timer",
+        "sudo systemctl disable update-notifier-download.timer"
       ]
     },
     {
@@ -204,7 +206,7 @@
     {
       "type": "shell",
       "inline": [
-	"mkdir -p ~/.config",
+	      "mkdir -p ~/.config",
         "sudo chown -R ubuntu: ~ubuntu/.config"
       ]
     },

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PG_VERSION_MAJOR=16
+
 source /etc/user_data.env
 
 set -xe
@@ -27,15 +29,15 @@ EOF
 			echo $device: mounting
 			mount /svr0
 
-			if [ -d /var/lib/postgresql/17/main ]; then
-				echo $device: rehoming /var/lib/postgresql/17/main to /svr0/postgres
+			if [ -d /var/lib/postgresql/$PG_VERSION_MAJOR/main ]; then
+				echo $device: rehoming /var/lib/postgresql/$PG_VERSION_MAJOR/main to /svr0/postgres
 				echo $device: stopping postgresql
 				systemctl stop postgresql
-				echo $device: moving /var/lib/postgresql/17/main
+				echo $device: moving /var/lib/postgresql/$PG_VERSION_MAJOR/main
 				mkdir -p /svr0/postgres
-				mv /var/lib/postgresql/17/main /svr0/postgres
-				ln -s /svr0/postgres/main /var/lib/postgresql/17/main
-				chown postgres: /var/lib/postgresql/17/main
+				mv /var/lib/postgresql/$PG_VERSION_MAJOR/main /svr0/postgres
+				ln -s /svr0/postgres/main /var/lib/postgresql/$PG_VERSION_MAJOR/main
+				chown postgres: /var/lib/postgresql/$PG_VERSION_MAJOR/main
 				echo $device: starting postgresql
 				systemctl start postgresql
 			fi

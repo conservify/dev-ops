@@ -47,7 +47,7 @@
       "inline": [
         "sudo mv /tmp/apt-sources.d/*.list /etc/apt/sources.list.d/",
         "sudo mv /tmp/apt-sources.d/*.list.asc /etc/apt/trusted.gpg.d/",
-	      "sudo rmdir /tmp/apt-sources.d"
+        "sudo rmdir /tmp/apt-sources.d"
       ]
     },
     {
@@ -99,10 +99,10 @@
         "sudo systemctl disable snapd.service",
         "sudo systemctl disable snapd.socket",
         "sudo systemctl disable snapd.seeded.service",
-	      "sudo systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent",
-	      "sudo systemctl disable ModemManager",
-	      "sudo systemctl stop update-notifier-download.timer",
-	      "sudo systemctl disable update-notifier-download.timer"
+        "sudo systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent",
+        "sudo systemctl disable ModemManager",
+        "sudo systemctl stop update-notifier-download.timer",
+        "sudo systemctl disable update-notifier-download.timer"
       ]
     },
     {
@@ -180,7 +180,9 @@
         "sudo apt update",
         "sudo apt install -y rsync tmux vim git ripgrep htop jq",
         "sudo apt install -y docker-ce docker-ce-cli containerd.io",
-        "sudo apt install -y postgresql-17 timescaledb-2-postgresql-17 postgresql-17-postgis-3 postgresql-17-pgvector postgresql-server-dev-17",
+        "sudo apt install -y postgresql-16 postgresql-client-16 postgresql-server-dev-16",
+        "sudo apt install -y postgresql-16-postgis-3 postgresql-16-pgvector",
+        "sudo apt install -y timescaledb-2-postgresql-16='2.15*' timescaledb-2-loader-postgresql-16=2.15*",
         "sudo apt install -y telegraf"
       ]
     },
