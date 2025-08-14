@@ -1,6 +1,6 @@
 
-STACKS ?= dummy-stack proxy-stack auth-stack portal-stack charting-stack influxdb-stack postgres-stack
-IMAGES ?= dummy-proxy dummy-service proxy-service auth-keycloak portal-service charting-service influxdb-service postgres-service
+STACKS ?= dummy-stack proxy-stack portal-stack charting-stack influxdb-stack postgres-stack maintenance-stack
+IMAGES ?= dummy-proxy dummy-service proxy-service portal-service charting-service influxdb-service postgres-service maintenance-service
 
 # NOTE: This fails miserably with spaces.
 BUILD := $(abspath build)
@@ -10,7 +10,7 @@ TAG ?= $(DATED_TAG)
 
 default: repository-stacks
 
-repository-stacks: dummy-stack proxy-stack auth-stack influxdb-stack postgres-stack
+repository-stacks: dummy-stack proxy-stack influxdb-stack postgres-stack maintenance-stack
 
 $(DEPDIR)/rules.mk: Makefile
 	@rm -rf $(DEPDIR)

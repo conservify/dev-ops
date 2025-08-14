@@ -5,6 +5,7 @@
 build
 .deps
 .bin
+.venv
 
 .env
 vpn.env
