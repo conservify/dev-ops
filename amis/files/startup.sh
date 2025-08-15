@@ -33,6 +33,12 @@ EOF
 				echo $device: rehoming /var/lib/postgresql/$PG_VERSION_MAJOR/main to /svr0/postgres
 				echo $device: stopping postgresql
 				systemctl stop postgresql
+				while /bin/true; do
+					if [ ! -f /var/lib/postgresql/$PG_VERSION_MAJOR/main/postmaster.pid ]; then
+						break
+					fi
+				  sleep 1
+				done
 				echo $device: moving /var/lib/postgresql/$PG_VERSION_MAJOR/main
 				mkdir -p /svr0/postgres
 				mv /var/lib/postgresql/$PG_VERSION_MAJOR/main /svr0/postgres
@@ -49,7 +55,12 @@ done
 
 # If we have a PostgreSQL server set the password.
 if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
-	su - postgres -c "psql -c \"ALTER USER postgres with password '$FIELDKIT_POSTGRES_DB_PASSWORD'\""
+	while /bin/true; do
+		if su - postgres -c "psql -c \"ALTER USER postgres with password '$FIELDKIT_POSTGRES_DB_PASSWORD'\""; then
+			break
+		fi
+		sleep 1
+	done
 fi
 
 # Large file of nothing we can delete if disk fills up.
