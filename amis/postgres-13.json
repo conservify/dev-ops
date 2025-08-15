@@ -1,0 +1,219 @@
+{
+  "variables": {},
+  "builders": [
+    {
+      "name": "conservify-postgres-13-ubuntu-20.04",
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "associate_public_ip_address": true,
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "099720109477"
+        ],
+        "most_recent": true
+      },
+      "spot_price": "auto",
+      "instance_type": "t2.micro",
+      "ami_name": "conservify-postgres-13-ubuntu-20.04-{{timestamp}}",
+      "ssh_username": "ubuntu",
+      "run_tags": {
+        "owner": "packer/run"
+      },
+      "fleet_tags": {
+        "owner": "packer/fleet"
+      },
+      "tags": {
+        "os_distribution": "Ubuntu"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [ "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections" ]
+    },
+    {
+      "type": "file",
+      "sources": "files/apt-sources.d",
+      "destination": "/tmp/apt-sources.d"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/apt-sources.d/*.list /etc/apt/sources.list.d/",
+        "sudo mv /tmp/apt-sources.d/*.list.asc /etc/apt/trusted.gpg.d/",
+        "sudo rmdir /tmp/apt-sources.d"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/docker-compose@.service",
+      "destination": "/tmp/docker-compose@.service"
+    },
+    {
+      "type": "file",
+      "source": "files/docker-cleanup.timer",
+      "destination": "/tmp/docker-cleanup.timer"
+    },
+    {
+      "type": "file",
+      "source": "files/docker-cleanup.service",
+      "destination": "/tmp/docker-cleanup.service"
+    },
+    {
+      "type": "file",
+      "source": "files/conservify.timer",
+      "destination": "/tmp/conservify.timer"
+    },
+    {
+      "type": "file",
+      "source": "files/conservify.service",
+      "destination": "/tmp/conservify.service"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/docker-compose@.service /etc/systemd/system/docker-compose@.service",
+        "sudo mv /tmp/docker-cleanup.service /etc/systemd/system/docker-cleanup.service",
+        "sudo mv /tmp/docker-cleanup.timer /etc/systemd/system/docker-cleanup.timer",
+        "sudo mv /tmp/conservify.service /etc/systemd/system/conservify.service",
+        "sudo mv /tmp/conservify.timer /etc/systemd/system/conservify.timer",
+        "sudo chown root: /etc/systemd/system/*",
+        "sudo systemctl enable docker-cleanup.service",
+        "sudo systemctl enable docker-cleanup.timer",
+        "sudo systemctl enable conservify.service",
+        "sudo systemctl enable conservify.timer",
+        "sudo mkdir -p /etc/docker/compose"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo systemctl disable ua-timer.service",
+        "sudo systemctl disable ua-timer.timer",
+        "sudo systemctl disable snapd.service",
+        "sudo systemctl disable snapd.socket",
+        "sudo systemctl disable snapd.seeded.service",
+        "sudo systemctl disable snap.amazon-ssm-agent.amazon-ssm-agent"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p /app/.well-known",
+        "sudo chown ubuntu: /app/.well-known"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/filebeat.yml",
+      "destination": "/tmp/filebeat.yml"
+    },
+    {
+      "type": "file",
+      "source": "files/filebeat.service",
+      "destination": "/tmp/filebeat.service"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "curl -L https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-9.0.1-amd64.deb -o /tmp/filebeat-9.0.1-amd64.deb",
+        "sudo dpkg -i /tmp/filebeat-9.0.1-amd64.deb",
+        "sudo filebeat modules enable system",
+        "sudo systemctl enable filebeat",
+        "sudo mkdir -p /etc/filebeat",
+        "sudo mv /tmp/filebeat.yml /etc/filebeat/filebeat.yml",
+        "sudo mv /tmp/filebeat.service /lib/systemd/system/filebeat.service",
+        "sudo chown -R root: /etc/filebeat/filebeat.yml /lib/systemd/system/filebeat.service",
+        "sudo chmod 644 /etc/filebeat/filebeat.yml"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/refresh.sh",
+      "destination": "/tmp/refresh.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/startup.sh",
+      "destination": "/tmp/startup.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/startup.py",
+      "destination": "/tmp/startup.py"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir /var/lib/conservify",
+        "sudo mv /tmp/refresh.sh /var/lib/conservify",
+        "sudo mv /tmp/startup.sh /var/lib/conservify",
+        "sudo mv /tmp/startup.py /var/lib/conservify",
+        "sudo chown root: /var/lib/conservify/*.sh",
+        "sudo chmod 755 /var/lib/conservify/*.sh /var/lib/conservify/*.py"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/40-graylog.conf",
+      "destination": "/tmp/40-graylog.conf"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mv /tmp/40-graylog.conf /etc/rsyslog.d",
+        "sudo chown root: /etc/rsyslog.d/40-graylog.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt update",
+        "sudo apt install -y rsync tmux vim git ripgrep htop jq",
+        "sudo apt install -y docker-ce docker-ce-cli containerd.io",
+        "sudo apt install -y postgresql-13 postgresql-client-13 postgresql-server-dev-13",
+        "sudo apt install -y postgresql-13-postgis-3 postgresql-13-pgvector",
+        "sudo apt install -y timescaledb-2-postgresql-13='2.4.2*' timescaledb-2-loader-postgresql-13=2.4.2*",
+        "sudo apt install -y telegraf"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/telegraf-postgresql.conf",
+      "destination": "/tmp/telegraf.conf"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p /etc/telegraf",
+        "sudo mv /tmp/telegraf.conf /etc/telegraf/telegraf.conf",
+        "sudo chown -R root: /etc/telegraf",
+        "sudo systemctl enable telegraf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo usermod -aG docker ubuntu"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+	      "mkdir -p ~/.config",
+        "sudo chown -R ubuntu: ~ubuntu/.config"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": [ "files/20_postgresql.sh" ],
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'"
+    }
+  ]
+}

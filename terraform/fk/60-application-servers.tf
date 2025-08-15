@@ -4,9 +4,15 @@ data "aws_ami" "bare" {
   most_recent      = true
 }
 
-data "aws_ami" "postgres" {
+data "aws_ami" "postgres-13" {
   owners           = ["self"]
-  name_regex       = "^conservify-postgres-.*"
+  name_regex       = "^conservify-postgres-13-.*"
+  most_recent      = true
+}
+
+data "aws_ami" "postgres-16" {
+  owners           = ["self"]
+  name_regex       = "^conservify-postgres-16-.*"
   most_recent      = true
 }
 
