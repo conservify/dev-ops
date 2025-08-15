@@ -20,7 +20,6 @@ resource "aws_db_instance" "fk-database" {
   allocated_storage      = local.database.allocated_storage
   engine_version         = local.database.engine_version
   instance_class         = local.database.instance
-  # name                   = local.database.name
   username               = local.database.username
   password               = local.database.password
   db_subnet_group_name   = aws_db_subnet_group.fk.name

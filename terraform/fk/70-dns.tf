@@ -111,7 +111,8 @@ resource "aws_route53_record" "pg-servers" {
   name    = "pg-servers.aws.${local.zone.name}"
   type    = "A"
   ttl     = "60"
-  records = [ for key, value in aws_instance.pg_servers: value.private_ip ]
+  records = [ for key, value in aws_instance.pg_servers: value.private_ip
+              if lookup(local.pg_servers, key, { config: { live: false } }).config.live ]
   count   = length(aws_instance.pg_servers) > 0 ? 1 : 0
 }
 

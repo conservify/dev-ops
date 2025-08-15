@@ -78,6 +78,7 @@ output postgres_servers {
       user = "ubuntu"
       ip = i.private_ip
       sshAt = "ubuntu@${i.private_ip}"
+      live = local.postgres_servers[key].config.live
     }
   ]
 }
@@ -90,6 +91,7 @@ output pg_servers {
       user = "ubuntu"
       ip = i.private_ip
       sshAt = "ubuntu@${i.private_ip}"
+      live = local.pg_servers[key].config.live
     }
   ]
 }
@@ -102,8 +104,8 @@ output servers {
       user = "ubuntu"
       ip = i.private_ip
       sshAt = "ubuntu@${i.private_ip}"
-      deploy = local.app_servers[key].config.deploy
       live = local.app_servers[key].config.live
+      deploy = local.app_servers[key].config.deploy
     }
   ]
 }
