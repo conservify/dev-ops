@@ -128,6 +128,9 @@ output alb {
   }
 }
 
+/*
+Disabled because output was verbose and as far as I know this is unnecessary.
+
 output user_data {
   value = [
     for key, i in data.template_file.app_server_user_data: {
@@ -136,3 +139,4 @@ output user_data {
     }
   ]
 }
+*/
