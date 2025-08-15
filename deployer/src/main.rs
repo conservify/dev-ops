@@ -195,7 +195,13 @@ fn main() -> Result<()> {
                 port: 22,
             };
 
-            let servers = env.servers.value;
+            let servers: Vec<_> = env
+                .servers
+                .value
+                .iter()
+                .filter(|server| server.deploy.unwrap_or(true))
+                .map(|server| server.clone())
+                .collect();
 
             let preparations = servers
                 .iter()
@@ -260,13 +266,15 @@ struct ServersDef {
 
 #[allow(dead_code)]
 #[derive(Deserialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
 struct Server {
     id: String,
     ip: String,
     key: String,
-    #[serde(rename = "sshAt")]
     ssh_at: String,
     user: String,
+    deploy: Option<bool>,
+    live: Option<bool>,
 }
 
 #[derive(Debug)]

@@ -94,18 +94,6 @@ output pg_servers {
   ]
 }
 
-output app_servers {
-  value = [
-    for key, i in aws_instance.app-servers: {
-      id = i.id
-      key = key
-      user = "ubuntu"
-      ip = i.private_ip
-      sshAt = "ubuntu@${i.private_ip}"
-    }
-  ]
-}
-
 output servers {
   value = [
     for key, i in aws_instance.app-servers: {
@@ -114,6 +102,8 @@ output servers {
       user = "ubuntu"
       ip = i.private_ip
       sshAt = "ubuntu@${i.private_ip}"
+      deploy = local.app_servers[key].config.deploy
+      live = local.app_servers[key].config.live
     }
   ]
 }

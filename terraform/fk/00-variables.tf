@@ -183,6 +183,7 @@ variable workspace_servers {
 	  number = number
 	  exclude = number
 	  instance = string
+	  deploy = bool
 	  live = bool
 	  workers = number
 	  queues = string
