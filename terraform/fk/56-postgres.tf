@@ -221,7 +221,7 @@ data "template_file" "pg_server_user_data" {
 
 resource "aws_instance" "pg_servers" {
   for_each                    = local.pg_servers
-  ami                         = data.aws_ami.postgres.id
+  ami                         = each.value.config.previous_version ? data.aws_ami.postgres-13.id : data.aws_ami.postgres-16.id
   subnet_id                   = aws_subnet.private[each.value.zone].id
   instance_type               = each.value.config.instance
   vpc_security_group_ids      = [ aws_security_group.ssh.id, aws_security_group.postgres-server.id ]

@@ -3,7 +3,7 @@ output bare_ami_id {
 }
 
 output postgres_ami_id {
-  value = data.aws_ami.postgres.id
+  value = data.aws_ami.postgres-16.id
 }
 
 output tsdb_snapshot_id {
