@@ -182,7 +182,7 @@
         "sudo apt install -y docker-ce docker-ce-cli containerd.io",
         "sudo apt install -y postgresql-16 postgresql-client-16 postgresql-server-dev-16",
         "sudo apt install -y postgresql-16-postgis-3 postgresql-16-pgvector",
-        "sudo apt install -y timescaledb-2-postgresql-16='2.15*' timescaledb-2-loader-postgresql-16=2.15*",
+        "sudo apt install -y timescaledb-2-postgresql-16 timescaledb-2-loader-postgresql-16",
         "sudo apt install -y telegraf"
       ]
     },
