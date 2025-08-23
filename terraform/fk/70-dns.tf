@@ -106,9 +106,9 @@ resource "aws_route53_record" "postgres-servers" {
   count   = length(aws_instance.postgres_servers) > 0 ? 1 : 0
 }
 
-resource "aws_route53_record" "pg-servers" {
+resource "aws_route53_record" "pg-server" {
   zone_id = local.zone.id
-  name    = "pg-servers.aws.${local.zone.name}"
+  name    = "pg.aws.${local.zone.name}"
   type    = "A"
   ttl     = "60"
   records = [ for key, value in aws_instance.pg_servers: value.private_ip
