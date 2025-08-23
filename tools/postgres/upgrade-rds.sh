@@ -19,4 +19,6 @@ if true; then
 	pg16_fk_psql "ALTER TABLE migrations RENAME TO migrations_rds"
 	pg16_fk_psql "ALTER SEQUENCE migrations_id_seq RENAME TO migrations_id_seq_rds"
 	pg16_fk_psql "ALTER TABLE migration_lock RENAME TO migration_lock_rds"
+	pg16_fk_psql "ALTER TABLE migration_lock_rds RENAME CONSTRAINT migration_lock_pkey TO migration_lock_rds_pkey"
+	pg16_fk_psql "ALTER TABLE migrations_rds RENAME CONSTRAINT migrations_pkey TO migrations_rds_pkey"
 fi
