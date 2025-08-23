@@ -15,6 +15,7 @@ if true; then
 	pg16_fk_psql "CREATE USER fieldkit WITH PASSWORD '$PASSWORD'"
 	pg16_fk_psql "CREATE EXTENSION postgis"
 	pg16_fk_psql "CREATE EXTENSION timescaledb WITH VERSION '2.15.3'"
+	pg16_admin_psql 'GRANT ALL PRIVILEGES ON SCHEMA fieldkit TO fk'
 	pg16_admin_psql 'ALTER DATABASE \"fk\" SET search_path TO \"\$user\", fieldkit, public'
 fi
 
