@@ -245,6 +245,7 @@ locals {
 		    name = "${local.env}-${k}-${r}"
 		    number = r
 		    config = v
+		    live = v.live
 		    zone = local.zones[0]
 	    }
 	  ] if v.enabled
@@ -268,6 +269,11 @@ locals {
   postgres_servers = {
 	  for r in local.all_postgres_servers : r.name => r
   }
+
+  live_database = [for r in local.all_pg_servers : r if r.live][0]
+  database_address = "${local.live_database.name}.fk.private"
+  database_url = "postgres://${local.database.username}:${local.database.password}@${local.database_address}/${local.database.name}"
+  database_admin_url = "postgres://${local.database.username}:${local.database.password}@${local.database_address}/postgres"
 
   all_app_servers = flatten([
 	  for k, v in var.workspace_servers[terraform.workspace] : [

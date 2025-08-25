@@ -1,9 +1,3 @@
-locals {
-  database_url = "postgres://${local.database.username}:${local.database.password}@${aws_db_instance.fk-database.address}/${local.database.name}"
-  database_admin_url = "postgres://${local.database.username}:${local.database.password}@${aws_db_instance.fk-database.address}/postgres"
-  database_address = aws_db_instance.fk-database.address
-}
-
 resource "aws_db_subnet_group" "fk" {
   name        = "${local.env}-db"
   description = "${local.env}-db"

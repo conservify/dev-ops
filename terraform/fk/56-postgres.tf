@@ -1,6 +1,6 @@
 locals {
   timescaledb_name = local.database.name
-  timescaledb_address = "postgres-servers.aws.${local.zone.name}"
+  timescaledb_address = local.database_address
   timescaledb_username = "postgres"
   timescaledb_password = local.database.password
   timescaledb_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/${local.timescaledb_name}?sslmode=disable"
