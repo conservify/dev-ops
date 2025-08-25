@@ -83,19 +83,6 @@ output postgres_servers {
   ]
 }
 
-output pg_servers {
-  value = [
-    for key, i in aws_instance.pg_servers: {
-      id = i.id
-      key = key
-      user = "ubuntu"
-      ip = i.private_ip
-      sshAt = "ubuntu@${i.private_ip}"
-      live = local.pg_servers[key].config.live
-    }
-  ]
-}
-
 output servers {
   value = [
     for key, i in aws_instance.app-servers: {
