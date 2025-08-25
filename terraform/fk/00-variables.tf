@@ -51,6 +51,7 @@ variable workspace_buckets {
 
 variable workspace_databases {
   type = map(object({
+	  enabled = bool
 	  id = string
 	  name = string
 	  username = string
