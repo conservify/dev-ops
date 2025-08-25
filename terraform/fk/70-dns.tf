@@ -1,3 +1,15 @@
+locals {
+  running_servers = { for row in
+      flatten([
+        [ for k, i in aws_instance.app-servers: { name: k, private_ip: i.private_ip } ],
+        [ for k, i in aws_instance.pg_servers: { name: k, private_ip: i.private_ip } ]
+      ]): row.name => row.private_ip
+    }
+}
+
+
+// *.org public facing
+
 resource "aws_route53_record" "home" {
   zone_id = local.zone.id
   name    = local.zone.name
@@ -61,18 +73,6 @@ resource "aws_route53_record" "floodnet" {
   }
 }
 
-resource "aws_route53_record" "auth" {
-  zone_id = local.zone.id
-  name    = "auth.${local.zone.name}"
-  type    = "A"
-
-  alias {
-    name                   = aws_alb.app-servers.dns_name
-    zone_id                = aws_alb.app-servers.zone_id
-    evaluate_target_health = false
-  }
-}
-
 resource "aws_route53_record" "www" {
   zone_id = local.zone.id
   name    = "www.${local.zone.name}"
@@ -86,25 +86,7 @@ resource "aws_route53_record" "www" {
   }
 }
 
-resource "aws_route53_record" "influxdb-servers" {
-  zone_id = local.zone.id
-  name    = "influxdb-servers.aws.${local.zone.name}"
-  type    = "A"
-  ttl     = "60"
-  records = [ for key, value in aws_instance.influxdb_servers: value.private_ip
-              if lookup(local.influxdb_servers, key, { config: { live: false } }).config.live ]
-  count   = length(aws_instance.influxdb_servers) > 0 ? 1 : 0
-}
-
-resource "aws_route53_record" "postgres-servers" {
-  zone_id = local.zone.id
-  name    = "postgres-servers.aws.${local.zone.name}"
-  type    = "A"
-  ttl     = "60"
-  records = [ for key, value in aws_instance.postgres_servers: value.private_ip
-              if lookup(local.postgres_servers, key, { config: { live: false } }).config.live ]
-  count   = length(aws_instance.postgres_servers) > 0 ? 1 : 0
-}
+// *.org internal
 
 resource "aws_route53_record" "app-servers" {
   zone_id = local.zone.id
@@ -115,6 +97,17 @@ resource "aws_route53_record" "app-servers" {
               if lookup(local.app_servers, key, { config: { live: false } }).config.live ]
   count   = length(aws_instance.app-servers) > 0 ? 1 : 0
 }
+
+resource "aws_route53_record" "servers" {
+  for_each = local.running_servers
+  zone_id = local.zone.id
+  name    = "${each.key}.servers.aws.${local.zone.name}"
+  type    = "A"
+  ttl     = "60"
+  records  = [ each.value ]
+}
+
+// *.fk.private
 
 resource "aws_route53_zone" "private" {
   name = "fk.private"
@@ -140,46 +133,19 @@ resource "aws_route53_record" "private-metrics" {
   records = [ var.infrastructure.address ]
 }
 
-resource "aws_route53_record" "influxdb" {
-  for_each = aws_instance.influxdb_servers
-  zone_id  = aws_route53_zone.private.id
-  name     = "${each.key}.${aws_route53_zone.private.name}"
-  type     = "A"
-  ttl      = "60"
-  records  = [ each.value.private_ip ]
-}
-
-resource "aws_route53_record" "postgres" {
-  for_each = aws_instance.postgres_servers
-  zone_id  = aws_route53_zone.private.id
-  name     = "${each.key}.${aws_route53_zone.private.name}"
-  type     = "A"
-  ttl      = "60"
-  records  = [ each.value.private_ip ]
-}
-
-resource "aws_route53_record" "pg" {
-  for_each = aws_instance.pg_servers
-  zone_id  = aws_route53_zone.private.id
-  name     = "${each.key}.${aws_route53_zone.private.name}"
-  type     = "A"
-  ttl      = "60"
-  records  = [ each.value.private_ip ]
-}
-
-resource "aws_route53_record" "servers" {
-  for_each = aws_instance.app-servers
-  zone_id  = aws_route53_zone.private.id
-  name     = "${each.key}.${aws_route53_zone.private.name}"
-  type     = "A"
-  ttl      = "60"
-  records  = [ each.value.private_ip ]
-}
-
-resource "aws_route53_record" "db" {
+resource "aws_route53_record" "private-db" {
   zone_id  = aws_route53_zone.private.id
   name     = "db.${aws_route53_zone.private.name}"
   type     = "CNAME"
   ttl      = "60"
   records  = [ local.database_address ]
+}
+
+resource "aws_route53_record" "private-servers" {
+  for_each = local.running_servers
+  zone_id  = aws_route53_zone.private.id
+  name     = "${each.key}.${aws_route53_zone.private.name}"
+  type     = "A"
+  ttl      = "60"
+  records  = [ each.value ]
 }
