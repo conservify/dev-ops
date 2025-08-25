@@ -5,7 +5,6 @@ locals {
   timescaledb_password = local.database.password
   timescaledb_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/${local.timescaledb_name}?sslmode=disable"
   timescaledb_admin_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/postgres?sslmode=disable"
-  prod = terraform.workspace == "prod"
 }
 
 data "aws_ebs_snapshot" "tsdb_snapshot" {
@@ -83,7 +82,7 @@ resource "aws_instance" "postgres_servers" {
 // Would love change the names here, perhaps to postgres_data_svr0 and I'd also like to get rid of the "from_snapshot" item.
 
 resource "aws_ebs_volume" "postgres_data" {
-  for_each          = local.prod ? local.postgres_servers : {}
+  for_each          = local.production ? local.postgres_servers : {}
   size              = 300
   encrypted         = true
   type              = "io1"
@@ -97,7 +96,7 @@ resource "aws_ebs_volume" "postgres_data" {
 }
 
 resource "aws_ebs_volume" "postgres_data_from_snapshot" {
-  for_each          = local.prod ? {} : local.postgres_servers
+  for_each          = local.production ? {} : local.postgres_servers
   size              = 800
   encrypted         = true
   type              = "io1"
@@ -118,14 +117,14 @@ resource "aws_ebs_volume" "postgres_data_from_snapshot" {
 resource "aws_volume_attachment" "postgres_data_attach" {
   for_each                       = { for key, value in aws_instance.postgres_servers: key => value }
   device_name                    = "/dev/xvdh"
-  volume_id                      = local.prod ? aws_ebs_volume.postgres_data[each.key].id : aws_ebs_volume.postgres_data_from_snapshot[each.key].id
+  volume_id                      = local.production ? aws_ebs_volume.postgres_data[each.key].id : aws_ebs_volume.postgres_data_from_snapshot[each.key].id
   instance_id                    = each.value.id
   force_detach                   = true
   stop_instance_before_detaching = true
 }    
 
 resource "aws_ebs_volume" "postgres_data_svr1" {
-  for_each          = local.prod ? local.postgres_servers : {}
+  for_each          = local.production ? local.postgres_servers : {}
   size              = 500
   encrypted         = true
   type              = "io1"
@@ -139,7 +138,7 @@ resource "aws_ebs_volume" "postgres_data_svr1" {
 }
 
 resource "aws_volume_attachment" "postgres_data_attach_svr1" {
-  for_each                       = local.prod ? { for key, value in aws_instance.postgres_servers: key => value } : {}
+  for_each                       = local.production ? { for key, value in aws_instance.postgres_servers: key => value } : {}
   device_name                    = "/dev/xvdi"
   volume_id                      = aws_ebs_volume.postgres_data_svr1[each.key].id
   instance_id                    = each.value.id
@@ -234,7 +233,8 @@ resource "aws_instance" "pg_servers" {
 
   lifecycle {
     ignore_changes = [ ami, user_data ]
-    create_before_destroy = true
+    // create_before_destroy = true
+    prevent_destroy = true
   }
 
   root_block_device {

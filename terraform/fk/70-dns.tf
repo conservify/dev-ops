@@ -14,7 +14,7 @@ resource "aws_route53_record" "home" {
   zone_id = local.zone.id
   name    = local.zone.name
   type    = "A"
-  count   = terraform.workspace == "prod" ? 0 : 1
+  count   = local.production ? 0 : 1
 
   alias {
     name                   = aws_alb.app-servers.dns_name
@@ -52,7 +52,7 @@ resource "aws_route53_record" "floodnet-partner-domain" {
   zone_id = local.partners.floodnet.zone.id
   name    = "dataviz.floodnet.nyc"
   type    = "A"
-  count   = terraform.workspace == "prod" ? 1 : 0
+  count   = local.production ? 1 : 0
 
   alias {
     name                   = aws_alb.app-servers.dns_name
@@ -77,7 +77,7 @@ resource "aws_route53_record" "www" {
   zone_id = local.zone.id
   name    = "www.${local.zone.name}"
   type    = "A"
-  count   = terraform.workspace == "dev" ? 1 : 0
+  count   = local.production ? 0 : 1
 
   alias {
     name                   = aws_alb.app-servers.dns_name
