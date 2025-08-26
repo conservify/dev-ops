@@ -44,17 +44,17 @@ output timescaledb_admin_url {
 }
 
 output timescaledb_address {
-  value = local.timescaledb_address
+  value = local.database_address
   sensitive = true
 }
 
 output timescaledb_username {
-  value = local.timescaledb_username
+  value = local.database.username
   sensitive = true
 }
 
 output timescaledb_password {
-  value = local.timescaledb_password
+  value = local.database.password
   sensitive = true
 }
 
