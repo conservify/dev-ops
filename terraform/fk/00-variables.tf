@@ -51,14 +51,9 @@ variable workspace_buckets {
 
 variable workspace_databases {
   type = map(object({
-	  enabled = bool
-	  id = string
 	  name = string
 	  username = string
 	  password = string
-	  instance = string
-	  engine_version = string
-	  allocated_storage = number
   }))
 }
 
@@ -170,16 +165,6 @@ variable workspace_pg_servers {
   })))
 }
 
-variable workspace_postgres_servers {
-  type = map(map(object({
-	  name = string
-	  number = number
-	  instance = string
-	  live = bool
-	  stacks = list(string)
-  })))
-}
-
 variable workspace_servers {
   type = map(map(object({
 	  name = string
@@ -254,21 +239,6 @@ locals {
 
   pg_servers = {
 	  for r in local.all_pg_servers : r.name => r
-  }
-
-  all_postgres_servers = flatten([
-	  for k, v in var.workspace_postgres_servers[terraform.workspace] : [
-	    for r in range(v.number) : {
-		    name = "${local.env}-${k}-${r}"
-		    number = r
-		    config = v
-		    zone = local.zones[0]
-	    }
-	  ]
-  ])
-
-  postgres_servers = {
-	  for r in local.all_postgres_servers : r.name => r
   }
 
   live_database = [for r in local.all_pg_servers : r if r.live][0]

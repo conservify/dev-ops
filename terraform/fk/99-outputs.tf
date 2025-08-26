@@ -70,19 +70,6 @@ output influxdb_servers {
   ]
 }
 
-output postgres_servers {
-  value = [
-    for key, i in aws_instance.postgres_servers: {
-      id = i.id
-      key = key
-      user = "ubuntu"
-      ip = i.private_ip
-      sshAt = "ubuntu@${i.private_ip}"
-      live = local.postgres_servers[key].config.live
-    }
-  ]
-}
-
 output servers {
   value = [
     for key, i in aws_instance.app-servers: {
@@ -106,16 +93,3 @@ output alb {
     }
   }
 }
-
-/*
-Disabled because output was verbose and as far as I know this is unnecessary.
-
-output user_data {
-  value = [
-    for key, i in data.template_file.app_server_user_data: {
-      key = key
-      value = data.template_file.app_server_user_data[key].rendered
-    }
-  ]
-}
-*/
