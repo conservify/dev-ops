@@ -7,65 +7,6 @@ locals {
   timescaledb_admin_url = "postgres://${local.timescaledb_username}:${local.timescaledb_password}@${local.timescaledb_address}/postgres?sslmode=disable"
 }
 
-data "aws_ebs_snapshot" "tsdb_snapshot" {
-  owners = ["self"]
-  most_recent = true
-
-  filter {
-    name = "tag:Env"
-    values = [ "fkprd" ]
-  }
-  filter {
-    name = "tag:PostgresBackup"
-    values = [ "true" ]
-  }
-}
-
-resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
-  description        = "DLM lifecycle policy for postgres_data"
-  execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
-  state              = "ENABLED"
-
-  policy_details {
-    resource_types = ["VOLUME"]
-
-    schedule {
-      name = "2 weeks of daily snapshots"
-
-      create_rule {
-        interval      = 24
-        interval_unit = "HOURS"
-        times         = ["23:45"]
-      }
-
-      retain_rule {
-        count = 14
-      }
-
-      tags_to_add = {
-        SnapshotCreator = "DLM"
-	      PostgresBackup = "true"
-	      Env = local.env
-      }
-
-      copy_tags = false
-    }
-
-    target_tags = {
-      Snapshot = local.env
-    }
-  }
-
-  tags = {
-    Name = "${local.env} postgres backup policy"
-    Snapshot = local.env
-  }
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-// 2025 Postgres Servers
-// --------------------------------------------------------------------------------------------------------------------
-
 data "template_file" "pg_server_user_data" {
   for_each                    = local.pg_servers
   template                    = file("user_data_postgres.yaml")
@@ -147,3 +88,58 @@ resource "aws_volume_attachment" "pg_data_attach_svr0" {
   force_detach                   = true
   stop_instance_before_detaching = true
 }    
+
+data "aws_ebs_snapshot" "tsdb_snapshot" {
+  owners = ["self"]
+  most_recent = true
+
+  filter {
+    name = "tag:Env"
+    values = [ "fkprd" ]
+  }
+  filter {
+    name = "tag:PostgresBackup"
+    values = [ "true" ]
+  }
+}
+
+resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
+  description        = "DLM lifecycle policy for postgres_data"
+  execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
+  state              = "ENABLED"
+
+  policy_details {
+    resource_types = ["VOLUME"]
+
+    schedule {
+      name = "2 weeks of daily snapshots"
+
+      create_rule {
+        interval      = 24
+        interval_unit = "HOURS"
+        times         = ["23:45"]
+      }
+
+      retain_rule {
+        count = 14
+      }
+
+      tags_to_add = {
+        SnapshotCreator = "DLM"
+	      PostgresBackup = "true"
+	      Env = local.env
+      }
+
+      copy_tags = false
+    }
+
+    target_tags = {
+      Snapshot = local.env
+    }
+  }
+
+  tags = {
+    Name = "${local.env} postgres backup policy"
+    Snapshot = local.env
+  }
+}

@@ -70,31 +70,6 @@ resource "aws_security_group" "influxdb-server" {
   }
 }
 
-resource "aws_security_group" "db-server" {
-  name        = "${local.env}-db-server"
-  description = "${local.env}-db-server"
-  vpc_id      = aws_vpc.fk.id
-
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [ aws_security_group.fk-app-server.id, aws_security_group.postgres-server.id, var.infrastructure.sg_id, var.infrastructure.secondary_sg_id ]
-  }
-
-  // This was added to make the database migration easier and can be removed after.
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    cidr_blocks     = [ local.network.cidr ]
-  }
-
-  tags = {
-    Name = local.env
-  }
-}
-
 resource "aws_security_group" "postgres-server" {
   name        = "${local.env}-postgres-server"
   description = "${local.env}-postgres-server"
