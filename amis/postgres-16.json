@@ -209,7 +209,7 @@
     {
       "type": "shell",
       "inline": [
-	      "mkdir -p ~/.config",
+        "mkdir -p ~/.config",
         "sudo chown -R ubuntu: ~ubuntu/.config"
       ]
     },

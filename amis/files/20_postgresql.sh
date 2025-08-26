@@ -18,3 +18,10 @@ cat <<EOF >> /etc/postgresql/$PG_VERSION_MAJOR/main/pg_hba.conf
 host    all             all             0.0.0.0/0               scram-sha-256
 EOF
 
+# Enable password authentication for replication hosts. Technically the above should pass them through, just in case.
+# I would love to have subnet information here.
+cat <<EOF >> /etc/postgresql/$PG_VERSION_MAJOR/main/pg_hba.conf
+# Password authentication for remote hosts.
+host    replication     all             0.0.0.0/0               scram-sha-256
+EOF
+
