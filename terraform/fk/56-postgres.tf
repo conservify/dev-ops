@@ -72,7 +72,9 @@ resource "aws_ebs_volume" "pg_data_svr0" {
 
   tags = {
     Name = "${each.value.name} svr0"
-    Snapshot = local.env
+    server = each.value.name
+    partition = "svr0"
+    snapshot = local.env
   }
 }
 
@@ -93,9 +95,10 @@ data "aws_ebs_snapshot" "tsdb_snapshot" {
     name = "tag:Env"
     values = [ "fkprd" ]
   }
+
   filter {
-    name = "tag:PostgresBackup"
-    values = [ "true" ]
+    name = "tag:server"
+    values = [ "fkprd-pg-main-0" ]
   }
 }
 
@@ -120,22 +123,15 @@ resource "aws_dlm_lifecycle_policy" "postgres_data_lifecycle_policy" {
         count = 14
       }
 
-      tags_to_add = {
-        SnapshotCreator = "DLM"
-	      PostgresBackup = "true"
-	      Env = local.env
-      }
-
-      copy_tags = false
+      copy_tags = true
     }
 
     target_tags = {
-      Snapshot = local.env
+      snapshot = local.env
     }
   }
 
   tags = {
     Name = "${local.env} postgres backup policy"
-    Snapshot = local.env
   }
 }
