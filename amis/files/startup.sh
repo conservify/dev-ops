@@ -6,6 +6,14 @@ source /etc/user_data.env
 
 set -xe
 
+pushd /var/lib/conservify
+
+wget -q --auth-no-challenge "https://gitlab.com/api/v4/projects/48313780/jobs/artifacts/develop/download?job=build:tools-amd64" -O tools.zip
+
+unzip -j tools.zip
+
+popd
+
 DEVICES="/dev/xvdh /dev/nvme1n1"
 
 for device in $DEVICES; do
@@ -82,7 +90,7 @@ if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
 	done
 fi
 
-# This will only do anything if we're restoring from a snapshot.
+# This will only do anything if we're restoring from a snapshot, otherwise it'll fail and we'll continue on.
 su - postgres -c "psql -c \"ALTER USER fk WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\"" || true
 
 # Large file of nothing we can delete if disk fills up.
