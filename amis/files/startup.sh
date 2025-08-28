@@ -28,24 +28,43 @@ EOF
 
 			echo $device: mounting
 			mount /svr0
+		fi
 
-			if [ -d /var/lib/postgresql/$PG_VERSION_MAJOR/main ]; then
-				echo $device: rehoming /var/lib/postgresql/$PG_VERSION_MAJOR/main to /svr0/postgres
+		PG_MAIN=/var/lib/postgresql/$PG_VERSION_MAJOR/main
+
+		if [ -d $PG_MAIN ]; then
+			if [ ! -L $PG_MAIN ]; then
+				echo $device: rehoming $PG_MAIN to /svr0/postgres
+
+				# Stop the server, since we'll be moving data directories around.
 				echo $device: stopping postgresql
 				systemctl stop postgresql
 				while /bin/true; do
-					if [ ! -f /var/lib/postgresql/$PG_VERSION_MAJOR/main/postmaster.pid ]; then
+					if [ ! -f $PG_MAIN/postmaster.pid ]; then
 						break
 					fi
 				  sleep 1
 				done
-				echo $device: moving /var/lib/postgresql/$PG_VERSION_MAJOR/main
-				mkdir -p /svr0/postgres
-				mv /var/lib/postgresql/$PG_VERSION_MAJOR/main /svr0/postgres
-				ln -s /svr0/postgres/main /var/lib/postgresql/$PG_VERSION_MAJOR/main
-				chown postgres: /var/lib/postgresql/$PG_VERSION_MAJOR/main
-				echo $device: starting postgresql
-				systemctl start postgresql
+
+				# If no data directory on the volume, create one and move the pristine data directory there.
+				if [ ! -d /svr0/postgres ]; then
+					echo $device: moving $PG_MAIN
+					mkdir -p /svr0/postgres
+					mv $PG_MAIN /svr0/postgres
+				fi
+
+				# Link to new data directory and start postgres. We refuse to start postgres
+				# again if we're in some unanticipated state.
+				if [ -d /svr0/postgres/main ]; then
+					if [ -d $PG_MAIN ]; then
+						echo backup $PG_MAIN 
+						mv $PG_MAIN ${PG_MAIN}-backup
+					fi
+					ln -s /svr0/postgres/main $PG_MAIN
+					chown postgres: $PG_MAIN
+					echo $device: starting postgresql
+					systemctl start postgresql
+				fi
 			fi
 		fi
 
@@ -56,12 +75,15 @@ done
 # If we have a PostgreSQL server set the password.
 if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
 	while /bin/true; do
-		if su - postgres -c "psql -c \"ALTER USER postgres with password '$FIELDKIT_POSTGRES_DB_PASSWORD'\""; then
+		if su - postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\""; then
 			break
 		fi
 		sleep 1
 	done
 fi
+
+# This will only do anything if we're restoring from a snapshot.
+su - postgres -c "psql -c \"ALTER USER fk WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\"" || true
 
 # Large file of nothing we can delete if disk fills up.
 if [ ! -f /empty.data ]; then
