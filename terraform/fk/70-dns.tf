@@ -134,6 +134,7 @@ resource "aws_route53_record" "private-metrics" {
 }
 
 resource "aws_route53_record" "private-db" {
+  count    = local.live_database != null ? 1 : 0
   zone_id  = aws_route53_zone.private.id
   name     = "db.${aws_route53_zone.private.name}"
   type     = "CNAME"

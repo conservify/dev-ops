@@ -32,7 +32,7 @@ data "template_file" "pg_server_user_data" {
 
 resource "aws_instance" "pg_servers" {
   for_each                    = local.pg_servers
-  ami                         = each.value.config.previous_version ? data.aws_ami.postgres-13.id : data.aws_ami.postgres-16.id
+  ami                         = data.aws_ami.postgres-16.id
   subnet_id                   = aws_subnet.private[each.value.zone].id
   instance_type               = each.value.config.instance
   vpc_security_group_ids      = [ aws_security_group.ssh.id, aws_security_group.postgres-server.id ]
@@ -46,7 +46,10 @@ resource "aws_instance" "pg_servers" {
   lifecycle {
     ignore_changes = [ ami, user_data ]
     // create_before_destroy = true
-    prevent_destroy = true
+    // It would be great if this could be set to true for just 'prod', I
+    // understand why arbitrary expressions don't work here but for my use case it
+    // seems like it should be possible.
+    // prevent_destroy = true
   }
 
   root_block_device {
@@ -63,7 +66,7 @@ resource "aws_instance" "pg_servers" {
 }
 
 resource "aws_ebs_volume" "pg_data_svr0" {
-  for_each          = local.pg_servers
+  for_each          = { for key, value in local.pg_servers: key => value if !value.config.restore }
   size              = 1000
   encrypted         = true
   type              = "io1"
@@ -78,10 +81,26 @@ resource "aws_ebs_volume" "pg_data_svr0" {
   }
 }
 
+resource "aws_ebs_volume" "pg_data_svr0_from_snapshot" {
+  for_each          = { for key, value in local.pg_servers: key => value if value.config.restore }
+  size              = 1000
+  encrypted         = true
+  type              = "io1"
+  iops              = 4000
+  availability_zone = each.value.zone
+  snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
+
+  tags = {
+    Name = "${each.value.name} svr0"
+    server = each.value.name
+    partition = "svr0"
+  }
+}
+
 resource "aws_volume_attachment" "pg_data_attach_svr0" {
-  for_each                       = { for key, value in aws_instance.pg_servers: key => value }
+  for_each                       = { for key, value in aws_instance.pg_servers: key => { id: value.id, config: local.pg_servers[key].config }}
   device_name                    = "/dev/xvdh"
-  volume_id                      = aws_ebs_volume.pg_data_svr0[each.key].id
+  volume_id                      = each.value.config.restore ? aws_ebs_volume.pg_data_svr0_from_snapshot[each.key].id : aws_ebs_volume.pg_data_svr0[each.key].id
   instance_id                    = each.value.id
   force_detach                   = true
   stop_instance_before_detaching = true

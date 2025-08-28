@@ -158,10 +158,10 @@ variable workspace_influxdb_servers {
 
 variable workspace_pg_servers {
   type = map(map(object({
-	  previous_version = string
 	  instance = string
 	  live = bool
 	  enabled = bool
+	  restore = bool
   })))
 }
 
@@ -241,8 +241,8 @@ locals {
 	  for r in local.all_pg_servers : r.name => r
   }
 
-  live_database = [for r in local.all_pg_servers : r if r.live][0]
-  database_address = "${local.live_database.name}.fk.private"
+  live_database = length(local.all_pg_servers) > 0 ? [for r in local.all_pg_servers : r if r.live][0] : null
+  database_address = local.live_database != null ? "${local.live_database.name}.fk.private" : ""
   database_url = "postgres://${local.database.username}:${local.database.password}@${local.database_address}/${local.database.name}"
   database_admin_url = "postgres://${local.database.username}:${local.database.password}@${local.database_address}/postgres"
 
