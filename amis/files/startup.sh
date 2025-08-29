@@ -10,7 +10,7 @@ pushd /var/lib/conservify
 
 wget -q --auth-no-challenge "https://gitlab.com/api/v4/projects/48313780/jobs/artifacts/develop/download?job=build:tools-amd64" -O tools.zip
 
-unzip -j tools.zip
+unzip -j tools.zip && rm tools.zip
 
 popd
 
