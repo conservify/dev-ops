@@ -12,6 +12,8 @@ wget -q --auth-no-challenge "https://gitlab.com/api/v4/projects/48313780/jobs/ar
 
 unzip -j tools.zip && rm tools.zip
 
+chown -R ubuntu: /var/lib/conservify
+
 popd
 
 DEVICES="/dev/xvdh /dev/nvme1n1"
