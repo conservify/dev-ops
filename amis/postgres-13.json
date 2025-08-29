@@ -175,7 +175,7 @@
       "type": "shell",
       "inline": [
         "sudo apt update",
-        "sudo apt install -y rsync tmux vim git ripgrep htop jq",
+        "sudo apt install -y rsync tmux vim git ripgrep htop jq unzip",
         "sudo apt install -y docker-ce docker-ce-cli containerd.io",
         "sudo apt install -y postgresql-13 postgresql-client-13 postgresql-server-dev-13",
         "sudo apt install -y postgresql-13-postgis-3 postgresql-13-pgvector",

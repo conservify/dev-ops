@@ -178,7 +178,7 @@
       "type": "shell",
       "inline": [
         "sudo apt update",
-        "sudo apt install -y rsync tmux vim git ripgrep htop jq",
+        "sudo apt install -y rsync tmux vim git ripgrep htop jq unzip",
         "sudo apt install -y docker-ce docker-ce-cli containerd.io",
         "sudo apt install -y telegraf"
       ]
