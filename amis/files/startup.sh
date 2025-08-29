@@ -95,6 +95,11 @@ fi
 # This will only do anything if we're restoring from a snapshot, otherwise it'll fail and we'll continue on.
 su - postgres -c "psql -c \"ALTER USER fk WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\"" || true
 
+# Create work and data areas for postgres
+mkdir -p /svr0/work /svr0/data
+chown -R postgres: /svr0/work
+chown -R postgres: /svr0/data
+
 # Large file of nothing we can delete if disk fills up.
 if [ ! -f /empty.data ]; then
 	echo creating empty.data for full disk recovery
