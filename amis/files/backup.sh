@@ -4,8 +4,12 @@ source /etc/user_data.env
 
 set -xe
 
+WORK=/svr0/work
+DATA=/svr0/data
 STAMP=$(date +"%Y%m%d_%H%M%S")
-FILE=/svr0/work/${STAMP}_backup.sql
+FILE=${STAMP}_backup.sql
+
+pushd $WORK
 
 # /var/lib/conservify/sanitizer
 
@@ -17,12 +21,18 @@ time pg_dump -v -j1 -d fk \
         > $FILE
 
 echo >> $FILE
+echo "SELECT timescaledb_pre_restore();"
 echo >> $FILE
 echo "COPY fieldkit.sensor_data FROM STDIN;" >> $FILE
 time psql -d fk -c "COPY (SELECT * FROM fieldkit.sensor_data WHERE time > NOW() - '7 days'::interval) TO STDOUT" >> $FILE
+echo >> $FILE
+echo "SELECT timescaledb_post_restore();"
+echo >> $FILE
 
-ls -alh /svr0/work
+ls -alh
 
 time xz $FILE
 
-mv *.xz /svr0/data
+mv *.xz $DATA
+
+popd
