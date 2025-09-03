@@ -15,13 +15,27 @@ output database_url {
   sensitive = true
 }
 
+output database_external_url {
+  value = local.database_external_url
+  sensitive = true
+}
+
 output database_admin_url {
   value = local.database_admin_url
   sensitive = true
 }
 
+output database_external_admin_url {
+  value = local.database_external_admin_url
+  sensitive = true
+}
+
 output database_address {
   value = local.database_address
+}
+
+output database_external_address {
+  value = local.database_external_address
 }
 
 output database_username {

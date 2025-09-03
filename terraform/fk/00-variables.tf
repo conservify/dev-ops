@@ -242,10 +242,13 @@ locals {
   }
 
   live_database = length(local.all_pg_servers) > 0 ? [for r in local.all_pg_servers : r if r.live][0] : null
+  database_external_address = local.live_database != null ? "${local.live_database.name}.servers.aws.${local.zone.name}" : ""
   database_address = local.live_database != null ? "${local.live_database.name}.fk.private" : ""
   database_url = "postgres://${local.database.username}:${local.database.password}@${local.database_address}/${local.database.name}"
   database_admin_url = "postgres://${local.database.username}:${local.database.password}@${local.database_address}/postgres"
-
+  database_external_url = "postgres://${local.database.username}:${local.database.password}@${local.database_external_address}/${local.database.name}"
+  database_external_admin_url = "postgres://${local.database.username}:${local.database.password}@${local.database_external_address}/postgres"
+  
   all_app_servers = flatten([
 	  for k, v in var.workspace_servers[terraform.workspace] : [
 	    for r in range(v.number) : {
