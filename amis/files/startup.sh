@@ -92,7 +92,10 @@ if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
 	done
 
   # This will only do anything if we're restoring from a snapshot, otherwise it'll fail and we'll continue on.
-  su - postgres -c "psql -c \"ALTER USER fk WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\"" || true
+	su - postgres -c "psql -c \"ALTER USER fk WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\"" || true
+	su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE fk TO fk\"" || true
+	su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON SCHEMA fieldkit TO fk\"" || true
+	
 
 	# Create work and data areas for postgres
 	mkdir -p /svr0/work /svr0/data
