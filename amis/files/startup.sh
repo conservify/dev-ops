@@ -102,6 +102,14 @@ if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
 	chown -R postgres: /svr0/work
 	chown -R postgres: /svr0/data
 
+  # Generally, trying to keep environments from appearing in this, an AMI 	#
+	# baked file and so I was tempted to verify we're in development. Technically, a 	#
+	# non-empty value for this password would be just as trustworthy. We're basically
+	# relying on the prod password ever getting here.
+	if [ ! -z "$FIELDKIT_FORCE_USER_PASSWORD" ]; then
+		FIELDKIT_POSTGRES_URL="postgres://postgres:${FIELDKIT_POSTGRES_DB_PASSWORD}@127.0.0.1/fk" /var/lib/conservify/passwords --set-all --password $FIELDKIT_FORCE_USER_PASSWORD
+	fi
+
 	# Run backup
 	sudo -u postgres /var/lib/conservify/backup.sh
 fi

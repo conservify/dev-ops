@@ -13,6 +13,8 @@ write_files:
 
       FIELDKIT_POSTGRES_DB_PASSWORD=${postgres_password}
 
+      FIELDKIT_FORCE_USER_PASSWORD=${force_user_password}
+
       APPLICATION_STACKS=${application_stacks}
 
       AWS_ACCESS_KEY=${aws_access_key}

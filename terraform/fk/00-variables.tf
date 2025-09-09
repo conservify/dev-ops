@@ -49,6 +49,10 @@ variable workspace_buckets {
   }))
 }
 
+variable workspace_force_user_password {
+  type = map(string)
+}
+
 variable workspace_databases {
   type = map(object({
 	  name = string
@@ -240,6 +244,8 @@ locals {
   pg_servers = {
 	  for r in local.all_pg_servers : r.name => r
   }
+
+  force_user_password = local.production ? null : var.workspace_force_user_password[terraform.workspace]
 
   live_database = length(local.all_pg_servers) > 0 ? [for r in local.all_pg_servers : r if r.live][0] : null
   database_external_address = local.live_database != null ? "${local.live_database.name}.servers.aws.${local.zone.name}" : ""
