@@ -64,6 +64,7 @@ resource "aws_instance" "pg_servers" {
 
   tags = {
     Name = "${each.value.name}"
+    env = local.env
   }
 }
 

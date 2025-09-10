@@ -121,6 +121,7 @@ resource "aws_instance" "app-servers" {
 
   tags = {
     Name = "${each.value.name}"
+    env = local.env
   }
 }
 
