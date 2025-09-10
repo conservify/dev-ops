@@ -80,6 +80,7 @@ resource "aws_ebs_volume" "pg_data_svr0" {
     server = each.value.name
     partition = "svr0"
     snapshot = local.env
+    env = local.env
   }
 }
 
@@ -96,6 +97,7 @@ resource "aws_ebs_volume" "pg_data_svr0_from_snapshot" {
     Name = "${each.value.name} svr0"
     server = each.value.name
     partition = "svr0"
+    env = local.env
   }
 }
 
@@ -113,8 +115,13 @@ data "aws_ebs_snapshot" "tsdb_snapshot" {
   most_recent = true
 
   filter {
-    name = "tag:Env"
+    name = "tag:env"
     values = [ "fkprd" ]
+  }
+
+  filter {
+    name = "tag:partition"
+    values = [ "svr0" ]
   }
 
   filter {
