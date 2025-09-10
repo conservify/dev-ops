@@ -93,6 +93,10 @@ resource "aws_ebs_volume" "pg_data_svr0_from_snapshot" {
   availability_zone = each.value.zone
   snapshot_id       = data.aws_ebs_snapshot.tsdb_snapshot.id
 
+  lifecycle {
+    ignore_changes = [ snapshot_id ]
+  }
+
   tags = {
     Name = "${each.value.name} svr0"
     server = each.value.name
