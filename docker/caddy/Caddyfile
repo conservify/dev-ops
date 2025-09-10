@@ -22,10 +22,6 @@ code.conservify.org {
 		reverse_proxy http://jira:8080
 	}
 
-	handle /logs/* {
-		reverse_proxy http://logs:9000
-	}
-
 	handle_path /gl/* {
 		reverse_proxy http://graylog:9001
 	}
