@@ -2,6 +2,13 @@
 hostname: ${hostname}
 fqdn: ${hostname}.${zone_name}
 manage_etc_hosts: true
+
+users:
+  - default
+  - name: 'postgres'
+    ssh_authorized_keys:
+      - '${postgres_public_key}'
+
 write_files:
   - path: /etc/user_data.env
     content: |

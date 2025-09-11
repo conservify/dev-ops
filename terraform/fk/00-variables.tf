@@ -15,6 +15,12 @@ variable workspace_tags {
   type = map(string)
 }
 
+variable workspace_keys {
+  type = map(object({
+	  postgres = string
+  }))
+}
+
 variable workspace_infra {
   type = map(object({
 	  logs_port = number
@@ -276,6 +282,7 @@ locals {
       zone = var.workspace_zones["floodnet.nyc"]
     }
   }
+  keys = var.workspace_keys[terraform.workspace]
   env = var.workspace_tags[terraform.workspace]
   buckets = var.workspace_buckets[terraform.workspace]
   database = var.workspace_databases[terraform.workspace]

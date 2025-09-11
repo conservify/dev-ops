@@ -14,6 +14,8 @@ data "template_file" "pg_server_user_data" {
 
     postgres_password         = local.database.password
 
+    postgres_public_key       = local.keys.postgres
+
     force_user_password       = local.production ? "" : local.force_user_password
 
     aws_access_key            = var.access_key
