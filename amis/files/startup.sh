@@ -91,7 +91,7 @@ if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
 		sleep 1
 	done
 
-  # This will only do anything if we're restoring from a snapshot, otherwise it'll fail and we'll continue on.
+	# This will only do anything if we're restoring from a snapshot, otherwise it'll fail and we'll continue on.
 	su - postgres -c "psql -c \"ALTER USER fk WITH PASSWORD '$FIELDKIT_POSTGRES_DB_PASSWORD'\"" || true
 	su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE fk TO fk\"" || true
 	su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON SCHEMA fieldkit TO fk\"" || true
@@ -102,7 +102,7 @@ if [ -x /usr/lib/postgresql/*/bin/postgres ]; then
 	chown -R postgres: /svr0/work
 	chown -R postgres: /svr0/data
 
-  # Generally, trying to keep environments from appearing in this, an AMI 	#
+	# Generally, trying to keep environments from appearing in this, an AMI 	#
 	# baked file and so I was tempted to verify we're in development. Technically, a 	#
 	# non-empty value for this password would be just as trustworthy. We're basically
 	# relying on the prod password ever getting here.
