@@ -8,7 +8,7 @@ WORK=/svr0/work
 DATA=/svr0/data
 STAMP=$(date +"%Y%m%d_%H%M%S")
 BASE=${STAMP}_backup.sql
-SENSOR_DATA=${STAMP}_sensor_data.sql
+SENSOR_DATA=${STAMP}_sensor_data_21d.sql
 BOOKMARKS=${STAMP}_bookmarks.sql
 
 pushd $WORK
