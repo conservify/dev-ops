@@ -23,7 +23,7 @@ time pg_dump -v -j1 -d fk \
         > $BASE
 
 echo "COPY fieldkit.sensor_data FROM STDIN;" > $SENSOR_DATA
-time psql -d fk -c "COPY (SELECT * FROM fieldkit.sensor_data WHERE time > NOW() - '7 days'::interval) TO STDOUT" >> $SENSOR_DATA
+time psql -d fk -c "COPY (SELECT * FROM fieldkit.sensor_data WHERE time > NOW() - '21 days'::interval) TO STDOUT" >> $SENSOR_DATA
 
 time pg_dump -v -j1 -d fk -t 'fieldkit.bookmarks' > $BOOKMARKS
 
