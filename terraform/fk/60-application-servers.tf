@@ -32,6 +32,7 @@ data "template_file" "app_server_user_data" {
 
     mapbox_token              = local.tokens.mapbox
     native_lands_token        = local.tokens.native_lands
+    deskpro_token             = local.tokens.deskpro
 
     gelf_url                  = var.gelf_url
     statsd_address            = var.statsd_address

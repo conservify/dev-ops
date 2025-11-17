@@ -31,6 +31,7 @@ variable workspace_tokens {
   type = map(object({
 	  mapbox = string
 	  native_lands = string
+	  deskpro = string
   }))
 }
 

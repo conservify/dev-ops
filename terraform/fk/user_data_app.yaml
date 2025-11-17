@@ -33,6 +33,7 @@ write_files:
 
       MAPBOX_TOKEN=${mapbox_token}
       NATIVE_LANDS_TOKEN=${native_lands_token}
+      DESKPRO_TOKEN=${deskpro_token}
 
       STREAMS_BUCKET_NAME=${streams_buckets}
       MEDIA_BUCKET_NAME=${media_buckets}
