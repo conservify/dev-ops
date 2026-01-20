@@ -47,6 +47,7 @@
       "inline": [
         "sudo mv /tmp/apt-sources.d/*.list /etc/apt/sources.list.d/",
         "sudo mv /tmp/apt-sources.d/*.list.asc /etc/apt/trusted.gpg.d/",
+        "for f in /etc/apt/trusted.gpg.d/*.asc ; do cat $f | sudo apt-key add - ; done",
         "sudo rmdir /tmp/apt-sources.d"
       ]
     },
