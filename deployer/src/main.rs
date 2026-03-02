@@ -2,11 +2,13 @@ use anyhow::{Context, Result};
 use clap::{Args, Parser, Subcommand};
 use serde::Deserialize;
 use ssh2::Session;
-use std::net::TcpStream;
-use std::path::PathBuf;
-use std::thread::{self, JoinHandle};
-use std::time::Duration;
-use std::{io::prelude::*, path::Path};
+use std::{
+    io::prelude::*,
+    net::TcpStream,
+    path::{Path, PathBuf},
+    thread::{self, JoinHandle},
+    time::Duration,
+};
 use tracing::*;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -51,8 +53,12 @@ struct Executor {
 
 impl Executor {
     fn execute(&self, server: &Server, command: &str) -> Result<()> {
-        let tcp = TcpStream::connect(format!("{}:{}", server.ip, self.port))?;
+        let addr = format!("{}:{}", server.ip, self.port).parse()?;
+        let tcp = TcpStream::connect_timeout(&addr, Duration::from_secs(5))?;
+        tcp.set_write_timeout(Some(Duration::from_secs(5)))?;
+        tcp.set_read_timeout(Some(Duration::from_secs(5)))?;
         let mut sess = Session::new()?;
+        sess.set_timeout(5_000);
         sess.set_tcp_stream(tcp);
         sess.handshake()?;
         sess.userauth_pubkey_file(&server.user, None, &self.cert, None)?;
@@ -74,8 +80,12 @@ impl Executor {
     }
 
     fn scp(&self, server: &Server, file: &Path) -> Result<()> {
-        let tcp = TcpStream::connect(format!("{}:22", server.ip))?;
+        let addr = format!("{}:22", server.ip).parse()?;
+        let tcp = TcpStream::connect_timeout(&addr, Duration::from_secs(5))?;
+        tcp.set_write_timeout(Some(Duration::from_secs(5)))?;
+        tcp.set_read_timeout(Some(Duration::from_secs(5)))?;
         let mut sess = Session::new()?;
+        sess.set_timeout(5_000);
         sess.set_tcp_stream(tcp);
         sess.handshake()?;
         sess.userauth_pubkey_file(&server.user, None, &self.cert, None)?;
@@ -222,7 +232,7 @@ fn main() -> Result<()> {
 
             info!("prepare = {:?}", joined);
 
-            fail_on_errors(joined)?;
+            info!("{:?}", fail_on_errors(joined)?);
 
             let commits = servers
                 .iter()
