@@ -318,7 +318,11 @@ impl Poller {
     }
 
     fn once(&self) -> Result<Status> {
-        Ok(reqwest::blocking::get(&self.url)?.json::<Status>()?)
+        let client = reqwest::blocking::Client::builder()
+            .timeout(Duration::from_secs(5))
+            .build()?;
+
+        Ok(client.get(&self.url).send()?.json::<Status>()?)
     }
 }
 
