@@ -176,6 +176,10 @@ fn run_and_join_all<T: Step + Send + Sync + 'static>(steps: Vec<T>) -> Result<Ve
     join_all(run_all(steps))
 }
 
+fn fail_on_errors(step_res: Vec<Result<()>>) -> Result<Vec<()>> {
+    step_res.into_iter().collect()
+}
+
 fn main() -> Result<()> {
     tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::new(get_rust_log()))
@@ -214,9 +218,11 @@ fn main() -> Result<()> {
 
             info!("preparing");
 
-            let joined = run_and_join_all(preparations);
+            let joined = run_and_join_all(preparations)?;
 
             info!("prepare = {:?}", joined);
+
+            fail_on_errors(joined)?;
 
             let commits = servers
                 .iter()
@@ -238,16 +244,20 @@ fn main() -> Result<()> {
             if !deploy.prepare_only {
                 info!("committing");
 
-                let joined = run_and_join_all(commits);
+                let joined = run_and_join_all(commits)?;
 
                 info!("commit = {:?}", joined);
+
+                fail_on_errors(joined)?;
             } else {
                 info!("prepare-only");
             }
 
-            let joined = join_all(verify);
+            let joined = join_all(verify)?;
 
             info!("verify = {:?}", joined);
+
+            fail_on_errors(joined)?;
         }
     }
 
