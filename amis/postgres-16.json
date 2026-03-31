@@ -199,11 +199,18 @@
       "destination": "/tmp/telegraf.conf"
     },
     {
+      "type": "file",
+      "source": "files/pgm",
+      "destination": "/tmp/pgm"
+    },
+    {
       "type": "shell",
       "inline": [
         "sudo mkdir -p /etc/telegraf",
         "sudo mv /tmp/telegraf.conf /etc/telegraf/telegraf.conf",
+        "sudo mv /tmp/pgm /etc/telegraf/pgm",
         "sudo chown -R root: /etc/telegraf",
+        "sudo chmod 755 /etc/telegraf/pgm",
         "sudo systemctl enable telegraf"
       ]
     },
