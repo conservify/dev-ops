@@ -21,6 +21,10 @@ variable workspace_keys {
   }))
 }
 
+variable workspace_email_override {
+  type = map(string)
+}
+
 variable workspace_infra {
   type = map(object({
 	  logs_port = number
@@ -289,7 +293,7 @@ locals {
   database = var.workspace_databases[terraform.workspace]
   influxdb = var.workspace_influxdbs[terraform.workspace]
   production = terraform.workspace == "prod" ? "true" : "false"
-  email_override = terraform.workspace == "prod" ? "" : "fkdev@conservify.org"
+  email_override = var.workspace_email_override[terraform.workspace]
   session_key = var.workspace_session_keys[terraform.workspace]
   tokens = var.workspace_tokens[terraform.workspace]
   infra = var.workspace_infra[terraform.workspace]
