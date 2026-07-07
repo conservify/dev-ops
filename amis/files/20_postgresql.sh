@@ -1,6 +1,12 @@
 #!/bin/bash
 
-PG_VERSION_MAJOR=16
+if [ -d /etc/postgresql/16 ]; then
+	PG_VERSION_MAJOR=16
+fi
+
+if [ -d /etc/postgresql/17 ]; then
+	PG_VERSION_MAJOR=17
+fi
 
 set -xu
 
