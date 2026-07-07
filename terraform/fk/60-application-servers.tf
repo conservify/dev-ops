@@ -16,6 +16,12 @@ data "aws_ami" "postgres-16" {
   most_recent      = true
 }
 
+data "aws_ami" "postgres-17" {
+  owners           = ["self"]
+  name_regex       = "^conservify-postgres-17-.*"
+  most_recent      = true
+}
+
 data "template_file" "app_server_user_data" {
   for_each                    = local.app_servers
   template                    = file("user_data_app.yaml")

@@ -174,6 +174,7 @@ variable workspace_influxdb_servers {
 variable workspace_pg_servers {
   type = map(map(object({
 	  instance = string
+	  image = string
 	  live = bool
 	  enabled = bool
 	  restore = bool
