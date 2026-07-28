@@ -1,0 +1,10 @@
+stages:
+  - build
+
+image: rust:latest
+
+build:
+  stage: build
+  script:
+    - cd deployer
+    - cargo build --release
